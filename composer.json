@@ -1,0 +1,36 @@
+{
+    "name": "barbosa/amp",
+    "description": "Amphp framework",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Core\\": "core/"
+        },
+        "files": [
+            "core/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Barbosa",
+            "email": "omar.barbosa@evertecinc.com"
+        }
+    ],
+    "require": {
+        "adbario/php-dot-notation": "^3.1",
+        "amphp/http-server": "^2.1",
+        "amphp/http-server-router": "^1.0",
+        "amphp/log": "^1.1",
+        "php-di/php-di": "^6.4",
+        "vlucas/phpdotenv": "5.4.x-dev"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
