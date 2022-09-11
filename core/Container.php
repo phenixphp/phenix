@@ -18,6 +18,7 @@ class Container
     public static function build(): void
     {
         if (!isset(self::$container)) {
+            self::loadRouter();
             self::loadControllers();
 
             $builder = new ContainerBuilder();
@@ -38,7 +39,7 @@ class Container
         throw new BadMethodCallException("Container does not have a named method {$method}");
     }
 
-    public static function self(): Storage
+    public static function getContainer(): Storage
     {
         return self::$container;
     }
@@ -46,6 +47,11 @@ class Container
     private static function hasMethod(string $method): bool
     {
         return method_exists(self::$container, $method) && is_callable([self::$container, $method]);
+    }
+
+    private static function loadRouter(): void
+    {
+        self::$definitions['router'] = create(Router::class);
     }
 
     private static function loadControllers(): void

@@ -1,6 +1,6 @@
 <?php
 
 use App\Http\Controllers\WelcomeController;
-use Core\Router;
+use Core\Facades\Router;
 
-Router::get('/', WelcomeController::index(...));
+Router::get('/', [WelcomeController::class, 'index']);

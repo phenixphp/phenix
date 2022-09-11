@@ -4,48 +4,54 @@ namespace Core;
 
 use Core\Constants\Http;
 use Amp\Http\Server\Middleware;
-use Amp\Http\Server\RequestHandler;
 use Amp\Http\Server\Router as ServerRouter;
 use Amp\Http\Server\RequestHandler\CallableRequestHandler;
 
 class Router
 {
-    private static ServerRouter $router;
+    private ServerRouter $router;
 
-    public static function init(): void
+    public function __construct()
     {
-        if (!isset(self::$router)) {
-            self::$router = new ServerRouter();
-        }
+        $this->router = new ServerRouter();
     }
 
-    public static function getRouter(): ServerRouter
+    public function getRouter(): ServerRouter
     {
-        return self::$router;
+        return $this->router;
     }
 
-    public static function get(string $uri, callable $requestHandler, Middleware ...$middlewares): void
+    public function get(string $uri, array $handler, Middleware ...$middlewares): void
     {
-        self::$router->addRoute(Http::METHOD_GET, $uri, new CallableRequestHandler($requestHandler), ...$middlewares);
+        $this->router->addRoute(Http::METHOD_GET, $uri, $this->callable($handler), ...$middlewares);
     }
 
-    public static function post(string $uri, RequestHandler $requestHandler, Middleware ...$middlewares): void
+    public function post(string $uri, array $handler, Middleware ...$middlewares): void
     {
-        self::$router->addRoute(Http::METHOD_POST, $uri, $requestHandler, ...$middlewares);
+        $this->router->addRoute(Http::METHOD_POST, $uri, $this->callable($handler), ...$middlewares);
     }
 
-    public static function put(string $uri, RequestHandler $requestHandler, Middleware ...$middlewares): void
+    public function put(string $uri, array $handler, Middleware ...$middlewares): void
     {
-        self::$router->addRoute(Http::METHOD_PUT, $uri, $requestHandler, ...$middlewares);
+        $this->router->addRoute(Http::METHOD_PUT, $uri, $this->callable($handler), ...$middlewares);
     }
 
-    public static function patch(string $uri, RequestHandler $requestHandler, Middleware ...$middlewares): void
+    public function patch(string $uri, array $handler, Middleware ...$middlewares): void
     {
-        self::$router->addRoute(Http::METHOD_PATCH, $uri, $requestHandler, ...$middlewares);
+        $this->router->addRoute(Http::METHOD_PATCH, $uri, $this->callable($handler), ...$middlewares);
     }
 
-    public function delete(string $uri, RequestHandler $requestHandler, Middleware ...$middlewares): void
+    public function delete(string $uri, array $handler, Middleware ...$middlewares): void
     {
-        self::$router->addRoute(Http::METHOD_DELETE, $uri, $requestHandler, ...$middlewares);
+        $this->router->addRoute(Http::METHOD_DELETE, $uri, $this->callable($handler), ...$middlewares);
+    }
+
+    private function callable(array $handler): CallableRequestHandler
+    {
+        [$controller, $method] = $handler;
+
+        $controller = Container::get($controller);
+
+        return new CallableRequestHandler($controller->{$method}(...));
     }
 }

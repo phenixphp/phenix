@@ -2,6 +2,7 @@
 
 namespace Core\Runtime;
 
+use BadMethodCallException;
 use Core\Container;
 
 abstract class Facade
@@ -17,6 +18,12 @@ abstract class Facade
     {
         $object = Container::get(static::getKeyName());
 
-        return $object->{$method}(...$arguments);
+        if (method_exists($object, $method) && is_callable([$object, $method])) {
+            return $object->{$method}(...$arguments);
+        }
+
+        $class = get_class($object);
+
+        throw new BadMethodCallException("{$class} does not have a named method {$method}");
     }
 }
