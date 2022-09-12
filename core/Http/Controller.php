@@ -4,7 +4,7 @@ namespace Core\Http;
 
 use Core\Concerns\HasRequest;
 
-class BaseController
+abstract class Controller
 {
     use HasRequest;
 }
