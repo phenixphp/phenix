@@ -6,23 +6,23 @@ use Amp\Loop;
 use Monolog\Logger;
 use Amp\Log\StreamHandler;
 use Amp\Http\Server\Router;
-use Amp\Http\Server\Server;
 use Amp\Log\ConsoleFormatter;
 use Amp\Socket\Server as SocketServer;
 use Amp\ByteStream\ResourceOutputStream;
+use Amp\Http\Server\HttpServer;
 
 class App
 {
     private Logger $logger;
     private array $sockets;
-    private Server $server;
+    private HttpServer $server;
 
     public function __construct(Router $router)
     {
         $this->setupSockets();
         $this->setupLogger();
 
-        $this->server = new Server($this->sockets, $router, $this->logger);
+        $this->server = new HttpServer($this->sockets, $router, $this->logger);
     }
 
     public function setupSockets(): void
