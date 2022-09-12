@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Concerns\Singleton;
+use Core\Http\Response;
 use Core\Runtime\Config;
 use Core\Util\Files;
 use League\Container\Container as Storage;
@@ -18,8 +19,7 @@ class Container
         if (!isset(self::$container)) {
             self::$container = new Storage();
 
-            self::addConfig();
-            self::addRouter();
+            self::addFacades();
             self::addControllers();
         }
     }
@@ -34,14 +34,11 @@ class Container
         return self::$container;
     }
 
-    private static function addConfig(): void
+    private function addFacades(): void
     {
         self::$container->add('config', Config::build(...))->setShared(true);
-    }
-
-    private static function addRouter(): void
-    {
         self::$container->add('router', Router::class)->setShared(true);
+        self::$container->add('response', Response::class);
     }
 
     private static function addControllers(): void
