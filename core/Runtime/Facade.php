@@ -12,7 +12,7 @@ abstract class Facade
     /**
      * @param string $method
      * @param array $arguments
-     * @return object
+     * @return mixed
      */
     public static function __callStatic($method, $arguments)
     {

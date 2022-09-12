@@ -1,5 +1,7 @@
 <?php
 
+use Core\Http\Response;
+
 if (!function_exists('base_path()')) {
     function base_path(string $path = ''): string {
         if (str_starts_with($path, DIRECTORY_SEPARATOR)) {
@@ -14,14 +16,10 @@ if (!function_exists('base_path()')) {
     }
 }
 
-// if (!function_exists('config')) {
-//     function config(string $path): array|string
-//     {
-//         $path = explode('.', $path);
-//         $file = array_shift($path);
+if (!function_exists('response')) {
+    function response(): Response {
+        return new Response();
+    }
+}
 
-//         if (!base_path('config' . DIRECTORY_SEPARATOR . $file)) {
-//             throw new RuntimeException("Error Processing Request");
-//         }
-//     }
-// }
+
