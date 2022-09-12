@@ -23,8 +23,8 @@
         "amphp/http-server": "^2.1",
         "amphp/http-server-router": "^1.0",
         "amphp/log": "^1.1",
-        "php-di/php-di": "^6.4",
-        "vlucas/phpdotenv": "5.4.x-dev"
+        "league/container": "^4.2",
+        "vlucas/phpdotenv": "^5.4.x-dev"
     },
     "config": {
         "optimize-autoloader": true,

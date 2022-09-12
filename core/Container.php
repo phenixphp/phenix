@@ -2,41 +2,31 @@
 
 namespace Core;
 
-use BadMethodCallException;
+use Core\Concerns\Singleton;
 use Core\Runtime\Config;
 use Core\Util\Files;
-use DI\ContainerBuilder;
-use DI\Container as Storage;
-
-use function DI\create;
+use League\Container\Container as Storage;
 
 class Container
 {
-    private static array $definitions;
+    use Singleton;
+
     private static Storage $container;
 
     public static function build(): void
     {
         if (!isset(self::$container)) {
-            self::loadRouter();
-            self::loadControllers();
+            self::$container = new Storage();
 
-            $builder = new ContainerBuilder();
-            $builder->addDefinitions(self::$definitions);
-
-            self::$container = $builder->build();
-
-            self::loadSettings();
+            self::addConfig();
+            self::addRouter();
+            self::addControllers();
         }
     }
 
-    public static function __callStatic($method, $arguments)
+    public static function get(string $id): mixed
     {
-        if (self::hasMethod($method)) {
-            return self::$container->{$method}(...$arguments);
-        }
-
-        throw new BadMethodCallException("Container does not have a named method {$method}");
+        return self::$container->get($id);
     }
 
     public static function getContainer(): Storage
@@ -44,24 +34,24 @@ class Container
         return self::$container;
     }
 
-    private static function hasMethod(string $method): bool
+    private static function addConfig(): void
     {
-        return method_exists(self::$container, $method) && is_callable([self::$container, $method]);
+        self::$container->add('config', Config::build(...))->setShared(true);
     }
 
-    private static function loadRouter(): void
+    private static function addRouter(): void
     {
-        self::$definitions['router'] = create(Router::class);
+        self::$container->add('router', Router::class)->setShared(true);
     }
 
-    private static function loadControllers(): void
+    private static function addControllers(): void
     {
         $controllers = Files::directory(self::getControllersPath());
 
         foreach ($controllers as $controller) {
-            $controller = ucfirst(str_replace([APP_PATH . DIRECTORY_SEPARATOR, '.php'], '', $controller));
+            $controller = self::parseNamespace($controller);
 
-            self::$definitions[$controller] = create($controller);
+            self::$container->add($controller);
         }
     }
 
@@ -70,10 +60,10 @@ class Container
         return base_path('app'. DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers');
     }
 
-    private static function loadSettings(): void
+    private static function parseNamespace(string $namespace): string
     {
-        $config = Config::build();
+        $namespace = str_replace([APP_PATH . DIRECTORY_SEPARATOR, '.php', '/'], ['', '', '\\'], $namespace);
 
-        self::$container->set('config', $config);
+        return ucfirst($namespace);
     }
 }
