@@ -24,6 +24,7 @@
         "amphp/http-server-router": "^1.0",
         "amphp/log": "^1.1",
         "league/container": "^4.2",
+        "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4.x-dev"
     },
     "config": {
