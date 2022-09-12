@@ -26,11 +26,18 @@
         "league/container": "^4.2",
         "vlucas/phpdotenv": "^5.4.x-dev"
     },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.11"
+    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/phpunit --testdox",
+        "phpcs": "vendor/bin/php-cs-fixer fix"
+    }
 }

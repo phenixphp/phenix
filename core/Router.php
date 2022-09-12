@@ -2,10 +2,10 @@
 
 namespace Core;
 
-use Core\Constants\Http;
 use Amp\Http\Server\Middleware;
-use Amp\Http\Server\Router as ServerRouter;
 use Amp\Http\Server\RequestHandler\CallableRequestHandler;
+use Amp\Http\Server\Router as ServerRouter;
+use Core\Constants\Http;
 
 class Router
 {
