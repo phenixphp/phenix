@@ -16,7 +16,7 @@ class Container
 
     public static function build(): void
     {
-        if (!isset(self::$container)) {
+        if (! isset(self::$container)) {
             self::$container = new Storage();
 
             self::addFacades();

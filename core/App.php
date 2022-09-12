@@ -2,14 +2,14 @@
 
 namespace Core;
 
-use Amp\Loop;
-use Monolog\Logger;
-use Amp\Log\StreamHandler;
-use Amp\Http\Server\Router;
-use Amp\Log\ConsoleFormatter;
-use Amp\Socket\Server as SocketServer;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Http\Server\HttpServer;
+use Amp\Http\Server\Router;
+use Amp\Log\ConsoleFormatter;
+use Amp\Log\StreamHandler;
+use Amp\Loop;
+use Amp\Socket\Server as SocketServer;
+use Monolog\Logger;
 
 class App
 {
@@ -55,7 +55,3 @@ class App
         });
     }
 }
-
-
-
-

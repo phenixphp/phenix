@@ -1,6 +1,7 @@
 <?php
 
 namespace Core\Facades;
+
 use Core\Runtime\Facade;
 
 /**
