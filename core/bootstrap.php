@@ -4,8 +4,8 @@ define('APP_PATH', dirname(__DIR__));
 
 use Core\App;
 use Core\Container;
-use Dotenv\Dotenv;
 use Core\Util\Files;
+use Dotenv\Dotenv;
 
 (Dotenv::createImmutable(base_path()))->load();
 

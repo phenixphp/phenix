@@ -2,11 +2,11 @@
 
 namespace Core\Runtime;
 
+use Adbar\Dot;
 use Core\Util\Files;
 use InvalidArgumentException;
 use SplFixedArray;
 use Throwable;
-use Adbar\Dot;
 
 class Config
 {
@@ -27,7 +27,6 @@ class Config
             $key = self::getKey($path);
 
             $settings[$key] = require_once($path);
-
         }
 
         return new static($settings);
