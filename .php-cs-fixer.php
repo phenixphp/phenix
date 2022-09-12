@@ -30,7 +30,6 @@ $rules = [
     'single_trait_insert_per_statement' => true,
 ];
 
-
 $finder = Finder::create()
     ->in([
         __DIR__ . '/app',
