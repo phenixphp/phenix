@@ -34,7 +34,7 @@ class Container
         return self::$container;
     }
 
-    private function addFacades(): void
+    private static function addFacades(): void
     {
         self::$container->add('config', Config::build(...))->setShared(true);
         self::$container->add('router', Router::class)->setShared(true);
