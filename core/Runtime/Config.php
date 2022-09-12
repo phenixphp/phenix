@@ -2,7 +2,6 @@
 
 namespace Core\Runtime;
 
-use Core\Exceptions\InvalidFileException;
 use Core\Util\Files;
 use InvalidArgumentException;
 use SplFixedArray;
