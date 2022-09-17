@@ -38,7 +38,7 @@ class MakeController extends Command
 
         $controller = array_pop($namespace);
 
-        $path = base_path("app/Http/Controllers");
+        $path = base_path('app/Http/Controllers');
 
         if (empty($namespace)) {
             $search[1] = '\\' . $search[1];

@@ -7,8 +7,6 @@ use Core\Container;
 
 abstract class Facade
 {
-    abstract protected static function getKeyName(): string;
-
     /**
      * @param string $method
      * @param array $arguments
@@ -26,4 +24,6 @@ abstract class Facade
 
         throw new BadMethodCallException("{$class} does not have a named method {$method}");
     }
+
+    abstract protected static function getKeyName(): string;
 }

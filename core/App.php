@@ -28,18 +28,9 @@ class App
     public function setupSockets(): void
     {
         $this->sockets = [
-            SocketServer::listen("0.0.0.0:1337"),
-            SocketServer::listen("[::]:1337"),
+            SocketServer::listen('0.0.0.0:1337'),
+            SocketServer::listen('[::]:1337'),
         ];
-    }
-
-    private function setupLogger(): void
-    {
-        $logHandler = new StreamHandler(new ResourceOutputStream(STDOUT));
-        $logHandler->setFormatter(new ConsoleFormatter());
-
-        $this->logger = new Logger('server');
-        $this->logger->pushHandler($logHandler);
     }
 
     public function run(): void
@@ -53,5 +44,14 @@ class App
                 yield $this->server->stop();
             });
         });
+    }
+
+    private function setupLogger(): void
+    {
+        $logHandler = new StreamHandler(new ResourceOutputStream(STDOUT));
+        $logHandler->setFormatter(new ConsoleFormatter());
+
+        $this->logger = new Logger('server');
+        $this->logger->pushHandler($logHandler);
     }
 }

@@ -32,15 +32,6 @@ class Config
         return new static($settings);
     }
 
-    private static function getKey(string $path): string
-    {
-        $path = explode(DIRECTORY_SEPARATOR, $path);
-
-        $name = array_pop($path);
-
-        return str_replace('.php', '', $name);
-    }
-
     public function get(string $key): mixed
     {
         try {
@@ -53,5 +44,14 @@ class Config
     public function set(string $key, mixed $value): void
     {
         $this->settings->set($key, $value);
+    }
+
+    private static function getKey(string $path): string
+    {
+        $path = explode(DIRECTORY_SEPARATOR, $path);
+
+        $name = array_pop($path);
+
+        return str_replace('.php', '', $name);
     }
 }
