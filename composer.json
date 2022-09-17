@@ -25,20 +25,27 @@
         "amphp/log": "^1.1",
         "league/container": "^4.2",
         "symfony/console": "^6.1",
-        "vlucas/phpdotenv": "^5.4.x-dev"
+        "vlucas/phpdotenv": "^5.4"
     },
     "require-dev": {
+        "amphp/phpunit-util": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.11",
         "nunomaduro/phpinsights": "^2.6",
+        "phpunit/phpunit": "^9.5"
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
         "test": "vendor/bin/phpunit --testdox",
-        "phpcs": "vendor/bin/php-cs-fixer fix"
+        "phpcs": "vendor/bin/php-cs-fixer fix",
+        "analyze": "vendor/bin/phpinsights"
     }
 }
