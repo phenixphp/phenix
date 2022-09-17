@@ -2,10 +2,14 @@
 
 <?php
 
+define('APP_PATH', __DIR__);
+
 require __DIR__ . '/vendor/autoload.php';
 
-use Symfony\Component\Console\Application;
+use Core\Console\Phenix;
 
-$application = new Application('Phenix', '0.0.1');
+$application = new Phenix();
+
+$application->loadCommands();
 
 $application->run();
