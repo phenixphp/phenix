@@ -2,14 +2,14 @@
 
 <?php
 
-define('APP_PATH', __DIR__);
-
-require __DIR__ . '/vendor/autoload.php';
-
 use Core\Console\Phenix;
 
-$application = new Phenix();
+require_once __DIR__ . '/vendor/autoload.php';
 
-$application->loadCommands();
+/** @var \Core\App $app */
+$app = require_once __DIR__ . '/core/bootstrap.php';
 
-$application->run();
+/** @var \Core\Console\Phenix $phenix */
+$phenix = $app::make(Phenix::class);
+
+$phenix->run();

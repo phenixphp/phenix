@@ -13,7 +13,7 @@ class Phenix extends Application
         parent::__construct('Phenix', '0.0.1');
     }
 
-    public function loadCommands(): void
+    public function registerCommands(): void
     {
         $commands = Files::directory(self::getCommandsPath());
 
