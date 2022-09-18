@@ -1,10 +1,11 @@
 <?php
 
-namespace Core;
+namespace Core\Routing;
 
 use Amp\Http\Server\Middleware;
 use Amp\Http\Server\RequestHandler\CallableRequestHandler;
 use Amp\Http\Server\Router as ServerRouter;
+use Core\App;
 use Core\Constants\Http;
 
 class Router
@@ -50,7 +51,7 @@ class Router
     {
         [$controller, $method] = $handler;
 
-        $controller = Container::get($controller);
+        $controller = App::make($controller);
 
         return new CallableRequestHandler($controller->{$method}(...));
     }

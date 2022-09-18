@@ -3,7 +3,7 @@
 namespace Core\Runtime;
 
 use BadMethodCallException;
-use Core\Container;
+use Core\App;
 
 abstract class Facade
 {
@@ -14,7 +14,7 @@ abstract class Facade
      */
     public static function __callStatic($method, $arguments)
     {
-        $object = Container::get(static::getKeyName());
+        $object = App::make(static::getKeyName());
 
         if (method_exists($object, $method) && is_callable([$object, $method])) {
             return $object->{$method}(...$arguments);
