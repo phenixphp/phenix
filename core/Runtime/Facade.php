@@ -22,7 +22,9 @@ abstract class Facade
             return $object->{$method}(...$arguments);
         }
 
-        throw new BadMethodCallException("{$object::class} does not have a named method {$method}");
+        $class = $object::class;
+
+        throw new BadMethodCallException("{$class} does not have a named method {$method}");
     }
 
     abstract protected static function getKeyName(): string;
