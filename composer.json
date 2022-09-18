@@ -38,6 +38,7 @@
         "nunomaduro/collision": "^6.3",
         "nunomaduro/phpinsights": "^2.6",
         "pestphp/pest": "^1.22",
+        "pestphp/pest-plugin-parallel": "^1.2",
         "phpunit/phpunit": "^9.5"
     },
     "config": {
@@ -54,6 +55,8 @@
     "prefer-stable": true,
     "scripts": {
         "test": "vendor/bin/pest",
+        "test:coverage": "vendor/bin/pest --coverage",
+        "test:parallel": "vendor/bin/pest --parallel",
         "phpcs": "vendor/bin/php-cs-fixer fix",
         "analyze": "vendor/bin/phpinsights"
     }
