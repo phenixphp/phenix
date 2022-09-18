@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core;
 
 use Amp\ByteStream\ResourceOutputStream;
@@ -18,8 +20,11 @@ use Monolog\Logger;
 
 class App
 {
-    private Logger $logger;
+    /**
+     * @var array<int, \Amp\Socket\Server>
+     */
     private array $sockets;
+    private Logger $logger;
     private HttpServer $server;
     private static Container $container;
 

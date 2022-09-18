@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Runtime;
 
 use BadMethodCallException;
@@ -20,9 +22,7 @@ abstract class Facade
             return $object->{$method}(...$arguments);
         }
 
-        $class = get_class($object);
-
-        throw new BadMethodCallException("{$class} does not have a named method {$method}");
+        throw new BadMethodCallException("{$object::class} does not have a named method {$method}");
     }
 
     abstract protected static function getKeyName(): string;
