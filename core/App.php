@@ -11,6 +11,7 @@ use Amp\Log\StreamHandler;
 use Amp\Loop;
 use Amp\Socket\Server as SocketServer;
 use Core\Console\Phenix;
+use Core\FileSystem\Storage;
 use Core\Http\Response;
 use Core\Routing\Router;
 use Core\Runtime\Config;
@@ -99,6 +100,7 @@ class App
     private function registerFacades(): void
     {
         self::$container->add('response', Response::class);
+        self::$container->add('storage', Storage::class);
         self::$container->add('router', Router::class)->setShared(true);
         self::$container->add('config', Config::build(...))->setShared(true);
     }
