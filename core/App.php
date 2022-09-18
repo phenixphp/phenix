@@ -19,18 +19,11 @@ class App
 
     public function __construct(Router $router)
     {
-        $this->setupSockets();
         $this->setupLogger();
+        $this->setupSockets();
 
         $this->server = new HttpServer($this->sockets, $router, $this->logger);
-    }
 
-    public function setupSockets(): void
-    {
-        $this->sockets = [
-            SocketServer::listen('0.0.0.0:1337'),
-            SocketServer::listen('[::]:1337'),
-        ];
     }
 
     public function run(): void
@@ -44,6 +37,14 @@ class App
                 yield $this->server->stop();
             });
         });
+    }
+
+    private function setupSockets(): void
+    {
+        $this->sockets = [
+            SocketServer::listen('0.0.0.0:1337'),
+            SocketServer::listen('[::]:1337'),
+        ];
     }
 
     private function setupLogger(): void
