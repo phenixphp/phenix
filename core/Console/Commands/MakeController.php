@@ -58,7 +58,7 @@ class MakeController extends Command
 
         $controllerPath = "{$path}/{$controller}.php";
 
-        if (file_exists($controllerPath) && !$force) {
+        if (file_exists($controllerPath) && ! $force) {
             $output->writeln(['Controller already exists!', self::EMPTY_LINE]);
 
             return Command::FAILURE;

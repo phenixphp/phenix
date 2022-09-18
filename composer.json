@@ -12,10 +12,15 @@
             "core/functions.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
-            "name": "Barbosa",
-            "email": "omar.barbosa@evertecinc.com"
+            "name": "Omar Barbosa",
+            "email": "contacto@omarbarbosa.com"
         }
     ],
     "require": {
@@ -32,6 +37,7 @@
         "friendsofphp/php-cs-fixer": "^3.11",
         "nunomaduro/collision": "^6.3",
         "nunomaduro/phpinsights": "^2.6",
+        "pestphp/pest": "^1.22",
         "phpunit/phpunit": "^9.5"
     },
     "config": {
@@ -39,13 +45,14 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "pestphp/pest-plugin": true
         }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "test": "vendor/bin/phpunit --testdox",
+        "test": "vendor/bin/pest",
         "phpcs": "vendor/bin/php-cs-fixer fix",
         "analyze": "vendor/bin/phpinsights"
     }
