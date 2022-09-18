@@ -4,7 +4,7 @@ namespace Core\Exceptions;
 
 use Exception;
 
-class RuntimeException extends Exception
+class RuntimeError extends Exception
 {
     // ..
 }
