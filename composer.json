@@ -40,7 +40,8 @@
         "nunomaduro/phpinsights": "^2.6",
         "pestphp/pest": "^1.22",
         "pestphp/pest-plugin-parallel": "^1.2",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "symfony/var-dumper": "^6.1"
     },
     "config": {
         "optimize-autoloader": true,
