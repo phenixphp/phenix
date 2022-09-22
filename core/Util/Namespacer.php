@@ -6,9 +6,9 @@ namespace Core\Util;
 
 class Namespacer
 {
-    public static function parse(string $namespace): string
+    public static function parse(string $path): string
     {
-        $namespace = str_replace([APP_PATH . DIRECTORY_SEPARATOR, '.php', '/'], ['', '', '\\'], $namespace);
+        $namespace = str_replace([APP_PATH . DIRECTORY_SEPARATOR, '.php', '/'], ['', '', '\\'], $path);
 
         return ucfirst($namespace);
     }
