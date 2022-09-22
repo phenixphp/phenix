@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Concerns;
 
-use Core\Exceptions\RuntimeException;
+use Core\Exceptions\RuntimeError;
 
 trait Singleton
 {
@@ -13,11 +15,11 @@ trait Singleton
 
     final public function __clone(): void
     {
-        throw new RuntimeException('Cloning was disabled.');
+        throw new RuntimeError('Cloning was disabled.');
     }
 
     final public function __wakeup(): void
     {
-        throw new RuntimeException('WakeUp was disabled.');
+        throw new RuntimeError('WakeUp was disabled.');
     }
 }

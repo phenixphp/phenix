@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Runtime;
 
 use BadMethodCallException;
-use Core\Container;
+use Core\App;
 
 abstract class Facade
 {
-    abstract protected static function getKeyName(): string;
-
     /**
      * @param string $method
      * @param array $arguments
@@ -16,14 +16,16 @@ abstract class Facade
      */
     public static function __callStatic($method, $arguments)
     {
-        $object = Container::get(static::getKeyName());
+        $object = App::make(static::getKeyName());
 
         if (method_exists($object, $method) && is_callable([$object, $method])) {
             return $object->{$method}(...$arguments);
         }
 
-        $class = get_class($object);
+        $class = $object::class;
 
         throw new BadMethodCallException("{$class} does not have a named method {$method}");
     }
+
+    abstract protected static function getKeyName(): string;
 }

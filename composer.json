@@ -12,25 +12,54 @@
             "core/functions.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
-            "name": "Barbosa",
-            "email": "omar.barbosa@evertecinc.com"
+            "name": "Omar Barbosa",
+            "email": "contacto@omarbarbosa.com"
         }
     ],
     "require": {
         "adbario/php-dot-notation": "^3.1",
+        "amphp/file": "^2.0",
         "amphp/http-server": "^2.1",
         "amphp/http-server-router": "^1.0",
         "amphp/log": "^1.1",
         "league/container": "^4.2",
-        "vlucas/phpdotenv": "^5.4.x-dev"
+        "symfony/console": "^6.1",
+        "vlucas/phpdotenv": "^5.4"
+    },
+    "require-dev": {
+        "amphp/phpunit-util": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.11",
+        "nunomaduro/collision": "^6.3",
+        "nunomaduro/phpinsights": "^2.6",
+        "pestphp/pest": "^1.22",
+        "pestphp/pest-plugin-parallel": "^1.2",
+        "phpunit/phpunit": "^9.5",
+        "symfony/var-dumper": "^6.1"
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "pestphp/pest-plugin": true
+        }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",
+        "test:parallel": "vendor/bin/pest --parallel",
+        "phpcs": "vendor/bin/php-cs-fixer fix",
+        "analyze": "vendor/bin/phpinsights"
+    }
 }

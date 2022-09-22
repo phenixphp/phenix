@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Facades;
 
 use Core\Runtime\Facade;
