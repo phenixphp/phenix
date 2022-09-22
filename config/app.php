@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-    'aliases' => [
-        'config' => \Core\Facades\Config::class,
-    ],
+    'name' => env('APP_NAME', fn() => 'Phenix'),
+    'env' => env('APP_ENV', fn() => 'local'),
 ];

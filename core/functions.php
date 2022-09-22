@@ -25,3 +25,12 @@ if (! function_exists('response')) {
         return new Response();
     }
 }
+
+if (! function_exists('env')) {
+    function env(string $key, callable $default): string|bool
+    {
+        return $_ENV[$key] ?? $default();
+    }
+}
+
+
