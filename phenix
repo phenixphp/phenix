@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+
+<?php
+
+use Core\Console\Phenix;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+/** @var \Core\App $app */
+$app = require_once __DIR__ . '/core/bootstrap.php';
+
+/** @var \Core\Console\Phenix $phenix */
+$phenix = $app::make(Phenix::class);
+
+$phenix->run();

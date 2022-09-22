@@ -7,13 +7,12 @@ namespace Core\Facades;
 use Core\Runtime\Facade;
 
 /**
- * @method static mixed get(string $key)
- * @method static void set(string $key, mixed $value)
+ * @method static string get(string $path, string $mode = 'r')
  */
-class Config extends Facade
+class Storage extends Facade
 {
     public static function getKeyName(): string
     {
-        return 'config';
+        return 'storage';
     }
 }
