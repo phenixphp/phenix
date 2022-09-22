@@ -11,7 +11,9 @@ use Amp\Log\StreamHandler;
 use Amp\Loop;
 use Amp\Socket\Server as SocketServer;
 use Core\Console\Phenix;
-use Core\FileSystem\Storage;
+use Core\Contracts\Filesystem\File as FileContract;
+use Core\Filesystem\File;
+use Core\Filesystem\Storage;
 use Core\Http\Response;
 use Core\Routing\Router;
 use Core\Runtime\Config;
@@ -64,6 +66,11 @@ class App
         return self::$container->get($key);
     }
 
+    public static function swap(string $key, string $concrete): mixed
+    {
+        return self::$container->add($key, $concrete);
+    }
+
     private function loadRoutes(): void
     {
         foreach (Files::directory(base_path('routes')) as $file) {
@@ -103,6 +110,7 @@ class App
         self::$container->add('storage', Storage::class);
         self::$container->add('router', Router::class)->setShared(true);
         self::$container->add('config', Config::build(...))->setShared(true);
+        self::$container->add(FileContract::class, File::class);
     }
 
     private function registerControllers(): void

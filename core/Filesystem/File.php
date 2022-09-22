@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Core\Filesystem;
 
 use Amp\File\FileSystem;
+use Core\Contracts\Filesystem\File as FileContract;
 use Throwable;
 
 use function Amp\File\filesystem;
 
-class Storage
+class File implements FileContract
 {
     private FileSystem $driver;
 
@@ -32,5 +33,15 @@ class Storage
             });
 
         return $content;
+    }
+
+    public function put(string $path, string $content): bool
+    {
+        return file_put_contents($path, $content) !== false;
+    }
+
+    public function exists(string $path): bool
+    {
+        return file_exists($path);
     }
 }
