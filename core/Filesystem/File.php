@@ -6,7 +6,6 @@ namespace Core\Filesystem;
 
 use Amp\File\FileSystem;
 use Core\Contracts\Filesystem\File as FileContract;
-use Throwable;
 
 use function Amp\File\filesystem;
 
@@ -21,27 +20,16 @@ class File implements FileContract
 
     public function get(string $path, string $mode = 'r'): string
     {
-        $content = '';
-
-        $this->driver->openFile($path, $mode)
-            ->onResolve(function (Throwable $error = null, $result = null) use (&$content) {
-                if ($error) {
-                    throw $error;
-                }
-
-                $content = $result ?? '';
-            });
-
-        return $content;
+        return $this->driver->read($path);
     }
 
-    public function put(string $path, string $content): bool
+    public function put(string $path, string $content): void
     {
-        return file_put_contents($path, $content) !== false;
+        $this->driver->write($path, $content);
     }
 
     public function exists(string $path): bool
     {
-        return file_exists($path);
+        return $this->driver->exists($path);
     }
 }
