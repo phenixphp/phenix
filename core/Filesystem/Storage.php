@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Core\Filesystem;
 
 use Amp\File\FileSystem;
-use Throwable;
 
 use function Amp\File\filesystem;
+
+use Throwable;
 
 class Storage
 {

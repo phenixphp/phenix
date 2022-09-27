@@ -32,5 +32,3 @@ if (! function_exists('env')) {
         return $_ENV[$key] ?? $default();
     }
 }
-
-
