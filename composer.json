@@ -25,16 +25,16 @@
     ],
     "require": {
         "adbario/php-dot-notation": "^3.1",
-        "amphp/file": "^2.0",
-        "amphp/http-server": "^2.1",
-        "amphp/http-server-router": "^1.0",
-        "amphp/log": "^1.1",
+        "amphp/file": "^v3.0.0-beta.3",
+        "amphp/http-server": "^v3.0.0-beta.3",
+        "amphp/http-server-router": "^v2.0.0-beta.1",
+        "amphp/log": "^v2.0.0-beta.1",
         "league/container": "^4.2",
         "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4"
     },
     "require-dev": {
-        "amphp/phpunit-util": "^2.0",
+        "amphp/phpunit-util": "^v3.0.0-beta.3",
         "friendsofphp/php-cs-fixer": "^3.11",
         "nunomaduro/collision": "^6.3",
         "nunomaduro/phpinsights": "^2.6",

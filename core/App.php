@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Amp\ByteStream\ResourceOutputStream;
-use Amp\Http\Server\HttpServer;
+use Amp\ByteStream;
+use Amp\Http\Server\DefaultErrorHandler;
+use Amp\Http\Server\SocketHttpServer;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
-use Amp\Loop;
-use Amp\Socket\Server as SocketServer;
+use Amp\Socket;
 use Core\Console\Phenix;
 use Core\Contracts\Filesystem\File as FileContract;
 use Core\Filesystem\File;
@@ -20,45 +20,38 @@ use Core\Runtime\Config;
 use Core\Util\Files;
 use League\Container\Container;
 use Monolog\Logger;
+use Monolog\Processor\PsrLogMessageProcessor;
 
 class App
 {
-    /**
-     * @var array<int, \Amp\Socket\Server>
-     */
-    private array $sockets;
     private Logger $logger;
-    private HttpServer $server;
+    private SocketHttpServer $server;
     private static Container $container;
+    private DefaultErrorHandler $errorHandler;
 
     public function __construct()
     {
         $this->setupLogger();
-        $this->setupSockets();
-
         self::$container = new Container();
+        $this->errorHandler = new DefaultErrorHandler();
+
+        $this->server = new SocketHttpServer($this->logger);
+        $this->server->expose(new Socket\InternetAddress("0.0.0.0", 1337));
+        $this->server->expose(new Socket\InternetAddress("[::]", 1337));
 
         $this->setupDefinitions();
         $this->loadRoutes();
-
-        $this->server = new HttpServer(
-            $this->sockets,
-            self::$container->get('router')->getRouter(),
-            $this->logger
-        );
     }
 
     public function run(): void
     {
-        Loop::run(function () {
-            yield $this->server->start();
+        $this->server->start(self::$container->get('router')->getRouter(), $this->errorHandler);
 
-            Loop::onSignal(SIGINT, function (string $watcherId) {
-                Loop::cancel($watcherId);
+        $signal = \Amp\trapSignal([SIGINT, SIGTERM]);
 
-                yield $this->server->stop();
-            });
-        });
+        $this->logger->info("Caught signal $signal, stopping server");
+
+        $this->server->stop();
     }
 
     public static function make(string $key): mixed
@@ -78,17 +71,10 @@ class App
         }
     }
 
-    private function setupSockets(): void
-    {
-        $this->sockets = [
-            SocketServer::listen('0.0.0.0:1337'),
-            SocketServer::listen('[::]:1337'),
-        ];
-    }
-
     private function setupLogger(): void
     {
-        $logHandler = new StreamHandler(new ResourceOutputStream(STDOUT));
+        $logHandler = new StreamHandler(ByteStream\getStdout());
+        $logHandler->pushProcessor(new PsrLogMessageProcessor());
         $logHandler->setFormatter(new ConsoleFormatter());
 
         $this->logger = new Logger('server');
@@ -106,9 +92,12 @@ class App
 
     private function registerFacades(): void
     {
+        self::$container->add('router', function () {
+            return new Router($this->server, $this->errorHandler);
+        })->setShared(true);
+
         self::$container->add('response', Response::class);
         self::$container->add('storage', Storage::class);
-        self::$container->add('router', Router::class)->setShared(true);
         self::$container->add('config', Config::build(...))->setShared(true);
         self::$container->add(FileContract::class, File::class);
     }

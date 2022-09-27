@@ -16,7 +16,9 @@ abstract class AbstractMake extends Command
     protected const SEARCH = ['{namespace}', '{name}'];
 
     abstract protected function outputDirectory(): string;
+
     abstract protected function stub(InputInterface $input): string;
+
     abstract protected function suffix(): string;
 
     protected function execute(InputInterface $input, OutputInterface $output): int
