@@ -56,7 +56,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "test": "vendor/bin/pest",
+        "test": "XDEBUG_MODE=off vendor/bin/pest",
+        "test:debug": "vendor/bin/pest",
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",
         "test:parallel": "vendor/bin/pest --parallel",
         "phpcs": "vendor/bin/php-cs-fixer fix",
