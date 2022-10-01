@@ -35,7 +35,7 @@ abstract class AbstractMake extends Command
         if (File::exists($filePath) && ! $force) {
             $output->writeln(["{$this->suffix()} already exists!", self::EMPTY_LINE]);
 
-            return Command::FAILURE;
+            return Command::SUCCESS;
         }
 
         $stub = File::get(base_path("core/stubs/{$this->stub($input)}"));
