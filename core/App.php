@@ -67,7 +67,7 @@ class App
 
     public function swap(string $key, object $concrete): void
     {
-        if (!empty($key)) {
+        if (! empty($key)) {
             self::$swaps[$key] = $concrete;
 
             return;

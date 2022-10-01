@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Core\Filesystem;
 
 use Amp\File\FileSystem;
-use Core\Contracts\Filesystem\File as FileContract;
 
 use function Amp\File\filesystem;
+
+use Core\Contracts\Filesystem\File as FileContract;
 
 class File implements FileContract
 {
