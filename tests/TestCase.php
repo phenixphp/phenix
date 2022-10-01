@@ -18,6 +18,11 @@ class TestCase extends BaseTestCase
         $this->app = require_once __DIR__ . '/../core/bootstrap.php';
     }
 
+    protected function tearDown(): void
+    {
+        $this->app->clearSwaps();
+    }
+
     protected function phenix(string $signature, array $arguments): CommandTester
     {
         $phenix = $this->app::make(Phenix::class);

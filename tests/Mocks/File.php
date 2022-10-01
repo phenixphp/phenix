@@ -8,11 +8,11 @@ use Core\Filesystem\File as FileBase;
 
 class File extends FileBase
 {
-    public function put(string $path, string $content): bool
+    public function put(string $path, string $content): void
     {
         $path = $this->getTempPath($path);
 
-        return file_put_contents($path, $content) !== false;
+        file_put_contents($path, $content) !== false;
     }
 
     public function exists(string $path): bool
