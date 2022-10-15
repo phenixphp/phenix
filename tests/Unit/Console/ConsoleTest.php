@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Tests\Unit\Console;
 
 use Core\Contracts\Filesystem\File;
-use Tests\Mocks\File as FileMock;
 
 it('creates controller successfully', function () {
-    $this->app->swap(File::class, new FileMock());
+    $mock = mock(File::class)->expect(
+        exists: fn (string $path) => false,
+        get: fn (string $path) => '',
+        put: fn (string $path) => true,
+    );
+
+    $this->app->swap(File::class, $mock);
 
     /** @var \Symfony\Component\Console\Tester\CommandTester $command */
     $command = $this->phenix('make:controller', [
@@ -24,7 +29,13 @@ it('creates controller successfully', function () {
 });
 
 it('does not create the controller because it already exists', function () {
-    $this->app->swap(File::class, new FileMock());
+    $mock = mock(File::class)->expect(
+        exists: fn (string $path) => true,
+        get: fn (string $path) => '',
+        put: fn (string $path) => true,
+    );
+
+    $this->app->swap(File::class, $mock);
 
     $this->phenix('make:controller', [
         'name' => 'TestController',
