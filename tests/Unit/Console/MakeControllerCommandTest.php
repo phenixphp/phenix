@@ -78,7 +78,6 @@ it('creates controller successfully with force option', function () {
 
     $this->assertStringContainsString('Controller successfully generated!', $output);
     $this->assertEquals('new content', file_get_contents($tempPath));
-
 });
 
 it('creates controller successfully in nested namespace', function () {
