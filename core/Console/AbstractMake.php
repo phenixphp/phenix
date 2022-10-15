@@ -55,8 +55,8 @@ abstract class AbstractMake extends Command
         foreach ($namespace as $directory) {
             $path .= '/' . ucfirst($directory);
 
-            if (! is_dir($path)) {
-                mkdir($path, 0755);
+            if (! File::exists($path)) {
+                File::createDirectory($path);
             }
         }
 
