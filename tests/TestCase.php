@@ -11,11 +11,22 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class TestCase extends BaseTestCase
 {
-    protected App $app;
+    protected ?App $app;
 
     protected function setUp(): void
     {
-        $this->app = require_once __DIR__ . '/../core/bootstrap.php';
+        if (! isset($this->app)) {
+            $this->app = require __DIR__ . '/../core/bootstrap.php';
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        if (isset($this->app)) {
+            $this->app->clearSwaps();
+
+            $this->app = null;
+        }
     }
 
     protected function phenix(string $signature, array $arguments): CommandTester

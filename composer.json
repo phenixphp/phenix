@@ -30,6 +30,7 @@
         "amphp/http-server-router": "^v2.0.0-beta.1",
         "amphp/log": "^v2.0.0-beta.1",
         "league/container": "^4.2",
+        "nesbot/carbon": "^2.62",
         "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4"
     },
@@ -39,8 +40,12 @@
         "nunomaduro/collision": "^6.3",
         "nunomaduro/phpinsights": "^2.6",
         "pestphp/pest": "^1.22",
+        "pestphp/pest-plugin-faker": "^1.0",
+        "pestphp/pest-plugin-global-assertions": "^1.0",
+        "pestphp/pest-plugin-mock": "^1.0",
         "pestphp/pest-plugin-parallel": "^1.2",
         "phpunit/phpunit": "^9.5",
+        "spatie/pest-plugin-test-time": "^1.1",
         "symfony/var-dumper": "^6.1"
     },
     "config": {
@@ -56,7 +61,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "test": "vendor/bin/pest",
+        "test": "XDEBUG_MODE=off vendor/bin/pest",
+        "test:debug": "vendor/bin/pest",
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",
         "test:parallel": "vendor/bin/pest --parallel",
         "phpcs": "vendor/bin/php-cs-fixer fix",

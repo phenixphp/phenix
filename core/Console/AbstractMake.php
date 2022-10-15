@@ -35,7 +35,7 @@ abstract class AbstractMake extends Command
         if (File::exists($filePath) && ! $force) {
             $output->writeln(["{$this->suffix()} already exists!", self::EMPTY_LINE]);
 
-            return Command::FAILURE;
+            return Command::SUCCESS;
         }
 
         $stub = File::get(base_path("core/stubs/{$this->stub($input)}"));
@@ -55,8 +55,8 @@ abstract class AbstractMake extends Command
         foreach ($namespace as $directory) {
             $path .= '/' . ucfirst($directory);
 
-            if (! is_dir($path)) {
-                mkdir($path, 0755);
+            if (! File::exists($path)) {
+                File::createDirectory($path);
             }
         }
 
