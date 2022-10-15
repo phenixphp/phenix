@@ -11,4 +11,10 @@ interface File
     public function put(string $path, string $content): void;
 
     public function exists(string $path): bool;
+
+    public function isDirectory(string $path): bool;
+
+    public function isFile(string $path): bool;
+
+    public function createDirectory(string $path, int $mode = 0777): void;
 }
