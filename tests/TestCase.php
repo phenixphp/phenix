@@ -23,8 +23,6 @@ class TestCase extends BaseTestCase
     protected function tearDown(): void
     {
         if (isset($this->app)) {
-            $this->app->clearSwaps();
-
             $this->app = null;
         }
     }
