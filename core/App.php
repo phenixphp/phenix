@@ -12,7 +12,6 @@ use Amp\Log\StreamHandler;
 use Amp\Socket;
 use Core\Console\Phenix;
 use Core\Contracts\Filesystem\File as FileContract;
-use Core\Exceptions\RuntimeError;
 use Core\Filesystem\File;
 use Core\Filesystem\Storage;
 use Core\Http\Response;
@@ -25,7 +24,6 @@ use Monolog\Processor\PsrLogMessageProcessor;
 
 class App
 {
-    private static array $swaps;
     private Logger $logger;
     private SocketHttpServer $server;
     private static Container $container;
@@ -58,27 +56,12 @@ class App
 
     public static function make(string $key): mixed
     {
-        if (isset(self::$swaps[$key])) {
-            return self::$swaps[$key];
-        }
-
         return self::$container->get($key);
     }
 
     public function swap(string $key, object $concrete): void
     {
-        if (! empty($key)) {
-            self::$swaps[$key] = $concrete;
-
-            return;
-        }
-
-        throw new RuntimeError('Invalid swap key');
-    }
-
-    public function clearSwaps(): void
-    {
-        self::$swaps = [];
+        self::$container->extend($key)->setConcrete($concrete);
     }
 
     private function loadRoutes(): void
