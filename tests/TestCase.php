@@ -6,12 +6,13 @@ namespace Tests;
 
 use Amp\PHPUnit\AsyncTestCase;
 use Core\App;
+use Core\AppProxy;
 use Core\Console\Phenix;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class TestCase extends AsyncTestCase
 {
-    protected ?App $app;
+    protected ?AppProxy $app;
 
     protected function setUp(): void
     {
@@ -33,7 +34,7 @@ class TestCase extends AsyncTestCase
 
     protected function phenix(string $signature, array $arguments): CommandTester
     {
-        $phenix = $this->app::make(Phenix::class);
+        $phenix = App::make(Phenix::class);
 
         $command = $phenix->find($signature);
         $commandTester = new CommandTester($command);

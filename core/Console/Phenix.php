@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Console;
 
-use Core\Util\Files;
-use Core\Util\Namespacer;
+use Core\Util\Directory;
+use Core\Util\NamespaceResolver;
 use Symfony\Component\Console\Application;
 
 class Phenix extends Application
@@ -17,10 +17,10 @@ class Phenix extends Application
 
     public function registerCommands(): void
     {
-        $commands = Files::directory(self::getCommandsPath());
+        $commands = Directory::all(self::getCommandsPath());
 
         foreach ($commands as $command) {
-            $command = Namespacer::parse($command);
+            $command = NamespaceResolver::parse($command);
 
             $this->add(new $command());
         }

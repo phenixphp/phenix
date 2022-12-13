@@ -11,18 +11,17 @@ use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Amp\Socket;
 use Core\Console\Phenix;
-use Core\Contracts\Filesystem\File as FileContract;
-use Core\Filesystem\File;
-use Core\Filesystem\Storage;
-use Core\Http\Response;
+use Core\Contracts\App as AppContract;
+use Core\Contracts\Makeable;
+use Core\Facades\Config;
 use Core\Routing\Router;
-use Core\Runtime\Config;
-use Core\Util\Files;
+use Core\Util\Directory;
+use Core\Util\NamespaceResolver;
 use League\Container\Container;
 use Monolog\Logger;
 use Monolog\Processor\PsrLogMessageProcessor;
 
-class App
+class App implements AppContract, Makeable
 {
     private Logger $logger;
     private SocketHttpServer $server;
@@ -31,16 +30,30 @@ class App
 
     public function __construct()
     {
-        $this->setupLogger();
+        $logHandler = new StreamHandler(ByteStream\getStdout());
+        $logHandler->pushProcessor(new PsrLogMessageProcessor());
+        $logHandler->setFormatter(new ConsoleFormatter());
+
+        $this->logger = new Logger('server');
+        $this->logger->pushHandler($logHandler);
+
         self::$container = new Container();
         $this->errorHandler = new DefaultErrorHandler();
 
         $this->server = new SocketHttpServer($this->logger);
-        $this->server->expose(new Socket\InternetAddress("0.0.0.0", 1337));
-        $this->server->expose(new Socket\InternetAddress("[::]", 1337));
+    }
 
+    public function setup(): void
+    {
         $this->setupDefinitions();
-        $this->loadRoutes();
+
+        /** @var int $port */
+        $port = Config::get('app.port');
+
+        [$ipv4, $ipv6] = Config::get('app.url');
+        dump($ipv4, $ipv6);
+        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
+        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
     }
 
     public function run(): void
@@ -54,7 +67,7 @@ class App
         $this->server->stop();
     }
 
-    public static function make(string $key): mixed
+    public static function make(string $key): object
     {
         return self::$container->get($key);
     }
@@ -62,23 +75,6 @@ class App
     public function swap(string $key, object $concrete): void
     {
         self::$container->extend($key)->setConcrete($concrete);
-    }
-
-    private function loadRoutes(): void
-    {
-        foreach (Files::directory(base_path('routes')) as $file) {
-            require_once $file;
-        }
-    }
-
-    private function setupLogger(): void
-    {
-        $logHandler = new StreamHandler(ByteStream\getStdout());
-        $logHandler->pushProcessor(new PsrLogMessageProcessor());
-        $logHandler->setFormatter(new ConsoleFormatter());
-
-        $this->logger = new Logger('server');
-        $this->logger->pushHandler($logHandler);
     }
 
     private function setupDefinitions(): void
@@ -92,22 +88,33 @@ class App
 
     private function registerFacades(): void
     {
-        self::$container->add('router', function () {
-            return new Router($this->server, $this->errorHandler);
-        })->setShared(true);
+        self::$container->add(
+            Config::getKeyName(),
+            \Core\Runtime\Config::build(...)
+        )->setShared(true);
 
-        self::$container->add('response', Response::class);
-        self::$container->add('storage', Storage::class);
-        self::$container->add('config', Config::build(...))->setShared(true);
-        self::$container->add(FileContract::class, File::class);
+        self::$container->add(
+            \Core\Facades\Router::getKeyName(),
+            fn () => new Router($this->server, $this->errorHandler)
+        )->setShared(true);
+
+        self::$container->add(
+            \Core\Facades\Storage::getKeyName(),
+            \Core\Filesystem\Storage::class
+        );
+
+        self::$container->add(
+            \Core\Facades\File::getKeyName(),
+            \Core\Filesystem\File::class
+        );
     }
 
     private function registerControllers(): void
     {
-        $controllers = Files::directory(self::getControllersPath());
+        $controllers = Directory::all(self::getControllersPath());
 
         foreach ($controllers as $controller) {
-            $controller = self::parseNamespace($controller);
+            $controller = NamespaceResolver::parse($controller);
 
             self::$container->add($controller);
         }
@@ -116,12 +123,5 @@ class App
     private function getControllersPath(): string
     {
         return base_path('app'. DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers');
-    }
-
-    private static function parseNamespace(string $namespace): string
-    {
-        $namespace = str_replace([APP_PATH . DIRECTORY_SEPARATOR, '.php', '/'], ['', '', '\\'], $namespace);
-
-        return ucfirst($namespace);
     }
 }

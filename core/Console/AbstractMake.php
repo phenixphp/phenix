@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Console;
 
 use Core\Facades\File;
-use Core\Util\Namespacer;
+use Core\Util\NamespaceResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -65,7 +65,7 @@ abstract class AbstractMake extends Command
 
     private function prepareNamespace(array $namespace): string
     {
-        array_unshift($namespace, Namespacer::parse($this->outputDirectory()));
+        array_unshift($namespace, NamespaceResolver::parse($this->outputDirectory()));
 
         return implode('\\', $namespace);
     }
