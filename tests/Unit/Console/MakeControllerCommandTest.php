@@ -22,9 +22,7 @@ it('creates controller successfully', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
-
-    $this->assertStringContainsString('Controller successfully generated!', $output);
+    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
 });
 
 it('does not create the controller because it already exists', function () {
@@ -45,9 +43,7 @@ it('does not create the controller because it already exists', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
-
-    $this->assertStringContainsString('Controller already exists!', $output);
+    expect('Controller already exists!')->toBe(trim($command->getDisplay()));
 });
 
 it('creates controller successfully with force option', function () {
@@ -74,10 +70,8 @@ it('creates controller successfully with force option', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
-
-    $this->assertStringContainsString('Controller successfully generated!', $output);
-    $this->assertEquals('new content', file_get_contents($tempPath));
+    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
+    expect('new content')->toBe(file_get_contents($tempPath));
 });
 
 it('creates controller successfully in nested namespace', function () {
@@ -99,7 +93,29 @@ it('creates controller successfully in nested namespace', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
+    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
+});
 
-    $this->assertStringContainsString('Controller successfully generated!', $output);
+it('creates controller successfully with api option', function () {
+    $tempDir = sys_get_temp_dir();
+    $tempPath = $tempDir . DIRECTORY_SEPARATOR . 'TestController.php';
+
+    $mock = mock(File::class)->expect(
+        exists: fn (string $path) => false,
+        get: fn (string $path) => 'Hello, world!',
+        put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
+    );
+
+    $this->app->swap(File::class, $mock);
+
+    /** @var \Symfony\Component\Console\Tester\CommandTester $command */
+    $command = $this->phenix('make:controller', [
+        'name' => 'TestController',
+        '--api' => true,
+    ]);
+
+    $command->assertCommandIsSuccessful();
+
+    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
+    expect(file_get_contents($tempPath))->toContain('Hello, world!');
 });
