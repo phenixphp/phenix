@@ -22,9 +22,7 @@ it('creates test successfully', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
-
-    $this->assertStringContainsString('Test successfully generated!', $output);
+    expect($command->getDisplay())->toContain('Test successfully generated!');
 });
 
 it('does not create the test because it already exists', function () {
@@ -45,9 +43,7 @@ it('does not create the test because it already exists', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
-
-    $this->assertStringContainsString('Test already exists!', $output);
+    expect($command->getDisplay())->toContain('Test already exists!');
 });
 
 it('creates test successfully with force option', function () {
@@ -56,7 +52,7 @@ it('creates test successfully with force option', function () {
 
     file_put_contents($tempPath, 'old content');
 
-    $this->assertEquals('old content', file_get_contents($tempPath));
+    expect('old content')->toBe(file_get_contents($tempPath));
 
     $mock = mock(File::class)->expect(
         exists: fn (string $path) => false,
@@ -74,10 +70,8 @@ it('creates test successfully with force option', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
-
-    $this->assertStringContainsString('Test successfully generated!', $output);
-    $this->assertEquals('new content', file_get_contents($tempPath));
+    expect($command->getDisplay())->toContain('Test successfully generated!');
+    expect('new content')->toBe(file_get_contents($tempPath));
 });
 
 it('creates test successfully in nested namespace', function () {
@@ -99,9 +93,7 @@ it('creates test successfully in nested namespace', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $output = $command->getDisplay();
-
-    $this->assertStringContainsString('Test successfully generated!', $output);
+    expect($command->getDisplay())->toContain('Test successfully generated!');
 });
 
 it('creates test successfully with unit option', function () {
@@ -121,5 +113,5 @@ it('creates test successfully with unit option', function () {
 
     $command->assertCommandIsSuccessful();
 
-    $this->assertStringContainsString('Test successfully generated!', $command->getDisplay());
+    expect($command->getDisplay())->toContain('Test successfully generated!');
 });
