@@ -22,7 +22,7 @@ it('creates controller successfully', function () {
 
     $command->assertCommandIsSuccessful();
 
-    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
+    expect($command->getDisplay())->toContain('Controller successfully generated!');
 });
 
 it('does not create the controller because it already exists', function () {
@@ -43,7 +43,7 @@ it('does not create the controller because it already exists', function () {
 
     $command->assertCommandIsSuccessful();
 
-    expect('Controller already exists!')->toBe(trim($command->getDisplay()));
+    expect($command->getDisplay())->toContain('Controller already exists!');
 });
 
 it('creates controller successfully with force option', function () {
@@ -70,7 +70,7 @@ it('creates controller successfully with force option', function () {
 
     $command->assertCommandIsSuccessful();
 
-    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
+    expect($command->getDisplay())->toContain('Controller successfully generated!');
     expect('new content')->toBe(file_get_contents($tempPath));
 });
 
@@ -93,7 +93,7 @@ it('creates controller successfully in nested namespace', function () {
 
     $command->assertCommandIsSuccessful();
 
-    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
+    expect($command->getDisplay())->toContain('Controller successfully generated!');
 });
 
 it('creates controller successfully with api option', function () {
@@ -116,6 +116,6 @@ it('creates controller successfully with api option', function () {
 
     $command->assertCommandIsSuccessful();
 
-    expect('Controller successfully generated!')->toBe(trim($command->getDisplay()));
+    expect($command->getDisplay())->toContain('Controller successfully generated!');
     expect(file_get_contents($tempPath))->toContain('Hello, world!');
 });
