@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Runtime;
 
 use Adbar\Dot;
-use Core\Util\Files;
+use Core\Util\Directory;
 use InvalidArgumentException;
 use SplFixedArray;
 use Throwable;
@@ -22,13 +22,13 @@ class Config
     public static function build(): self
     {
         /** @var SplFixedArray<int, string> $paths */
-        $paths = SplFixedArray::fromArray(Files::directory(base_path('config')));
+        $paths = SplFixedArray::fromArray(Directory::all(base_path('config')));
         $settings = [];
 
         foreach ($paths as $path) {
             $key = self::getKey($path);
 
-            $settings[$key] = require_once $path;
+            $settings[$key] = require $path;
         }
 
         return new static($settings);

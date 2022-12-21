@@ -9,6 +9,8 @@ use Core\Runtime\Facade;
 /**
  * @method static mixed get(string $key)
  * @method static void set(string $key, mixed $value)
+ *
+ * @see \Core\Runtime\Config
  */
 class Config extends Facade
 {

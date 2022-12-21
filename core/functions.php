@@ -27,7 +27,7 @@ if (! function_exists('response')) {
 }
 
 if (! function_exists('env')) {
-    function env(string $key, callable $default): string|bool
+    function env(string $key, callable $default): string|int|bool
     {
         return $_ENV[$key] ?? $default();
     }

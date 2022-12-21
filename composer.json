@@ -26,6 +26,7 @@
     "require": {
         "adbario/php-dot-notation": "^3.1",
         "amphp/file": "^v3.0.0-beta.3",
+        "amphp/http-client": "^v5.0.0-beta.6",
         "amphp/http-server": "^v3.0.0-beta.3",
         "amphp/http-server-router": "^v2.0.0-beta.1",
         "amphp/log": "^v2.0.0-beta.1",

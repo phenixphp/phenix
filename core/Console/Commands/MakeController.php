@@ -27,11 +27,11 @@ class MakeController extends AbstractMake
 
         $this->addArgument('name', InputArgument::REQUIRED, 'The controller name');
 
-        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force creates controller');
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force to create controller');
         $this->addOption('api', 'a', InputOption::VALUE_NONE, 'Add API methods to controller');
     }
 
-    protected function outputDirectory(): string
+    protected function outputDirectory(InputInterface $input): string
     {
         return 'app/Http/Controllers';
     }
