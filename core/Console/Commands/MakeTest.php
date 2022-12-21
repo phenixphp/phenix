@@ -28,7 +28,7 @@ class MakeTest extends AbstractMake
         $this->addArgument('name', InputArgument::REQUIRED, 'The test name');
 
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force to create test');
-        $this->addOption('unit', 'u', InputOption::VALUE_NONE, 'Force to create unit testing');
+        $this->addOption('unit', 'u', InputOption::VALUE_NONE, 'Create unit testing');
     }
 
     protected function outputDirectory(InputInterface $input): string
