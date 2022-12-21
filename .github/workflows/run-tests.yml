@@ -35,4 +35,6 @@ jobs:
           composer install --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/pest
+        run: |
+          cp .env.example .env
+          vendor/bin/pest
