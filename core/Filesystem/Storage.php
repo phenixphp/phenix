@@ -24,7 +24,7 @@ class Storage
         $content = '';
 
         $this->driver->openFile($path, $mode)
-            ->onResolve(function (Throwable $error = null, $result = null) use (&$content) {
+            ->onResolve(function (?Throwable $error = null, $result = null) use (&$content) {
                 if ($error) {
                     throw $error;
                 }
