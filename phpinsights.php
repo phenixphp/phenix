@@ -51,9 +51,12 @@ return [
     */
 
     'exclude' => [
+        'build',
         'public',
         'vendor',
+        'storage',
         '.vscode',
+        '.github',
     ],
 
     'add' => [
