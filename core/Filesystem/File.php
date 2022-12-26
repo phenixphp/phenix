@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Core\Filesystem;
 
 use Amp\File\Filesystem;
-
 use function Amp\File\filesystem;
-
 use Core\Contracts\Filesystem\File as FileContract;
 
 class File implements FileContract
@@ -19,7 +17,7 @@ class File implements FileContract
         $this->driver = filesystem();
     }
 
-    public function get(string $path, string $mode = 'r'): string
+    public function get(string $path): string
     {
         return $this->driver->read($path);
     }
