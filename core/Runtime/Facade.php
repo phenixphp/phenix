@@ -11,10 +11,10 @@ abstract class Facade
 {
     /**
      * @param string $method
-     * @param array $arguments
+     * @param array<int, mixed> $arguments
      * @return mixed
      */
-    public static function __callStatic($method, $arguments)
+    public static function __callStatic(string $method, array $arguments): mixed
     {
         $object = App::make(static::getKeyName());
 

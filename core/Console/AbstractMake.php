@@ -48,6 +48,11 @@ abstract class AbstractMake extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @param array<int, string> $namespace
+     * @param InputInterface $input
+     * @return string
+     */
     private function preparePath(array $namespace, InputInterface $input): string
     {
         $path = base_path($this->outputDirectory($input));
@@ -63,6 +68,11 @@ abstract class AbstractMake extends Command
         return $path;
     }
 
+    /**
+     * @param array<int, string> $namespace
+     * @param InputInterface $input
+     * @return string
+     */
     private function prepareNamespace(array $namespace, InputInterface $input): string
     {
         array_unshift($namespace, NamespaceResolver::parse($this->outputDirectory($input)));

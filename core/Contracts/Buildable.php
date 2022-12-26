@@ -6,5 +6,5 @@ namespace Core\Contracts;
 
 interface Buildable
 {
-    public static function build();
+    public static function build(): mixed;
 }

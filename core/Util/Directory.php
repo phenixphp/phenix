@@ -6,6 +6,10 @@ namespace Core\Util;
 
 class Directory
 {
+    /**
+     * @param string $path
+     * @return array<int, string>
+     */
     public static function all(string $path): array
     {
         $paths = [];

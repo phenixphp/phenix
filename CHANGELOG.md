@@ -8,4 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- PHPStan integration. ([#11](https://github.com/barbosa89/phenix/pull/11))
+- GitHub actions integratation. ([#10](https://github.com/barbosa89/phenix/pull/10))
+- Command to make test `make:test`. ([#9](https://github.com/barbosa89/phenix/pull/9))
 - Tests for the `make:controller` command. ([#6](https://github.com/barbosa89/phenix/pull/6))
