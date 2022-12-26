@@ -73,6 +73,9 @@
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",
         "test:parallel": "vendor/bin/pest --parallel",
         "format": "vendor/bin/php-cs-fixer fix",
-        "analyze": "vendor/bin/phpinsights"
+        "analyze": [
+            "vendor/bin/phpinsights",
+            "vendor/bin/phpstan"
+        ]
     }
 }
