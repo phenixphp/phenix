@@ -50,8 +50,6 @@ abstract class AbstractMake extends Command
 
     /**
      * @param array<int, string> $namespace
-     * @param InputInterface $input
-     * @return string
      */
     private function preparePath(array $namespace, InputInterface $input): string
     {
@@ -70,8 +68,6 @@ abstract class AbstractMake extends Command
 
     /**
      * @param array<int, string> $namespace
-     * @param InputInterface $input
-     * @return string
      */
     private function prepareNamespace(array $namespace, InputInterface $input): string
     {

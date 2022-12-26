@@ -10,9 +10,7 @@ use Core\App;
 abstract class Facade
 {
     /**
-     * @param string $method
      * @param array<int, mixed> $arguments
-     * @return mixed
      */
     public static function __callStatic(string $method, array $arguments): mixed
     {
