@@ -11,15 +11,9 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MakeController extends AbstractMake
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'make:controller';
+    protected static string $defaultName = 'make:controller';
 
-    /**
-     * @var string
-     */
-    protected static $defaultDescription = 'Creates a new controller.';
+    protected static string $defaultDescription = 'Creates a new controller.';
 
     protected function configure(): void
     {

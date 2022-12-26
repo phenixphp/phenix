@@ -11,15 +11,9 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MakeTest extends AbstractMake
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'make:test';
+    protected static string $defaultName = 'make:test';
 
-    /**
-     * @var string
-     */
-    protected static $defaultDescription = 'Creates a new test.';
+    protected static string $defaultDescription = 'Creates a new test.';
 
     protected function configure(): void
     {
@@ -40,7 +34,7 @@ class MakeTest extends AbstractMake
             : $base . 'Feature';
     }
 
-    protected function stub(InputInterface $input): string
+    protected function stub(?InputInterface $input = null): string
     {
         return 'test.stub';
     }
