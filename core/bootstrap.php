@@ -9,6 +9,6 @@ if (! defined('APP_PATH')) {
 use Core\AppBuilder;
 use Dotenv\Dotenv;
 
-(Dotenv::createImmutable(base_path()))->load();
+Dotenv::createImmutable(base_path())->load();
 
 return AppBuilder::build();
