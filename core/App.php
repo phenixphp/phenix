@@ -62,7 +62,7 @@ class App implements AppContract, Makeable
 
         $signal = \Amp\trapSignal([SIGINT, SIGTERM]);
 
-        $this->logger->info("Caught signal $signal, stopping server");
+        $this->logger->info("Caught signal {$signal}, stopping server");
 
         $this->server->stop();
     }
