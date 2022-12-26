@@ -46,6 +46,10 @@
         "pestphp/pest-plugin-global-assertions": "^1.0",
         "pestphp/pest-plugin-mock": "^1.0",
         "pestphp/pest-plugin-parallel": "^1.2",
+        "phpstan/extension-installer": "^1.2",
+        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan-deprecation-rules": "^1.1",
+        "phpstan/phpstan-phpunit": "^1.3",
         "phpunit/phpunit": "^9.5",
         "spatie/pest-plugin-test-time": "^1.1",
         "symfony/var-dumper": "^6.1"
@@ -57,7 +61,8 @@
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
         }
     },
     "minimum-stability": "dev",

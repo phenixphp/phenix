@@ -12,8 +12,14 @@ use Throwable;
 
 class Config
 {
+    /**
+     * @var Dot<string, mixed>
+     */
     private Dot $settings;
 
+    /**
+     * @param array<string, mixed> $settings
+     */
     public function __construct(array $settings)
     {
         $this->settings = new Dot($settings, true);
@@ -21,7 +27,7 @@ class Config
 
     public static function build(): self
     {
-        /** @var SplFixedArray<int, string> $paths */
+        /** @var SplFixedArray<string> $paths */
         $paths = SplFixedArray::fromArray(Directory::all(base_path('config')));
         $settings = [];
 
@@ -31,7 +37,7 @@ class Config
             $settings[$key] = require $path;
         }
 
-        return new static($settings);
+        return new self($settings);
     }
 
     public function get(string $key): mixed

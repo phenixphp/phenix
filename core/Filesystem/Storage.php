@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Core\Filesystem;
 
-use Amp\File\FileSystem;
+use Amp\File\Filesystem;
 
 use function Amp\File\filesystem;
 
-use Throwable;
-
 class Storage
 {
-    private FileSystem $driver;
+    private Filesystem $driver;
 
     public function __construct()
     {
@@ -21,17 +19,6 @@ class Storage
 
     public function get(string $path, string $mode = 'r'): string
     {
-        $content = '';
-
-        $this->driver->openFile($path, $mode)
-            ->onResolve(function (?Throwable $error = null, $result = null) use (&$content) {
-                if ($error) {
-                    throw $error;
-                }
-
-                $content = $result ?? '';
-            });
-
-        return $content;
+        return $this->driver->read($path);
     }
 }
