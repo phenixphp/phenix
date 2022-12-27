@@ -8,8 +8,6 @@ use Adbar\Dot;
 use Core\Util\Directory;
 use SplFixedArray;
 
-use function Core\base_path;
-
 class Config
 {
     /**
