@@ -37,9 +37,9 @@ jobs:
           vendor/bin/phpinsights -n --ansi --format=github-action
 
       - name: Analyze code statically with PHPStan
-        uses: php-actions/phpstan@v3
-        with:
-          command: cp .env.example .env
+        run: |
+          cp .env.example .env
+          vendor/bin/phpstan
 
       - name: Execute tests
         run: |
