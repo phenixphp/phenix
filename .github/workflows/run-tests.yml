@@ -9,8 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
 
     steps:
       - name: Checkout code
@@ -32,7 +30,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer install --no-interaction
+          composer install --no-interaction --prefer-dist --no-progress --no-suggest
+
+      - name: Check quality code with PHPInsights
+        run: |
+          vendor/bin/phpinsights -n --ansi --format=github-action
+
+      - name: Analyze code statically with PHPStan
+        uses: php-actions/phpstan@v3
 
       - name: Execute tests
         run: |
