@@ -17,7 +17,7 @@ class Storage
         $this->driver = filesystem();
     }
 
-    public function get(string $path, string $mode = 'r'): string
+    public function get(string $path): string
     {
         return $this->driver->read($path);
     }

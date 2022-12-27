@@ -10,8 +10,7 @@ use Amp\Http\Server\Router;
 trait HasRequest
 {
     /**
-     * @param Request $request
-     * @return array<string, mixed>
+     * @return array<string, array|string|int|bool|null>
      */
     protected function getAttrs(Request $request): array
     {

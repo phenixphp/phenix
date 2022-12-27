@@ -23,13 +23,18 @@ use Monolog\Processor\PsrLogMessageProcessor;
 
 class App implements AppContract, Makeable
 {
+    private static string $path;
+    private static Container $container;
+
     private Logger $logger;
     private SocketHttpServer $server;
-    private static Container $container;
     private DefaultErrorHandler $errorHandler;
 
-    public function __construct()
+    public function __construct(string $path)
     {
+        self::$path = $path;
+        self::$container = new Container();
+
         $logHandler = new StreamHandler(ByteStream\getStdout());
         $logHandler->pushProcessor(new PsrLogMessageProcessor());
         $logHandler->setFormatter(new ConsoleFormatter());
@@ -37,7 +42,6 @@ class App implements AppContract, Makeable
         $this->logger = new Logger('server');
         $this->logger->pushHandler($logHandler);
 
-        self::$container = new Container();
         $this->errorHandler = new DefaultErrorHandler();
 
         $this->server = new SocketHttpServer($this->logger);
@@ -70,6 +74,11 @@ class App implements AppContract, Makeable
     public static function make(string $key): object
     {
         return self::$container->get($key);
+    }
+
+    public static function path(): string
+    {
+        return self::$path;
     }
 
     public function swap(string $key, object $concrete): void

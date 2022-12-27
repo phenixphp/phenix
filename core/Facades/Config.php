@@ -7,8 +7,8 @@ namespace Core\Facades;
 use Core\Runtime\Facade;
 
 /**
- * @method static mixed get(string $key)
- * @method static void set(string $key, mixed $value)
+ * @method static array|string|int|bool|null get(string $key)
+ * @method static void set(string $key, array|string|int|bool|null $value)
  *
  * @see \Core\Runtime\Config
  */

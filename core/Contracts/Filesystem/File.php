@@ -6,7 +6,7 @@ namespace Core\Contracts\Filesystem;
 
 interface File
 {
-    public function get(string $path, string $mode = 'r'): string;
+    public function get(string $path): string;
 
     public function put(string $path, string $content): void;
 

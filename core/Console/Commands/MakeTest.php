@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace Core\Console\Commands;
 
-use Core\Console\AbstractMake;
+use Core\Console\Maker;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class MakeTest extends AbstractMake
+class MakeTest extends Maker
 {
     /**
      * @var string
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint
      */
     protected static $defaultName = 'make:test';
 
     /**
      * @var string
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint
      */
     protected static $defaultDescription = 'Creates a new test.';
 
@@ -31,16 +34,16 @@ class MakeTest extends AbstractMake
         $this->addOption('unit', 'u', InputOption::VALUE_NONE, 'Create unit testing');
     }
 
-    protected function outputDirectory(InputInterface $input): string
+    protected function outputDirectory(): string
     {
         $base = 'tests' . DIRECTORY_SEPARATOR;
 
-        return $input->getOption('unit')
+        return $this->input->getOption('unit')
             ? $base . 'Unit'
             : $base . 'Feature';
     }
 
-    protected function stub(InputInterface $input): string
+    protected function stub(): string
     {
         return 'test.stub';
     }

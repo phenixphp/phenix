@@ -27,10 +27,7 @@ class Router
     }
 
     /**
-     * @param string $uri
      * @param array<int, string> $handler
-     * @param Middleware ...$middlewares
-     * @return void
      */
     public function get(string $uri, array $handler, Middleware ...$middlewares): void
     {
@@ -38,10 +35,7 @@ class Router
     }
 
     /**
-      * @param string $uri
      * @param array<int, string> $handler
-     * @param Middleware ...$middlewares
-     * @return void
      */
     public function post(string $uri, array $handler, Middleware ...$middlewares): void
     {
@@ -49,10 +43,7 @@ class Router
     }
 
     /**
-     * @param string $uri
      * @param array<int, string> $handler
-     * @param Middleware ...$middlewares
-     * @return void
      */
     public function put(string $uri, array $handler, Middleware ...$middlewares): void
     {
@@ -60,10 +51,7 @@ class Router
     }
 
     /**
-     * @param string $uri
      * @param array<int, string> $handler
-     * @param Middleware ...$middlewares
-     * @return void
      */
     public function patch(string $uri, array $handler, Middleware ...$middlewares): void
     {
@@ -71,10 +59,7 @@ class Router
     }
 
     /**
-     * @param string $uri
      * @param array<int, string> $handler
-     * @param Middleware ...$middlewares
-     * @return void
      */
     public function delete(string $uri, array $handler, Middleware ...$middlewares): void
     {
@@ -83,7 +68,6 @@ class Router
 
     /**
      * @param array<int, string> $handler
-     * @return ClosureRequestHandler
      */
     private function callable(array $handler): ClosureRequestHandler
     {

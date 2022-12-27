@@ -8,7 +8,7 @@ use Core\Contracts\Filesystem\File as FileContract;
 use Core\Runtime\Facade;
 
 /**
- * @method static string get(string $path, string $mode = 'r')
+ * @method static string get(string $path)
  * @method static bool put(string $path, string $content)
  * @method static bool exists(string $path)
  * @method static bool isDirectory(string $path)

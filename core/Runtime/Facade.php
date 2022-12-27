@@ -4,28 +4,32 @@ declare(strict_types=1);
 
 namespace Core\Runtime;
 
-use BadMethodCallException;
+use BadMethodCallException as BadMethodCall;
 use Core\App;
 
 abstract class Facade
 {
     /**
-     * @param string $method
-     * @param array<int, mixed> $arguments
-     * @return mixed
+     * @param array<int, object|string|int|bool|null> $args
      */
-    public static function __callStatic(string $method, array $arguments): mixed
+    public static function __callStatic(string $method, array $args): mixed
     {
         $object = App::make(static::getKeyName());
 
-        if (method_exists($object, $method) && is_callable([$object, $method])) {
-            return $object->{$method}(...$arguments);
+        if (self::hasMethod($object, $method)) {
+            return $object->{$method}(...$args);
         }
 
         $class = $object::class;
 
-        throw new BadMethodCallException("{$class} does not have a named method {$method}");
+        throw new BadMethodCall("{$class} does not have method {$method}");
     }
 
     abstract protected static function getKeyName(): string;
+
+    private static function hasMethod(object $object, string $method): bool
+    {
+        return method_exists($object, $method)
+            && is_callable([$object, $method]);
+    }
 }

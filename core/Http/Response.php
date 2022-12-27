@@ -15,9 +15,7 @@ class Response
     }
 
     /**
-     * @param array<mixed, mixed> $content
-     * @param int $status
-     * @return ServerResponse
+     * @param array<string|int, array|string|int|bool> $content
      */
     public function json(array $content, int $status = Status::OK): ServerResponse
     {
