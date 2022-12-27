@@ -12,7 +12,7 @@ class AppBuilder implements Buildable
 {
     public static function build(): AppContract
     {
-        $app = new App();
+        $app = new App(dirname(__DIR__));
         $app->setup();
 
         self::loadRoutes();

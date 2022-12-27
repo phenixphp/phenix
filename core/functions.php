@@ -15,8 +15,7 @@ if (! function_exists('base_path()')) {
             $path = rtrim($path, DIRECTORY_SEPARATOR);
         }
 
-        return APP_PATH . DIRECTORY_SEPARATOR . $path;
-    }
+    return App::path() . DIRECTORY_SEPARATOR . $path;
 }
 
 if (! function_exists('response')) {
