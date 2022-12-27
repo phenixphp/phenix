@@ -38,6 +38,8 @@ jobs:
 
       - name: Analyze code statically with PHPStan
         uses: php-actions/phpstan@v3
+        with:
+          command: cp .env.example .env
 
       - name: Execute tests
         run: |
