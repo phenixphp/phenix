@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Core\App;
 use Core\Http\Response;
 
 if (! function_exists('base_path()')) {
@@ -15,7 +16,8 @@ if (! function_exists('base_path()')) {
             $path = rtrim($path, DIRECTORY_SEPARATOR);
         }
 
-    return App::path() . DIRECTORY_SEPARATOR . $path;
+        return App::path() . DIRECTORY_SEPARATOR . $path;
+    }
 }
 
 if (! function_exists('response')) {
@@ -28,6 +30,8 @@ if (! function_exists('response')) {
 if (! function_exists('env')) {
     function env(string $key, callable $default): string|int|bool
     {
-        return $_ENV[$key] ?? $default();
+        $value = getenv($key);
+
+        return $value ? $value : $default();
     }
 }
