@@ -57,7 +57,7 @@ abstract class Maker extends Command
      */
     private function preparePath(array $namespace): string
     {
-        $path = base_path($this->outputDirectory($this->input));
+        $path = base_path($this->outputDirectory());
 
         foreach ($namespace as $directory) {
             $path .= '/' . ucfirst($directory);
