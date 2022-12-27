@@ -6,19 +6,19 @@ namespace Core\Runtime;
 
 use Adbar\Dot;
 use Core\Util\Directory;
-use InvalidArgumentException;
 use SplFixedArray;
-use Throwable;
+
+use function Core\base_path;
 
 class Config
 {
     /**
-     * @var Dot<string, mixed>
+     * @var Dot<string, array|string|int|bool>
      */
     private Dot $settings;
 
     /**
-     * @param array<string, mixed> $settings
+     * @param array<string, array|string|int|bool> $settings
      */
     public function __construct(array $settings)
     {
@@ -42,11 +42,7 @@ class Config
 
     public function get(string $key): mixed
     {
-        try {
-            return $this->settings->get($key);
-        } catch (Throwable $th) {
-            throw new InvalidArgumentException("Invalid configuration key: {$key}");
-        }
+        return $this->settings->get($key);
     }
 
     public function set(string $key, mixed $value): void
