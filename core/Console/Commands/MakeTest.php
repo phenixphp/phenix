@@ -32,15 +32,22 @@ class MakeTest extends Maker
 
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force to create test');
         $this->addOption('unit', 'u', InputOption::VALUE_NONE, 'Create unit testing');
+        $this->addOption('core', 'c', InputOption::VALUE_NONE, 'Create core testing');
     }
 
     protected function outputDirectory(): string
     {
         $base = 'tests' . DIRECTORY_SEPARATOR;
 
-        return $this->input->getOption('unit')
-            ? $base . 'Unit'
-            : $base . 'Feature';
+        if ($this->input->getOption('unit')) {
+            return $base . 'Unit';
+        }
+
+        if ($this->input->getOption('core')) {
+            return $base . 'Core';
+        }
+
+        return $base . 'Feature';
     }
 
     protected function stub(): string
