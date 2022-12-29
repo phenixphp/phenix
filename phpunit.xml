@@ -17,7 +17,15 @@
             <directory suffix=".php">./app</directory>
             <directory suffix=".php">./core</directory>
         </include>
+        <report>
+            <html outputDirectory="build/coverage"/>
+            <text outputFile="build/coverage.txt"/>
+            <clover outputFile="build/logs/clover.xml"/>
+        </report>
     </coverage>
+    <logging>
+        <junit outputFile="build/report.junit.xml"/>
+    </logging>
     <php>
         <env name="APP_ENV" value="testing"/>
     </php>

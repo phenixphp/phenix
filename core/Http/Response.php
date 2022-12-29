@@ -14,6 +14,9 @@ class Response
         return new ServerResponse($status, ['content-type' => 'text/plain'], $content);
     }
 
+    /**
+     * @param array<string|int, array|string|int|bool> $content
+     */
     public function json(array $content, int $status = Status::OK): ServerResponse
     {
         return new ServerResponse($status, ['content-type' => 'application/javascript'], json_encode($content));

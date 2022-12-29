@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-define('APP_PATH', dirname(__DIR__));
-
-use Core\App;
+use Core\AppBuilder;
 use Dotenv\Dotenv;
 
-(Dotenv::createImmutable(base_path()))->load();
+Dotenv::createImmutable(dirname(__DIR__))->load();
 
-return new App();
+return AppBuilder::build();

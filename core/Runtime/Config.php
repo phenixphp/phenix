@@ -5,15 +5,19 @@ declare(strict_types=1);
 namespace Core\Runtime;
 
 use Adbar\Dot;
-use Core\Util\Files;
-use InvalidArgumentException;
+use Core\Util\Directory;
 use SplFixedArray;
-use Throwable;
 
 class Config
 {
+    /**
+     * @var Dot<string, array|string|int|bool>
+     */
     private Dot $settings;
 
+    /**
+     * @param array<string, array|string|int|bool> $settings
+     */
     public function __construct(array $settings)
     {
         $this->settings = new Dot($settings, true);
@@ -21,26 +25,22 @@ class Config
 
     public static function build(): self
     {
-        /** @var SplFixedArray<int, string> $paths */
-        $paths = SplFixedArray::fromArray(Files::directory(base_path('config')));
+        /** @var SplFixedArray<string> $paths */
+        $paths = SplFixedArray::fromArray(Directory::all(base_path('config')));
         $settings = [];
 
         foreach ($paths as $path) {
             $key = self::getKey($path);
 
-            $settings[$key] = require_once $path;
+            $settings[$key] = require $path;
         }
 
-        return new static($settings);
+        return new self($settings);
     }
 
     public function get(string $key): mixed
     {
-        try {
-            return $this->settings->get($key);
-        } catch (Throwable $th) {
-            throw new InvalidArgumentException("Invalid configuration key: {$key}");
-        }
+        return $this->settings->get($key);
     }
 
     public function set(string $key, mixed $value): void

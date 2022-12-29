@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Core\Util;
 
-class Files
+class Directory
 {
-    public static function directory(string $path): array
+    /**
+     * @return array<int, string>
+     */
+    public static function all(string $path): array
     {
         $paths = [];
         $files = \glob($path . '/*');
 
         foreach ($files as $file) {
             if (\is_dir($file)) {
-                $paths = \array_merge($paths, self::directory($file));
+                $paths = \array_merge($paths, self::all($file));
 
                 continue;
             }

@@ -26,31 +26,49 @@ class Router
         return $this->router;
     }
 
+    /**
+     * @param array<int, string> $handler
+     */
     public function get(string $uri, array $handler, Middleware ...$middlewares): void
     {
         $this->router->addRoute(Http::METHOD_GET, $uri, $this->callable($handler), ...$middlewares);
     }
 
+    /**
+     * @param array<int, string> $handler
+     */
     public function post(string $uri, array $handler, Middleware ...$middlewares): void
     {
         $this->router->addRoute(Http::METHOD_POST, $uri, $this->callable($handler), ...$middlewares);
     }
 
+    /**
+     * @param array<int, string> $handler
+     */
     public function put(string $uri, array $handler, Middleware ...$middlewares): void
     {
         $this->router->addRoute(Http::METHOD_PUT, $uri, $this->callable($handler), ...$middlewares);
     }
 
+    /**
+     * @param array<int, string> $handler
+     */
     public function patch(string $uri, array $handler, Middleware ...$middlewares): void
     {
         $this->router->addRoute(Http::METHOD_PATCH, $uri, $this->callable($handler), ...$middlewares);
     }
 
+    /**
+     * @param array<int, string> $handler
+     */
     public function delete(string $uri, array $handler, Middleware ...$middlewares): void
     {
         $this->router->addRoute(Http::METHOD_DELETE, $uri, $this->callable($handler), ...$middlewares);
     }
 
+    /**
+     * @param array<int, string> $handler
+     */
     private function callable(array $handler): ClosureRequestHandler
     {
         [$controller, $method] = $handler;

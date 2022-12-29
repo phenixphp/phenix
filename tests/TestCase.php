@@ -4,23 +4,37 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Amp\PHPUnit\AsyncTestCase;
 use Core\App;
+use Core\AppProxy;
 use Core\Console\Phenix;
-use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class TestCase extends BaseTestCase
+class TestCase extends AsyncTestCase
 {
-    protected App $app;
+    protected ?AppProxy $app;
 
     protected function setUp(): void
     {
-        $this->app = require_once __DIR__ . '/../core/bootstrap.php';
+        parent::setUp();
+
+        if (! isset($this->app)) {
+            $this->app = require __DIR__ . '/../core/bootstrap.php';
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        if (isset($this->app)) {
+            $this->app = null;
+        }
     }
 
     protected function phenix(string $signature, array $arguments): CommandTester
     {
-        $phenix = $this->app::make(Phenix::class);
+        $phenix = App::make(Phenix::class);
 
         $command = $phenix->find($signature);
         $commandTester = new CommandTester($command);

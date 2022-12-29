@@ -2,20 +2,13 @@
 
 declare(strict_types=1);
 
+use Core\App;
 use Core\Http\Response;
 
 if (! function_exists('base_path()')) {
     function base_path(string $path = ''): string
     {
-        if (str_starts_with($path, DIRECTORY_SEPARATOR)) {
-            $path = ltrim($path, DIRECTORY_SEPARATOR);
-        }
-
-        if (str_ends_with($path, DIRECTORY_SEPARATOR)) {
-            $path = rtrim($path, DIRECTORY_SEPARATOR);
-        }
-
-        return APP_PATH . DIRECTORY_SEPARATOR . $path;
+        return App::path() . DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
     }
 }
 
@@ -27,8 +20,10 @@ if (! function_exists('response')) {
 }
 
 if (! function_exists('env')) {
-    function env(string $key, callable $default): string|bool
+    function env(string $key, callable $default): string|int|bool
     {
-        return $_ENV[$key] ?? $default();
+        $value = getenv($key);
+
+        return $value ? $value : $default();
     }
 }

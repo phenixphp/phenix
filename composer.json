@@ -24,12 +24,15 @@
         }
     ],
     "require": {
+        "php": "^8.1",
         "adbario/php-dot-notation": "^3.1",
         "amphp/file": "^v3.0.0-beta.3",
+        "amphp/http-client": "^v5.0.0-beta.6",
         "amphp/http-server": "^v3.0.0-beta.3",
         "amphp/http-server-router": "^v2.0.0-beta.1",
         "amphp/log": "^v2.0.0-beta.1",
         "league/container": "^4.2",
+        "nesbot/carbon": "^2.62",
         "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4"
     },
@@ -39,8 +42,16 @@
         "nunomaduro/collision": "^6.3",
         "nunomaduro/phpinsights": "^2.6",
         "pestphp/pest": "^1.22",
+        "pestphp/pest-plugin-faker": "^1.0",
+        "pestphp/pest-plugin-global-assertions": "^1.0",
+        "pestphp/pest-plugin-mock": "^1.0",
         "pestphp/pest-plugin-parallel": "^1.2",
+        "phpstan/extension-installer": "^1.2",
+        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan-deprecation-rules": "^1.1",
+        "phpstan/phpstan-phpunit": "^1.3",
         "phpunit/phpunit": "^9.5",
+        "spatie/pest-plugin-test-time": "^1.1",
         "symfony/var-dumper": "^6.1"
     },
     "config": {
@@ -50,16 +61,19 @@
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
         }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "test": "vendor/bin/pest",
+        "test": "XDEBUG_MODE=off vendor/bin/pest",
+        "test:debug": "vendor/bin/pest",
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",
         "test:parallel": "vendor/bin/pest --parallel",
-        "phpcs": "vendor/bin/php-cs-fixer fix",
-        "analyze": "vendor/bin/phpinsights"
+        "format": "vendor/bin/php-cs-fixer fix",
+        "analyze": "vendor/bin/phpinsights",
+        "analyze:static": "vendor/bin/phpstan"
     }
 }

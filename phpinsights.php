@@ -51,9 +51,14 @@ return [
     */
 
     'exclude' => [
+        'build',
         'public',
         'vendor',
+        'storage',
         '.vscode',
+        '.github',
+        'phpinsights.php',
+        'core/functions.php',
     ],
 
     'add' => [
@@ -63,15 +68,26 @@ return [
     ],
 
     'remove' => [
+        PhpCsFixer\Fixer\Import\OrderedImportsFixer::class, // Collision with PHP CS Fixer
+        NunoMaduro\PhpInsights\Domain\Insights\ForbiddenTraits::class,
         NunoMaduro\PhpInsights\Domain\Metrics\Architecture\Traits::class,
+        SlevomatCodingStandard\Sniffs\Functions\StaticClosureSniff::class,
         NunoMaduro\PhpInsights\Domain\Insights\ForbiddenNormalClasses::class,
         NunoMaduro\PhpInsights\Domain\Insights\ForbiddenDefineGlobalConstants::class,
+        SlevomatCodingStandard\Sniffs\Namespaces\AlphabeticallySortedUsesSniff::class,
     ],
 
     'config' => [
-        //  ExampleInsight::class => [
-        //      'key' => 'value',
-        //  ],
+        \SlevomatCodingStandard\Sniffs\Namespaces\UseSpacingSniff::class => [
+            'linesCountBeforeFirstUse' => 1,
+            'linesCountBetweenUseTypes' => 1,
+            'linesCountAfterLastUse' => 1,
+        ],
+        \PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff::class => [
+            'lineLimit' => 120,
+            'absoluteLineLimit' => 120,
+            'ignoreComments' => false,
+        ],
     ],
 
     /*
