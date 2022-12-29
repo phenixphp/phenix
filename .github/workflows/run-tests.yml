@@ -21,7 +21,7 @@ jobs:
         with:
           php-version: 8.1
           extensions: json, mbstring, pcntl, intl, fileinfo
-          coverage: none
+          coverage: xdebug
 
       - name: Setup problem matchers
         run: |
@@ -44,4 +44,15 @@ jobs:
       - name: Execute tests
         run: |
           cp .env.example .env
-          vendor/bin/pest
+          vendor/bin/pest --coverage
+
+      - name: Prepare paths for SonarQube analysis
+        run: |
+          sed -i "s|$GITHUB_WORKSPACE|/github/workspace|g" build/logs/clover.xml
+          sed -i "s|$GITHUB_WORKSPACE|/github/workspace|g" build/report.junit.xml
+
+      - name: Run SonarQube analysis
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
