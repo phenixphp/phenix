@@ -10,7 +10,11 @@ it('creates test successfully', function () {
     $mock = mock(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
-        put: fn (string $path) => true,
+        put: function (string $path) {
+            expect($path)->toContain('Feature' . DIRECTORY_SEPARATOR .'ExampleTest');
+
+            return true;
+        },
     );
 
     $this->app->swap(File::class, $mock);
