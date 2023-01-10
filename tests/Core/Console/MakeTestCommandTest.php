@@ -15,6 +15,9 @@ it('creates test successfully', function () {
 
             return true;
         },
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -62,6 +65,9 @@ it('creates test successfully with force option', function () {
         exists: fn (string $path) => false,
         get: fn (string $path) => 'new content',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -109,6 +115,9 @@ it('creates test successfully with unit option', function () {
 
             return true;
         },
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -133,6 +142,9 @@ it('creates test successfully with core option', function () {
 
             return true;
         },
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);

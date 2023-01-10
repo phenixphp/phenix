@@ -14,6 +14,9 @@ it('creates middleware successfully', function () {
             expect($path)->toBe(base_path('app/Http/Middleware/AwesomeMiddleware.php'));
 
             return true;
+        },
+        createDirectory: function (string $path): void {
+            // ..
         }
     );
 
@@ -62,6 +65,9 @@ it('creates middleware successfully with force option', function () {
         exists: fn (string $path) => false,
         get: fn (string $path) => 'new content',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
