@@ -8,6 +8,8 @@ use Core\Http\Response;
 if (! function_exists('base_path()')) {
     function base_path(string $path = ''): string
     {
+        $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
+
         return App::path() . DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
     }
 }
