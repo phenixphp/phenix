@@ -23,4 +23,9 @@ class AppProxy implements AppContract
     {
         $this->app->swap($key, $concrete);
     }
+
+    public function enableTestingMode(): void
+    {
+        $this->app->disableSignalTrapping();
+    }
 }
