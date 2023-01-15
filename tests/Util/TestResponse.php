@@ -23,6 +23,13 @@ class TestResponse
         return $this;
     }
 
+    public function assertNotAcceptable(): self
+    {
+        expect($this->response->getStatus())->toBe(Status::NOT_ACCEPTABLE);
+
+        return $this;
+    }
+
     /**
      * @param array<int, string>|string $needles
      * @return self

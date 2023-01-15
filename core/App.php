@@ -70,8 +70,13 @@ class App implements AppContract, Makeable
 
             $this->logger->info("Caught signal {$signal}, stopping server");
 
-            $this->server->stop();
+            $this->stop();
         }
+    }
+
+    public function stop(): void
+    {
+        $this->server->stop();
     }
 
     public static function make(string $key): object

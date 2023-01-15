@@ -8,5 +8,7 @@ interface App
 {
     public function run(): void;
 
+    public function stop(): void;
+
     public function swap(string $key, object $concrete): void;
 }

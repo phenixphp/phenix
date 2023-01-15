@@ -19,6 +19,11 @@ class AppProxy implements AppContract
         $this->app->run();
     }
 
+    public function stop(): void
+    {
+        $this->app->stop();
+    }
+
     public function swap(string $key, object $concrete): void
     {
         $this->app->swap($key, $concrete);

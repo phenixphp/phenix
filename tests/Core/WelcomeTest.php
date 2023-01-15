@@ -13,3 +13,8 @@ it('responses successfully', function () {
         ->assertOk()
         ->assertBodyContains('Hello, world!');
 });
+
+it('responses not acceptable request', function () {
+    get(path: '/', headers: ['Accept' => 'text/html'])
+        ->assertNotAcceptable();
+});
