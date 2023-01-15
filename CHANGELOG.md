@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Command to make middlewares. ([#19](https://github.com/barbosa89/phenix/pull/19))
 - SonarCloud integration. ([#13](https://github.com/barbosa89/phenix/pull/13))
 - PHPInsights integration. ([#12](https://github.com/barbosa89/phenix/pull/12))
 - PHPStan integration. ([#11](https://github.com/barbosa89/phenix/pull/11))
