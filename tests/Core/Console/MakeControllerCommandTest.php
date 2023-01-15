@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Console;
+namespace Tests\Core\Console;
 
 use Core\Contracts\Filesystem\File;
 
@@ -11,6 +11,9 @@ it('creates controller successfully', function () {
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: fn (string $path) => true,
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -58,6 +61,9 @@ it('creates controller successfully with force option', function () {
         exists: fn (string $path) => false,
         get: fn (string $path) => 'new content',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -104,6 +110,9 @@ it('creates controller successfully with api option', function () {
         exists: fn (string $path) => false,
         get: fn (string $path) => 'Hello, world!',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);

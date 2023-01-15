@@ -11,7 +11,14 @@
 |
 */
 
-uses(Tests\TestCase::class)->in('Unit');
+use Amp\Http\Client\HttpClientBuilder;
+use Amp\Http\Client\Request;
+use Core\Constants\Http;
+use Core\Facades\Config;
+use Tests\Util\TestResponse;
+
+uses(Tests\TestCase::class)->in('Core');
+// uses(Tests\TestCase::class)->in('Unit');
 // uses(Tests\TestCase::class)->in('Feature');
 
 /*
@@ -40,7 +47,63 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function call(
+    string $method,
+    string $path,
+    array $parameters = [],
+    array|string|null $body = null,
+    array $headers = []
+): TestResponse {
+    $path = trim($path, "/");
+
+    $port = Config::get('app.port');
+
+    [$ipv4,] = Config::get('app.url');
+
+    $uri = "http://{$ipv4}:{$port}/{$path}";
+
+    if (! empty($parameters)) {
+        $uri .= '?' . http_build_query($parameters);
+    }
+
+    $request = new Request($uri, $method);
+
+    if (! empty($headers)) {
+        $request->setHeaders($headers);
+    }
+
+    if (! empty($body)) {
+        $body = \is_array($body) ? json_encode($body) : $body;
+
+        $request->setBody($body);
+    }
+
+    $client = HttpClientBuilder::buildDefault();
+
+    return new TestResponse($client->request($request));
+}
+
+function get(string $path, array $parameters = [], array $headers = []): TestResponse
 {
-    // ..
+    return call(method: Http::METHOD_GET, path: $path, parameters: $parameters, headers: $headers);
+}
+
+function post(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
+{
+    return call(Http::METHOD_POST, $path, $parameters, $body, $headers);
+}
+
+function put(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
+{
+    return call(Http::METHOD_PUT, $path, $parameters, $body, $headers);
+}
+
+function patch(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
+{
+    return call(Http::METHOD_PATCH, $path, $parameters, $body, $headers);
+}
+
+function delete(string $path, array $parameters = [], array $headers = []): TestResponse
+{
+    return call(method: Http::METHOD_DELETE, path: $path, parameters: $parameters, headers: $headers);
 }

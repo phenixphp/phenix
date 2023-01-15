@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Console;
+namespace Tests\Core\Console;
 
 use Core\Contracts\Filesystem\File;
 
@@ -10,7 +10,14 @@ it('creates test successfully', function () {
     $mock = mock(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
-        put: fn (string $path) => true,
+        put: function (string $path) {
+            expect($path)->toContain('Feature' . DIRECTORY_SEPARATOR .'ExampleTest');
+
+            return true;
+        },
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -58,6 +65,9 @@ it('creates test successfully with force option', function () {
         exists: fn (string $path) => false,
         get: fn (string $path) => 'new content',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -100,7 +110,14 @@ it('creates test successfully with unit option', function () {
     $mock = mock(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
-        put: fn (string $path) => true,
+        put: function (string $path) {
+            expect($path)->toContain('Unit' . DIRECTORY_SEPARATOR .'ExampleTest');
+
+            return true;
+        },
+        createDirectory: function (string $path): void {
+            // ..
+        }
     );
 
     $this->app->swap(File::class, $mock);
@@ -109,6 +126,33 @@ it('creates test successfully with unit option', function () {
     $command = $this->phenix('make:test', [
         'name' => 'ExampleTest',
         '--unit' => true,
+    ]);
+
+    $command->assertCommandIsSuccessful();
+
+    expect($command->getDisplay())->toContain('Test successfully generated!');
+});
+
+it('creates test successfully with core option', function () {
+    $mock = mock(File::class)->expect(
+        exists: fn (string $path) => false,
+        get: fn (string $path) => '',
+        put: function (string $path) {
+            expect($path)->toContain('Core' . DIRECTORY_SEPARATOR .'ExampleTest');
+
+            return true;
+        },
+        createDirectory: function (string $path): void {
+            // ..
+        }
+    );
+
+    $this->app->swap(File::class, $mock);
+
+    /** @var \Symfony\Component\Console\Tester\CommandTester $command */
+    $command = $this->phenix('make:test', [
+        'name' => 'ExampleTest',
+        '--core' => true,
     ]);
 
     $command->assertCommandIsSuccessful();

@@ -23,7 +23,7 @@ class AppBuilder implements Buildable
     private static function loadRoutes(): void
     {
         foreach (Directory::all(base_path('routes')) as $file) {
-            require_once $file;
+            require $file;
         }
     }
 }

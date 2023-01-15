@@ -28,6 +28,7 @@ class App implements AppContract, Makeable
 
     private Logger $logger;
     private SocketHttpServer $server;
+    private bool $signalTrapping = true;
     private DefaultErrorHandler $errorHandler;
 
     public function __construct(string $path)
@@ -64,10 +65,17 @@ class App implements AppContract, Makeable
     {
         $this->server->start(self::$container->get('router')->getRouter(), $this->errorHandler);
 
-        $signal = \Amp\trapSignal([SIGINT, SIGTERM]);
+        if ($this->signalTrapping) {
+            $signal = \Amp\trapSignal([SIGINT, SIGTERM]);
 
-        $this->logger->info("Caught signal {$signal}, stopping server");
+            $this->logger->info("Caught signal {$signal}, stopping server");
 
+            $this->stop();
+        }
+    }
+
+    public function stop(): void
+    {
         $this->server->stop();
     }
 
@@ -84,6 +92,11 @@ class App implements AppContract, Makeable
     public function swap(string $key, object $concrete): void
     {
         self::$container->extend($key)->setConcrete($concrete);
+    }
+
+    public function disableSignalTrapping(): void
+    {
+        $this->signalTrapping = false;
     }
 
     private function setupDefinitions(): void
