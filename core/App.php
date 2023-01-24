@@ -6,20 +6,18 @@ namespace Core;
 
 use Amp\Http\Server\DefaultErrorHandler;
 use Amp\Http\Server\SocketHttpServer;
-use Amp\Log\StreamHandler;
 use Amp\Socket;
 use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
 use Core\Facades\Config;
 use Core\Facades\File;
+use Core\Logging\LoggerFactory;
 use Core\Routing\Router;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Container;
-use Monolog\Formatter\LineFormatter;
 use Monolog\Logger;
-use Monolog\Processor\PsrLogMessageProcessor;
 
 class App implements AppContract, Makeable
 {
@@ -43,7 +41,10 @@ class App implements AppContract, Makeable
     {
         $this->registerElementalFacades();
 
-        $this->setupLogger();
+        /** @var string $channel */
+        $channel = Config::get('logging.channel');
+
+        $this->logger = LoggerFactory::make($channel);
 
         $this->setupServer();
 
@@ -86,18 +87,6 @@ class App implements AppContract, Makeable
     public function disableSignalTrapping(): void
     {
         $this->signalTrapping = false;
-    }
-
-    private function setupLogger(): void
-    {
-        $file = File::openFile(base_path('storage/framework/logs/phenix.log'), 'a');
-
-        $logHandler = new StreamHandler($file);
-        $logHandler->pushProcessor(new PsrLogMessageProcessor());
-        $logHandler->setFormatter(new LineFormatter());
-
-        $this->logger = new Logger('phenix');
-        $this->logger->pushHandler($logHandler);
     }
 
     private function setupServer(): void
