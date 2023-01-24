@@ -18,26 +18,26 @@ beforeEach(function () {
 it('reads files successfully', function () {
     $path = sys_get_temp_dir() . '/file.txt';
 
-    file_put_contents($path, 'phenix');
+    file_put_contents($path, 'php');
 
     $file = new File();
 
-    expect($file->get($path))->toBe('phenix');
+    expect($file->get($path))->toBe('php');
 });
 
 it('writes files successfully', function () {
     $path = sys_get_temp_dir() . '/file.txt';
 
     $file = new File();
-    $file->put($path, 'phenix');
+    $file->put($path, 'php');
 
-    expect(file_get_contents($path))->toBe('phenix');
+    expect(file_get_contents($path))->toBe('php');
 });
 
 it('checks if file exists', function () {
     $path = sys_get_temp_dir() . '/file.txt';
 
-    file_put_contents($path, 'phenix');
+    file_put_contents($path, 'php');
 
     $file = new File();
 
@@ -53,7 +53,7 @@ it('checks if path exist and is it a directory', function () {
 it('checks if path exist and is it a file', function () {
     $path = sys_get_temp_dir() . '/file.txt';
 
-    file_put_contents($path, 'phenix');
+    file_put_contents($path, 'php');
 
     $file = new File();
 
@@ -61,9 +61,11 @@ it('checks if path exist and is it a file', function () {
 });
 
 it('creates a directory successfully', function () {
-    $path = sys_get_temp_dir() . '/phenix';
+    $path = sys_get_temp_dir() . '/php';
 
-    rmdir($path);
+    if (file_exists($path)) {
+        rmdir($path);
+    }
 
     $file = new File();
     $file->createDirectory($path);
@@ -74,7 +76,7 @@ it('creates a directory successfully', function () {
 it('open a file for IO operations', function () {
     $path = sys_get_temp_dir() . '/file.txt';
 
-    file_put_contents($path, 'phenix');
+    file_put_contents($path, 'php');
 
     $file = new File();
 
