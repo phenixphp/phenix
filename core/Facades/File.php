@@ -14,6 +14,7 @@ use Core\Runtime\Facade;
  * @method static bool isDirectory(string $path)
  * @method static bool isFile(string $path)
  * @method static void createDirectory(string $path, int $mode = 0755)
+ * @method static \Amp\File\File openFile(string $path, string $mode = 'w')
  *
  * @see \Core\Filesystem\File
  */
