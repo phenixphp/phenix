@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Routes with support for groups ([#28](https://github.com/barbosa89/phenix/pull/28))
 - Ability to use multiple logger channels. ([#24](https://github.com/barbosa89/phenix/pull/24))
 - Command to make middlewares. ([#19](https://github.com/barbosa89/phenix/pull/19))
 - SonarCloud integration. ([#13](https://github.com/barbosa89/phenix/pull/13))
