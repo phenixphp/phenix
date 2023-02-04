@@ -4,30 +4,30 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Amp\ByteStream;
 use Amp\Http\Server\DefaultErrorHandler;
+use Amp\Http\Server\Router;
 use Amp\Http\Server\SocketHttpServer;
-use Amp\Log\ConsoleFormatter;
-use Amp\Log\StreamHandler;
 use Amp\Socket;
 use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
 use Core\Facades\Config;
-use Core\Routing\Router;
+use Core\Facades\File;
+use Core\Logging\LoggerFactory;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Container;
 use Monolog\Logger;
-use Monolog\Processor\PsrLogMessageProcessor;
 
 class App implements AppContract, Makeable
 {
     private static string $path;
     private static Container $container;
 
+    private Router $router;
     private Logger $logger;
     private SocketHttpServer $server;
+    private bool $signalTrapping = true;
     private DefaultErrorHandler $errorHandler;
 
     public function __construct(string $path)
@@ -35,39 +35,52 @@ class App implements AppContract, Makeable
         self::$path = $path;
         self::$container = new Container();
 
-        $logHandler = new StreamHandler(ByteStream\getStdout());
-        $logHandler->pushProcessor(new PsrLogMessageProcessor());
-        $logHandler->setFormatter(new ConsoleFormatter());
-
-        $this->logger = new Logger('server');
-        $this->logger->pushHandler($logHandler);
-
         $this->errorHandler = new DefaultErrorHandler();
-
-        $this->server = new SocketHttpServer($this->logger);
     }
 
     public function setup(): void
     {
+        $this->registerElementalFacades();
+
+        /** @var string $channel */
+        $channel = Config::get('logging.channel');
+
+        $this->logger = LoggerFactory::make($channel);
+
+        $this->setupServer();
+
         $this->setupDefinitions();
+    }
 
-        /** @var int $port */
-        $port = Config::get('app.port');
+    public function setRouter(): void
+    {
+        $this->router = new Router($this->server, $this->errorHandler);
 
-        [$ipv4, $ipv6] = Config::get('app.url');
+        /** @var array $routes */
+        $routes = self::$container->get('route')->toArray();
 
-        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
-        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
+        foreach ($routes as $route) {
+            [$method, $path, $closure, $middlewares] = $route;
+
+            $this->router->addRoute($method->value, $path, $closure, ...$middlewares);
+        }
     }
 
     public function run(): void
     {
-        $this->server->start(self::$container->get('router')->getRouter(), $this->errorHandler);
+        $this->server->start($this->router, $this->errorHandler);
 
-        $signal = \Amp\trapSignal([SIGINT, SIGTERM]);
+        if ($this->signalTrapping) {
+            $signal = \Amp\trapSignal([SIGINT, SIGTERM]);
 
-        $this->logger->info("Caught signal {$signal}, stopping server");
+            $this->logger->info("Caught signal {$signal}, stopping server");
 
+            $this->stop();
+        }
+    }
+
+    public function stop(): void
+    {
         $this->server->stop();
     }
 
@@ -86,6 +99,24 @@ class App implements AppContract, Makeable
         self::$container->extend($key)->setConcrete($concrete);
     }
 
+    public function disableSignalTrapping(): void
+    {
+        $this->signalTrapping = false;
+    }
+
+    private function setupServer(): void
+    {
+        $this->server = new SocketHttpServer($this->logger);
+
+        /** @var int $port */
+        $port = Config::get('app.port');
+
+        [$ipv4, $ipv6] = Config::get('app.url');
+
+        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
+        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
+    }
+
     private function setupDefinitions(): void
     {
         $this->registerFacades();
@@ -98,13 +129,16 @@ class App implements AppContract, Makeable
     private function registerFacades(): void
     {
         self::$container->add(
+            \Core\Facades\Route::getKeyName(),
+            \Core\Routing\Route::class
+        )->setShared(true);
+    }
+
+    private function registerElementalFacades(): void
+    {
+        self::$container->add(
             Config::getKeyName(),
             \Core\Runtime\Config::build(...)
-        )->setShared(true);
-
-        self::$container->add(
-            \Core\Facades\Router::getKeyName(),
-            fn () => new Router($this->server, $this->errorHandler)
         )->setShared(true);
 
         self::$container->add(
@@ -113,7 +147,7 @@ class App implements AppContract, Makeable
         );
 
         self::$container->add(
-            \Core\Facades\File::getKeyName(),
+            File::getKeyName(),
             \Core\Filesystem\File::class
         );
     }

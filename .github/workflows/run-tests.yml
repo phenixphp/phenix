@@ -39,7 +39,7 @@ jobs:
       - name: Analyze code statically with PHPStan
         run: |
           cp .env.example .env
-          vendor/bin/phpstan
+          vendor/bin/phpstan --xdebug
 
       - name: Execute tests
         run: |

@@ -30,7 +30,7 @@ abstract class Maker extends Command
         $name = $this->input->getArgument('name');
         $force = $this->input->getOption('force');
 
-        $namespace = explode('/', $name);
+        $namespace = explode(DIRECTORY_SEPARATOR, $name);
         $className = array_pop($namespace);
 
         $filePath = $this->preparePath($namespace) . "/{$className}.php";
@@ -59,15 +59,22 @@ abstract class Maker extends Command
     {
         $path = base_path($this->outputDirectory());
 
-        foreach ($namespace as $directory) {
-            $path .= '/' . ucfirst($directory);
+        $this->checkDirectory($path);
 
-            if (! File::exists($path)) {
-                File::createDirectory($path);
-            }
+        foreach ($namespace as $directory) {
+            $path .= DIRECTORY_SEPARATOR . ucfirst($directory);
+
+            $this->checkDirectory($path);
         }
 
         return $path;
+    }
+
+    private function checkDirectory(string $path): void
+    {
+        if (! File::exists($path)) {
+            File::createDirectory($path);
+        }
     }
 
     /**

@@ -17,13 +17,15 @@ class AppBuilder implements Buildable
 
         self::loadRoutes();
 
+        $app->setRouter();
+
         return new AppProxy($app);
     }
 
     private static function loadRoutes(): void
     {
         foreach (Directory::all(base_path('routes')) as $file) {
-            require_once $file;
+            require $file;
         }
     }
 }

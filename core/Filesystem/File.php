@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Filesystem;
 
+use Amp\File\File as FileHandler;
 use Amp\File\Filesystem;
 
 use function Amp\File\filesystem;
@@ -47,5 +48,10 @@ class File implements FileContract
     public function createDirectory(string $path, int $mode = 0755): void
     {
         $this->driver->createDirectory($path, $mode);
+    }
+
+    public function openFile(string $path, string $mode = 'w'): FileHandler
+    {
+        return $this->driver->openFile($path, $mode);
     }
 }

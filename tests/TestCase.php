@@ -20,6 +20,7 @@ class TestCase extends AsyncTestCase
 
         if (! isset($this->app)) {
             $this->app = require __DIR__ . '/../core/bootstrap.php';
+            $this->app->enableTestingMode();
         }
     }
 
@@ -28,6 +29,7 @@ class TestCase extends AsyncTestCase
         parent::tearDown();
 
         if (isset($this->app)) {
+            $this->app->stop();
             $this->app = null;
         }
     }
