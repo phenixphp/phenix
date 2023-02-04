@@ -10,7 +10,7 @@ class RouteGroupBuilder extends RouteBuilder
 {
     protected string $basePrefix;
 
-    protected string|null $prefix = null;
+    protected string $prefix = '';
 
     protected Route|null $group = null;
 

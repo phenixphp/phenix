@@ -71,7 +71,7 @@ it('can call a class callable method', function () {
         ->assertContainsParameters(['user', 'post']);
 });
 
-it('can add route group from middleware method', function () {
+it('can add nested route groups', function () {
     $router = new Route();
 
     $router->middleware(AcceptJsonResponses::class)
@@ -89,6 +89,13 @@ it('can add route group from middleware method', function () {
                 ->group(function (Route $route) {
                     $route->get('invoices', fn () => 'Invoice index')
                         ->name('invoices.index');
+
+                    $route->name('payments')
+                        ->prefix('payments')
+                        ->group(function (Route $route) {
+                            $route->get('pending', fn () => 'Invoice index')
+                                ->name('pending.index');
+                        });
                 });
         });
 
@@ -114,6 +121,12 @@ it('can add route group from middleware method', function () {
             'uri' => '/admin/accounting/invoices',
             'middlewares' => [new AcceptJsonResponses()],
             'name' => 'admin.accounting.invoices.index',
+        ],
+        [
+            'method' => Methods::GET,
+            'uri' => '/admin/accounting/payments/pending',
+            'middlewares' => [new AcceptJsonResponses()],
+            'name' => 'admin.accounting.payments.pending.index',
         ],
         [
             'method' => Methods::GET,
