@@ -15,8 +15,8 @@ class Route implements Arrayable
     private array $collection;
 
     public function __construct(
-        private string|null $baseName = null,
-        private string|null $prefix = null,
+        private string $baseName = '',
+        private string $prefix = '',
         private array $middleware = [],
     ) {
         $this->collection = [];

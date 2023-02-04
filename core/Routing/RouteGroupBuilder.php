@@ -8,13 +8,13 @@ use Closure;
 
 class RouteGroupBuilder extends RouteBuilder
 {
-    protected string|null $basePrefix = null;
+    protected string $basePrefix;
 
     protected string|null $prefix = null;
 
     protected Route|null $group = null;
 
-    public function __construct(string|null $prefix = null, string|null $name = null, array $middleware = [])
+    public function __construct(string $prefix = '', string $name = '', array $middleware = [])
     {
         $this->basePrefix = $prefix;
         $this->baseName = $name;
@@ -23,14 +23,14 @@ class RouteGroupBuilder extends RouteBuilder
 
     public function name(string $name): self
     {
-        $this->name = rtrim($this->baseName ?: '', '.') . '.' . trim($name, '.') . '.';
+        $this->name = rtrim($this->baseName, '.') . '.' . trim($name, '.') . '.';
 
         return $this;
     }
 
     public function prefix(string $prefix): self
     {
-        $this->prefix = rtrim($this->basePrefix ?: '', '/') . '/' . trim($prefix, '/') . '/';
+        $this->prefix = rtrim($this->basePrefix, '/') . '/' . trim($prefix, '/') . '/';
 
         return $this;
     }

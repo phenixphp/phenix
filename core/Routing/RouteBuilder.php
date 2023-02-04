@@ -57,7 +57,7 @@ class RouteBuilder implements Arrayable
     {
         return [
             $this->method,
-            $this->uri ? '/' . trim($this->uri, '/') : null,
+            '/' . trim($this->uri, '/'),
             $this->closure,
             $this->middlewares,
             $this->name ? trim($this->name, '.') : null,
