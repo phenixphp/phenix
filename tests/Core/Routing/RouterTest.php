@@ -8,7 +8,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Middleware\AcceptJsonResponses;
 use Core\Constants\Http\Methods;
 use Core\Routing\Route;
-use Tests\Util\RouteParser;
+use Tests\Util\AssertRoute;
 
 it('adds get routes successfully', function (string $method, Methods $httpMethod) {
     $router = new Route();
@@ -19,11 +19,10 @@ it('adds get routes successfully', function (string $method, Methods $httpMethod
             AcceptJsonResponses::class,
         ]);
 
-    $parser = new RouteParser($router);
-
-    $parser->assertMethodIs($httpMethod)
-        ->assertNameIs('awesome')
-        ->assertHasMiddlewares([AcceptJsonResponses::class]);
+    AssertRoute::from($router)
+        ->methodIs($httpMethod)
+        ->nameIs('awesome')
+        ->hasMiddlewares([AcceptJsonResponses::class]);
 })->with([
     ['get', Methods::GET],
     ['post', Methods::POST],
@@ -38,11 +37,10 @@ it('adds get routes with params successfully', function () {
     $router->get('/users/{user}', fn () => 'Hello')
         ->name('users.show');
 
-    $parser = new RouteParser($router);
-
-    $parser->assertMethodIs(Methods::GET)
-        ->assertNameIs('users.show')
-        ->assertContainsParameters(['user']);
+    AssertRoute::from($router)
+        ->methodIs(Methods::GET)
+        ->nameIs('users.show')
+        ->containsParameters(['user']);
 });
 
 it('adds get routes with many params successfully', function () {
@@ -51,11 +49,10 @@ it('adds get routes with many params successfully', function () {
     $router->get('/users/{user}/posts/{post}', fn () => 'Hello')
         ->name('users.posts.show');
 
-    $parser = new RouteParser($router);
-
-    $parser->assertMethodIs(Methods::GET)
-        ->assertNameIs('users.posts.show')
-        ->assertContainsParameters(['user', 'post']);
+    AssertRoute::from($router)
+        ->methodIs(Methods::GET)
+        ->nameIs('users.posts.show')
+        ->containsParameters(['user', 'post']);
 });
 
 it('can call a class callable method', function () {
@@ -64,11 +61,10 @@ it('can call a class callable method', function () {
     $router->get('/users/{user}/posts/{post}', [WelcomeController::class, 'index'])
         ->name('users.posts.show');
 
-    $parser = new RouteParser($router);
-
-    $parser->assertMethodIs(Methods::GET)
-        ->assertNameIs('users.posts.show')
-        ->assertContainsParameters(['user', 'post']);
+    AssertRoute::from($router)
+        ->methodIs(Methods::GET)
+        ->nameIs('users.posts.show')
+        ->containsParameters(['user', 'post']);
 });
 
 it('can add nested route groups', function () {
@@ -90,8 +86,8 @@ it('can add nested route groups', function () {
                     $route->get('invoices', fn () => 'Invoice index')
                         ->name('invoices.index');
 
-                    $route->name('payments')
-                        ->prefix('payments')
+                    $route->prefix('payments')
+                        ->name('payments')
                         ->group(function (Route $route) {
                             $route->get('pending', fn () => 'Invoice index')
                                 ->name('pending.index');
@@ -106,32 +102,32 @@ it('can add nested route groups', function () {
     $expectedRoutes = [
         [
             'method' => Methods::GET,
-            'uri' => '/admin/users',
-            'middlewares' => [new AcceptJsonResponses()],
+            'path' => '/admin/users',
+            'middlewares' => [AcceptJsonResponses::class],
             'name' => 'admin.users.index',
         ],
         [
             'method' => Methods::GET,
-            'uri' => '/admin/users/{user}',
-            'middlewares' => [new AcceptJsonResponses()],
+            'path' => '/admin/users/{user}',
+            'middlewares' => [AcceptJsonResponses::class],
             'name' => 'admin.users.show',
         ],
         [
             'method' => Methods::GET,
-            'uri' => '/admin/accounting/invoices',
-            'middlewares' => [new AcceptJsonResponses()],
+            'path' => '/admin/accounting/invoices',
+            'middlewares' => [AcceptJsonResponses::class],
             'name' => 'admin.accounting.invoices.index',
         ],
         [
             'method' => Methods::GET,
-            'uri' => '/admin/accounting/payments/pending',
-            'middlewares' => [new AcceptJsonResponses()],
+            'path' => '/admin/accounting/payments/pending',
+            'middlewares' => [AcceptJsonResponses::class],
             'name' => 'admin.accounting.payments.pending.index',
         ],
         [
             'method' => Methods::GET,
-            'uri' => '/products',
-            'middlewares' => [new AcceptJsonResponses()],
+            'path' => '/products',
+            'middlewares' => [AcceptJsonResponses::class],
             'name' => 'products.index',
         ],
     ];
@@ -139,11 +135,10 @@ it('can add nested route groups', function () {
     $routes = $router->toArray();
 
     foreach ($expectedRoutes as $index => $expectedRoute) {
-        [$method, $uri,, $middlewares, $name] = $routes[$index];
-
-        expect($method)->toBe($expectedRoute['method']);
-        expect($uri)->toBe($expectedRoute['uri']);
-        expect($middlewares)->toMatchArray($expectedRoute['middlewares']);
-        expect($name)->toBe($expectedRoute['name']);
+        AssertRoute::from($routes[$index])
+            ->methodIs($expectedRoute['method'])
+            ->pathIs($expectedRoute['path'])
+            ->hasMiddlewares($expectedRoute['middlewares'])
+            ->nameIs($expectedRoute['name']);
     }
 });

@@ -27,12 +27,12 @@ class RouteBuilder implements Arrayable
 
     public function __construct(
         protected Methods $method,
-        protected string $uri,
+        protected string $path,
         protected ClosureRequestHandler $closure,
         string|null $name = null,
         array $middleware = [],
     ) {
-        $this->parameters = $this->extractParams($uri);
+        $this->parameters = $this->extractParams($path);
         $this->baseName = $name;
         $this->middleware($middleware);
     }
@@ -47,7 +47,7 @@ class RouteBuilder implements Arrayable
     public function middleware(array|string $middleware): self
     {
         foreach ((array) $middleware as $item) {
-            $this->pushMiddleware(new $item);
+            $this->pushMiddleware(new $item());
         }
 
         return $this;
@@ -57,16 +57,17 @@ class RouteBuilder implements Arrayable
     {
         return [
             $this->method,
-            '/' . trim($this->uri, '/'),
+            '/' . trim($this->path, '/'),
             $this->closure,
             $this->middlewares,
             $this->name ? trim($this->name, '.') : null,
+            $this->parameters,
         ];
     }
 
-    protected function extractParams(string $uri): array
+    protected function extractParams(string $path): array
     {
-        preg_match_all('/\{(\w+)\}/', $uri, $params);
+        preg_match_all('/\{(\w+)\}/', $path, $params);
 
         return array_unique($params[1]);
     }
