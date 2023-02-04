@@ -7,7 +7,7 @@ namespace Core\Facades;
 use Core\Runtime\Facade;
 
 /**
- * @method static \Core\Routing\RouteBuilder get(string $, \Closure|array $handler)
+ * @method static \Core\Routing\RouteBuilder get(string $path, \Closure|array $handler)
  * @method static \Core\Routing\RouteBuilder post(string $path, \Closure|array $handler)
  * @method static \Core\Routing\RouteBuilder put(string $path, \Closure|array $handler)
  * @method static \Core\Routing\RouteBuilder patch(string $path, \Closure|array $handler)
