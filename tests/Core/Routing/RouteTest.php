@@ -146,15 +146,13 @@ it('can add nested route groups', function () {
 it('can create route group from group method', function () {
     $router = new Route();
 
-    $router->group(
-        closure: function (Route $route) {
-            $route->get('users', fn () => 'User index')
-                ->name('users.index');
-        },
-        name: 'admin',
-        prefix: 'admin',
-        middleware: [AcceptJsonResponses::class]
-    );
+    $router->group(function (Route $route) {
+        $route->get('users', fn () => 'User index')
+            ->name('users.index');
+    })
+    ->middleware(AcceptJsonResponses::class)
+    ->name('admin')
+    ->prefix('admin');
 
     AssertRoute::from($router)
         ->methodIs(Methods::GET)

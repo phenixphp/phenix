@@ -12,7 +12,7 @@ class RouteGroupBuilder extends RouteBuilder
 
     protected string $prefix = '';
 
-    protected Route|null $group = null;
+    protected Closure $group;
 
     public function __construct(string $prefix = '', string $name = '', array $middleware = [])
     {
@@ -44,15 +44,15 @@ class RouteGroupBuilder extends RouteBuilder
 
     public function group(Closure $closure): void
     {
-        $group = new Route($this->name, $this->prefix, $this->middlewares);
-
-        $closure($group);
-
-        $this->group = $group;
+        $this->group = $closure;
     }
 
     public function toArray(): array
     {
-        return array_values($this->group->toArray());
+        $route = new Route($this->name, $this->prefix, $this->middlewares);
+
+        ($this->group)($route);
+
+        return array_values($route->toArray());
     }
 }

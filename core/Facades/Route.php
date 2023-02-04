@@ -12,10 +12,10 @@ use Core\Runtime\Facade;
  * @method static \Core\Routing\RouteBuilder put(string $path, \Closure|array $handler)
  * @method static \Core\Routing\RouteBuilder patch(string $path, \Closure|array $handler)
  * @method static \Core\Routing\RouteBuilder delete(string $path, \Closure|array $handler)
+ * @method static \Core\Routing\RouteGroupBuilder group(\Closure $closure)
  * @method static \Core\Routing\RouteGroupBuilder name(string $name)
  * @method static \Core\Routing\RouteGroupBuilder prefix(string $prefix)
  * @method static \Core\Routing\RouteGroupBuilder middleware(array|string $middleware)
- * @method static void group(\Closure $closure, string $prefix = '', string $name = '', array $middleware = [])
  */
 class Route extends Facade
 {
@@ -23,5 +23,5 @@ class Route extends Facade
     {
         return 'route';
     }
-
+    // TODO: Implement deny methods
 }
