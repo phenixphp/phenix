@@ -25,29 +25,29 @@ class Route implements Arrayable
     /**
      * @param Closure|array<int, string> $handler
      */
-    public function get(string $uri, Closure|array $handler): RouteBuilder
+    public function get(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::GET, $uri, $handler);
+        return $this->addRoute(Methods::GET, $path, $handler);
     }
 
-    public function post(string $uri, Closure|array $handler): RouteBuilder
+    public function post(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::POST, $uri, $handler);
+        return $this->addRoute(Methods::POST, $path, $handler);
     }
 
-    public function put(string $uri, Closure|array $handler): RouteBuilder
+    public function put(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::PUT, $uri, $handler);
+        return $this->addRoute(Methods::PUT, $path, $handler);
     }
 
-    public function patch(string $uri, Closure|array $handler): RouteBuilder
+    public function patch(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::PATCH, $uri, $handler);
+        return $this->addRoute(Methods::PATCH, $path, $handler);
     }
 
-    public function delete(string $uri, Closure|array $handler): RouteBuilder
+    public function delete(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::DELETE, $uri, $handler);
+        return $this->addRoute(Methods::DELETE, $path, $handler);
     }
 
     public function name(string $name): RouteGroupBuilder
@@ -80,6 +80,9 @@ class Route implements Arrayable
         return $group;
     }
 
+    /**
+     * @return array<int, array>
+     */
     public function toArray(): array
     {
         return array_reduce($this->collection, function (array $routes, Arrayable $item) {
@@ -93,11 +96,11 @@ class Route implements Arrayable
         }, []);
     }
 
-    private function addRoute(Methods $method, string $uri, Closure|array $handler): RouteBuilder
+    private function addRoute(Methods $method, string $path, Closure|array $handler): RouteBuilder
     {
         $route = new RouteBuilder(
             $method,
-            $this->prefix . $uri,
+            $this->prefix . $path,
             $this->callable($handler),
             $this->baseName,
             $this->middleware

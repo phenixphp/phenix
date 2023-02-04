@@ -60,9 +60,9 @@ class App implements AppContract, Makeable
         $routes = self::$container->get('route')->toArray();
 
         foreach ($routes as $route) {
-            [$method, $uri, $closure, $middlewares, ] = $route;
+            [$method, $path, $closure, $middlewares] = $route;
 
-            $this->router->addRoute($method->value, $uri, $closure, ...$middlewares);
+            $this->router->addRoute($method->value, $path, $closure, ...$middlewares);
         }
     }
 
