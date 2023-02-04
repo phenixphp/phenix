@@ -42,9 +42,11 @@ class RouteGroupBuilder extends RouteBuilder
         return $this;
     }
 
-    public function group(Closure $closure): void
+    public function group(Closure $closure): self
     {
         $this->group = $closure;
+
+        return $this;
     }
 
     public function toArray(): array
