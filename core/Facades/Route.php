@@ -23,5 +23,4 @@ class Route extends Facade
     {
         return 'route';
     }
-    // TODO: Implement deny methods
 }
