@@ -99,7 +99,7 @@ it('can add nested route groups', function () {
         ->name('products.index')
         ->middleware(AcceptJsonResponses::class);
 
-    $expectedRoutes = [
+    $expected = [
         [
             'method' => Methods::GET,
             'path' => '/admin/users',
@@ -134,11 +134,30 @@ it('can add nested route groups', function () {
 
     $routes = $router->toArray();
 
-    foreach ($expectedRoutes as $index => $expectedRoute) {
+    foreach ($expected as $index => $route) {
         AssertRoute::from($routes[$index])
-            ->methodIs($expectedRoute['method'])
-            ->pathIs($expectedRoute['path'])
-            ->hasMiddlewares($expectedRoute['middlewares'])
-            ->nameIs($expectedRoute['name']);
+            ->methodIs($route['method'])
+            ->pathIs($route['path'])
+            ->hasMiddlewares($route['middlewares'])
+            ->nameIs($route['name']);
     }
+});
+
+it('can create route group from group method', function () {
+    $router = new Route();
+
+    $router->group(
+        closure: function (Route $route) {
+            $route->get('users', fn () => 'User index')
+                ->name('users.index');
+        },
+        name: 'admin',
+        prefix: 'admin',
+        middleware: [AcceptJsonResponses::class]
+    );
+
+    AssertRoute::from($router)
+        ->methodIs(Methods::GET)
+        ->nameIs('admin.users.index')
+        ->pathIs('/admin/users');
 });

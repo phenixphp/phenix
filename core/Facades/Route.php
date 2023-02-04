@@ -15,6 +15,7 @@ use Core\Runtime\Facade;
  * @method static \Core\Routing\RouteGroupBuilder name(string $name)
  * @method static \Core\Routing\RouteGroupBuilder prefix(string $prefix)
  * @method static \Core\Routing\RouteGroupBuilder middleware(array|string $middleware)
+ * @method static void group(\Closure $closure, string $prefix = '', string $name = '', array $middleware = [])
  */
 class Route extends Facade
 {

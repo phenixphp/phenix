@@ -50,6 +50,17 @@ class Route implements Arrayable
         return $this->addRoute(Methods::DELETE, $path, $handler);
     }
 
+    public function group(Closure $closure, string $prefix = '', string $name = '', array $middleware = []): void
+    {
+        $group = new RouteGroupBuilder($this->prefix, $this->baseName, $this->middleware);
+        $group->prefix($prefix)
+            ->name($name)
+            ->middleware($middleware)
+            ->group($closure);
+
+        $this->collection[] = $group;
+    }
+
     public function name(string $name): RouteGroupBuilder
     {
         $group = new RouteGroupBuilder($this->prefix, $this->baseName, $this->middleware);

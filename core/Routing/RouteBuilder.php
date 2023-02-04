@@ -13,7 +13,7 @@ class RouteBuilder implements Arrayable
 {
     protected string|null $baseName = null;
 
-    protected string|null $name = null;
+    protected string $name = '';
 
     /**
      * @var array<int, string>
@@ -60,7 +60,7 @@ class RouteBuilder implements Arrayable
             '/' . trim($this->path, '/'),
             $this->closure,
             $this->middlewares,
-            $this->name ? trim($this->name, '.') : null,
+            trim($this->name, '.'),
             $this->parameters,
         ];
     }
