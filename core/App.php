@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core;
 
 use Amp\Http\Server\DefaultErrorHandler;
+use Amp\Http\Server\Router;
 use Amp\Http\Server\SocketHttpServer;
 use Amp\Socket;
 use Core\Console\Phenix;
@@ -13,7 +14,6 @@ use Core\Contracts\Makeable;
 use Core\Facades\Config;
 use Core\Facades\File;
 use Core\Logging\LoggerFactory;
-use Core\Routing\Router;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Container;
@@ -24,6 +24,7 @@ class App implements AppContract, Makeable
     private static string $path;
     private static Container $container;
 
+    private Router $router;
     private Logger $logger;
     private SocketHttpServer $server;
     private bool $signalTrapping = true;
@@ -51,9 +52,23 @@ class App implements AppContract, Makeable
         $this->setupDefinitions();
     }
 
+    public function setRouter(): void
+    {
+        $this->router = new Router($this->server, $this->errorHandler);
+
+        /** @var array $routes */
+        $routes = self::$container->get('route')->toArray();
+
+        foreach ($routes as $route) {
+            [$method, $uri, $closure, $middlewares, ] = $route;
+
+            $this->router->addRoute($method->value, $uri, $closure, ...$middlewares);
+        }
+    }
+
     public function run(): void
     {
-        $this->server->start(self::$container->get('router')->getRouter(), $this->errorHandler);
+        $this->server->start($this->router, $this->errorHandler);
 
         if ($this->signalTrapping) {
             $signal = \Amp\trapSignal([SIGINT, SIGTERM]);
@@ -114,8 +129,8 @@ class App implements AppContract, Makeable
     private function registerFacades(): void
     {
         self::$container->add(
-            \Core\Facades\Router::getKeyName(),
-            fn () => new Router($this->server, $this->errorHandler)
+            \Core\Facades\Route::getKeyName(),
+            \Core\Routing\Route::class
         )->setShared(true);
     }
 

@@ -13,7 +13,7 @@
 
 use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
-use Core\Constants\Http;
+use Core\Constants\Http\Methods;
 use Core\Facades\Config;
 use Tests\Util\TestResponse;
 
@@ -48,7 +48,7 @@ expect()->extend('toBeOne', function () {
 */
 
 function call(
-    string $method,
+    Methods $method,
     string $path,
     array $parameters = [],
     array|string|null $body = null,
@@ -66,7 +66,7 @@ function call(
         $uri .= '?' . http_build_query($parameters);
     }
 
-    $request = new Request($uri, $method);
+    $request = new Request($uri, $method->value);
 
     if (! empty($headers)) {
         $request->setHeaders($headers);
@@ -85,25 +85,25 @@ function call(
 
 function get(string $path, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(method: Http::METHOD_GET, path: $path, parameters: $parameters, headers: $headers);
+    return call(method: Methods::GET, path: $path, parameters: $parameters, headers: $headers);
 }
 
 function post(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(Http::METHOD_POST, $path, $parameters, $body, $headers);
+    return call(Methods::POST, $path, $parameters, $body, $headers);
 }
 
 function put(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(Http::METHOD_PUT, $path, $parameters, $body, $headers);
+    return call(Methods::PUT, $path, $parameters, $body, $headers);
 }
 
 function patch(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(Http::METHOD_PATCH, $path, $parameters, $body, $headers);
+    return call(Methods::PATCH, $path, $parameters, $body, $headers);
 }
 
 function delete(string $path, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(method: Http::METHOD_DELETE, path: $path, parameters: $parameters, headers: $headers);
+    return call(method: Methods::DELETE, path: $path, parameters: $parameters, headers: $headers);
 }

@@ -17,6 +17,8 @@ class AppBuilder implements Buildable
 
         self::loadRoutes();
 
+        $app->setRouter();
+
         return new AppProxy($app);
     }
 
