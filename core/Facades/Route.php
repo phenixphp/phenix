@@ -12,6 +12,9 @@ use Core\Runtime\Facade;
  * @method static \Core\Routing\RouteBuilder put(string $path, \Closure|array $handler)
  * @method static \Core\Routing\RouteBuilder patch(string $path, \Closure|array $handler)
  * @method static \Core\Routing\RouteBuilder delete(string $path, \Closure|array $handler)
+ * @method static \Core\Routing\RouteGroupBuilder name(string $name)
+ * @method static \Core\Routing\RouteGroupBuilder prefix(string $prefix)
+ * @method static \Core\Routing\RouteGroupBuilder middleware(array|string $middleware)
  */
 class Route extends Facade
 {
