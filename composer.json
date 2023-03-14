@@ -31,6 +31,7 @@
         "amphp/http-server": "^v3.0.0-beta.3",
         "amphp/http-server-router": "^v2.0.0-beta.1",
         "amphp/log": "^v2.0.0-beta.1",
+        "amphp/mysql": "v3.0.0-beta.4",
         "league/container": "^4.2",
         "nesbot/carbon": "^2.62",
         "symfony/console": "^6.1",

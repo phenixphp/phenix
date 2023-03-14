@@ -7,10 +7,12 @@ namespace Core;
 use Amp\Http\Server\DefaultErrorHandler;
 use Amp\Http\Server\Router;
 use Amp\Http\Server\SocketHttpServer;
+use Amp\Mysql\MysqlConnectionPool;
 use Amp\Socket;
 use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
+use Core\Database\ConfigFactory;
 use Core\Facades\Config;
 use Core\Facades\File;
 use Core\Logging\LoggerFactory;
@@ -42,8 +44,20 @@ class App implements AppContract, Makeable
     {
         $this->registerElementalFacades();
 
+        self::$container->add(
+            'db.connection.default',
+            static function () {
+                /** @var string $connection */
+                $connection = Config::get('database.default');
+
+                $config = ConfigFactory::make($connection);
+
+                return new MysqlConnectionPool($config);
+            }
+        );
+
         /** @var string $channel */
-        $channel = Config::get('logging.channel');
+        $channel = Config::get('logging.default');
 
         $this->logger = LoggerFactory::make($channel);
 
