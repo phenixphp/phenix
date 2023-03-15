@@ -144,6 +144,8 @@ class Query implements QueryBuilder
         return $this;
     }
 
+    // TODO: whereBetween, whereSubquery, move where to trait
+
     public function orderBy(string $column, Order $order = Order::DESC)
     {
         # code...
@@ -171,7 +173,7 @@ class Query implements QueryBuilder
                 ->setLogicalConnector(null);
         }
 
-        return $this;
+        return $this->{$method}(...$arguments);
     }
 
     protected function setLogicalConnector(Operators|null $operator): self
