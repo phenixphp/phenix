@@ -144,7 +144,23 @@ class Query implements QueryBuilder
         return $this;
     }
 
-    // TODO: whereBetween, whereSubquery, move where to trait
+    public function whereBetween(string $column, array $values): self
+    {
+        $this->pushWhere([$column,  Operators::BETWEEN, self::PLACEHOLDER, Operators::AND, self::PLACEHOLDER]);
+
+        $this->arguments = array_merge($this->arguments, (array) $values);
+
+        return $this;
+    }
+
+    public function whereNotBetween(string $column, array $values): self
+    {
+        $this->pushWhere([$column,  Operators::NOT_BETWEEN, self::PLACEHOLDER, Operators::AND, self::PLACEHOLDER]);
+
+        $this->arguments = array_merge($this->arguments, (array) $values);
+
+        return $this;
+    }
 
     public function orderBy(string $column, Order $order = Order::DESC)
     {

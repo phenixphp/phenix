@@ -201,3 +201,20 @@ it('generates query using the or operator between the and operators', function (
     expect($dml)->toBe("SELECT * FROM users WHERE created_at > ? OR updated_at < ? AND verified_at IS NOT NULL");
     expect($params)->toBe([$date, $date]);
 });
+
+it('generates query to select between columns', function (string $method, string $operator) {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->{$method}('age', [20, 30])
+        ->selectAllColumns()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users WHERE age {$operator} ? AND ?");
+    expect($params)->toBe([20, 30]);
+})->with([
+    ['whereBetween', Operators::BETWEEN->value],
+    ['whereNotBetween', Operators::NOT_BETWEEN->value],
+]);

@@ -21,6 +21,8 @@ enum Operators: string
     case LIKE = 'LIKE';
     case AND = 'AND';
     case OR = 'OR';
+    case BETWEEN = 'BETWEEN';
+    case NOT_BETWEEN = 'NOT BETWEEN';
 
     public function type(): OperatorTypes
     {
