@@ -214,22 +214,22 @@ class Query implements QueryBuilder
 
         if (! empty($this->where)) {
             $query[] = 'WHERE';
-            $query[] = $this->prepareClausules();
+            $query[] = $this->prepareClauses();
         }
 
         return $this->implode($query);
     }
 
-    protected function prepareClausules(): array
+    protected function prepareClauses(): array
     {
-        return array_map(function (array $clausule): array {
+        return array_map(function (array $clause): array {
             return array_map(function ($value) {
                 return match (true) {
                     $value instanceof Operators => $value->value,
                     \is_array($value) => '(' . $this->implode($value, ', ') . ')',
                     default => $value,
                 };
-            }, $clausule);
+            }, $clause);
         }, $this->where);
     }
 
