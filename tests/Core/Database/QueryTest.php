@@ -161,3 +161,43 @@ it('generates query to select boolean columns', function (string $method, string
     ['whereTrue', Operators::IS_TRUE->value],
     ['whereFalse', Operators::IS_FALSE->value],
 ]);
+
+it('generates query using logical connectors', function () {
+    $query = new Query();
+
+    $date = date('Y-m-d');
+
+    $sql = $query->table('users')
+        ->whereNotNull('verified_at')
+        ->whereGreatherThan('created_at', $date)
+        ->orWhereLessThan('updated_at', $date)
+        ->selectAllColumns()
+        ->toSql();
+
+    expect($sql)->toBeArray();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users WHERE verified_at IS NOT NULL AND created_at > ? OR updated_at < ?");
+    expect($params)->toBe([$date, $date]);
+});
+
+it('generates query using the or operator between the and operators', function () {
+    $query = new Query();
+
+    $date = date('Y-m-d');
+
+    $sql = $query->table('users')
+        ->whereGreatherThan('created_at', $date)
+        ->orWhereLessThan('updated_at', $date)
+        ->whereNotNull('verified_at')
+        ->selectAllColumns()
+        ->toSql();
+
+    expect($sql)->toBeArray();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users WHERE created_at > ? OR updated_at < ? AND verified_at IS NOT NULL");
+    expect($params)->toBe([$date, $date]);
+});

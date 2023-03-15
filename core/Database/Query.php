@@ -19,6 +19,7 @@ class Query implements QueryBuilder
     protected array $where;
     protected array $fields;
     protected array $arguments;
+    protected Operators|null $logicalConnector;
 
     public function __construct()
     {
@@ -26,6 +27,7 @@ class Query implements QueryBuilder
         $this->where = [];
         $this->fields = [];
         $this->arguments = [];
+        $this->logicalConnector = null;
     }
 
     public function table(string $table): self
@@ -58,93 +60,86 @@ class Query implements QueryBuilder
         return $this;
     }
 
-    // public function where(string $column, Operators $operator, string|int|bool|null $value): self
-    // {
-    //     $this->pushWhere($column, $operator, $value);
-
-    //     return $this;
-    // }
-
     public function whereEqual(string $column, string|int $value): self
     {
-        $this->pushWhere($column, Operators::EQUAL, $value);
+        $this->pushWhereWithArgs($column, Operators::EQUAL, $value);
 
         return $this;
     }
 
     public function whereDistinct(string $column, string|int $value): self
     {
-        $this->pushWhere($column, Operators::DISTINCT, $value);
+        $this->pushWhereWithArgs($column, Operators::DISTINCT, $value);
 
         return $this;
     }
 
     public function whereGreatherThan(string $column, string|int $value): self
     {
-        $this->pushWhere($column, Operators::GREATHER_THAN, $value);
+        $this->pushWhereWithArgs($column, Operators::GREATHER_THAN, $value);
 
         return $this;
     }
 
     public function whereGreatherThanOrEqual(string $column, string|int $value): self
     {
-        $this->pushWhere($column, Operators::GREATHER_THAN_OR_EQUAL, $value);
+        $this->pushWhereWithArgs($column, Operators::GREATHER_THAN_OR_EQUAL, $value);
 
         return $this;
     }
 
     public function whereLessThan(string $column, string|int $value): self
     {
-        $this->pushWhere($column, Operators::LESS_THAN, $value);
+        $this->pushWhereWithArgs($column, Operators::LESS_THAN, $value);
 
         return $this;
     }
 
     public function whereLessThanOrEqual(string $column, string|int $value): self
     {
-        $this->pushWhere($column, Operators::LESS_THAN_OR_EQUAL, $value);
+        $this->pushWhereWithArgs($column, Operators::LESS_THAN_OR_EQUAL, $value);
 
         return $this;
     }
 
     public function whereIn(string $column, array $value): self
     {
-        $this->pushWhere($column, Operators::IN, $value);
+        $this->pushWhereWithArgs($column, Operators::IN, $value);
 
         return $this;
     }
 
     public function whereNotIn(string $column, array $value): self
     {
-        $this->pushWhere($column, Operators::NOT_IN, $value);
+        $this->pushWhereWithArgs($column, Operators::NOT_IN, $value);
 
         return $this;
     }
 
     public function whereNull(string $column): self
     {
-        $this->where[] = [$column, Operators::IS_NULL, Operators::AND];
+        $this->pushWhere([$column, Operators::IS_NULL]);
 
         return $this;
     }
 
     public function whereNotNull(string $column): self
     {
-        $this->where[] = [$column, Operators::IS_NOT_NULL, Operators::AND];
+        $this->pushWhere([$column, Operators::IS_NOT_NULL]);
 
         return $this;
     }
 
     public function whereTrue(string $column): self
     {
-        $this->where[] = [$column, Operators::IS_TRUE];
+        $this->pushWhere([$column, Operators::IS_TRUE]);
 
         return $this;
     }
 
     public function whereFalse(string $column): self
     {
-        $this->where[] = [$column, Operators::IS_FALSE];
+        $this->pushWhere([$column, Operators::IS_FALSE]);
 
         return $this;
     }
@@ -166,19 +161,44 @@ class Query implements QueryBuilder
         ];
     }
 
-    protected function pushWhere(
-        string $column,
-        Operators $operator,
-        array|string|int $value,
-        Operators $logicalConnector = Operators::AND,
-    ): void {
+    public function __call(string $method, array $arguments)
+    {
+        if (str_starts_with($method, 'or')) {
+            $method = lcfirst(str_replace('or', '', $method));
+
+            return $this->setLogicalConnector(Operators::OR)
+                ->{$method}(...$arguments)
+                ->setLogicalConnector(null);
+        }
+
+        return $this;
+    }
+
+    protected function setLogicalConnector(Operators|null $operator): self
+    {
+        $this->logicalConnector = $operator;
+
+        return $this;
+    }
+
+    protected function pushWhereWithArgs(string $column, Operators $operator, array|string|int $value): void
+    {
         $placeholders = \is_array($value)
             ? array_fill(0, count($value), self::PLACEHOLDER)
             : self::PLACEHOLDER;
 
-        $this->where[] = [$column, $operator, $placeholders, $logicalConnector];
+        $this->pushWhere([$column, $operator, $placeholders]);
 
         $this->arguments = array_merge($this->arguments, (array) $value);
+    }
+
+    protected function pushWhere(array $where): void
+    {
+        if (count($this->where) > 0) {
+            array_unshift($where, $this->logicalConnector ?? Operators::AND);
+        }
+
+        $this->where[] = $where;
     }
 
     protected function buildSelectQuery(): string
@@ -200,12 +220,6 @@ class Query implements QueryBuilder
 
     protected function prepareClausules(): array
     {
-        $last = array_pop($this->where);
-
-        $this->where[] = array_filter($last, function ($value) {
-            return ! \in_array($value, [Operators::AND, Operators::OR], true);
-        });
-
         return array_map(function (array $clausule): array {
             return array_map(function ($value) {
                 return match (true) {
