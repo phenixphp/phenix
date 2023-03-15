@@ -23,12 +23,5 @@ enum Operators: string
     case OR = 'OR';
     case BETWEEN = 'BETWEEN';
     case NOT_BETWEEN = 'NOT BETWEEN';
-
-    public function type(): OperatorTypes
-    {
-        return match ($this) {
-            Operators::IN, Operators::NOT_IN => OperatorTypes::LOGICAL,
-            default => OperatorTypes::COMPARISON,
-        };
-    }
+    case ORDER_BY = 'ORDER BY';
 }

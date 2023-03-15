@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\Database;
 
 use Core\Database\Constants\Operators;
+use Core\Database\Constants\Order;
 use Core\Database\Query;
 
 it('generates query to select all columns of table', function () {
@@ -217,4 +218,27 @@ it('generates query to select between columns', function (string $method, string
 })->with([
     ['whereBetween', Operators::BETWEEN->value],
     ['whereNotBetween', Operators::NOT_BETWEEN->value],
+]);
+
+it('generates a column-ordered query', function (array|string $column, string $order) {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->selectAllColumns()
+        ->orderBy($column, Order::from($order))
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $operator = Operators::ORDER_BY->value;
+
+    $column = implode(', ', (array) $column);
+
+    expect($dml)->toBe("SELECT * FROM users {$operator} {$column} {$order}");
+    expect($params)->toBeEmpty($params);
+})->with([
+    ['id', Order::ASC->value],
+    [['id', 'created_at'], Order::ASC->value],
+    ['id', Order::DESC->value],
+    [['id', 'created_at'], Order::DESC->value],
 ]);

@@ -15,15 +15,14 @@ class Query implements QueryBuilder
 
     protected readonly string $table;
     protected readonly Actions $action;
-    protected array $dml;
     protected array $where;
     protected array $fields;
     protected array $arguments;
     protected Operators|null $logicalConnector;
+    protected readonly array $orderBy;
 
     public function __construct()
     {
-        $this->dml = [];
         $this->where = [];
         $this->fields = [];
         $this->arguments = [];
@@ -162,9 +161,13 @@ class Query implements QueryBuilder
         return $this;
     }
 
-    public function orderBy(string $column, Order $order = Order::DESC)
+    // TODO: whereSubquery, move where to trait
+
+    public function orderBy(array|string $column, Order $order = Order::DESC)
     {
-        # code...
+        $this->orderBy = [Operators::ORDER_BY->value, $this->implode((array) $column, ', '), $order->value];
+
+        return $this;
     }
 
     public function toSql(): array
@@ -231,6 +234,10 @@ class Query implements QueryBuilder
         if (! empty($this->where)) {
             $query[] = 'WHERE';
             $query[] = $this->prepareClauses();
+        }
+
+        if (isset($this->orderBy)) {
+            $query[] = $this->implode($this->orderBy);
         }
 
         return $this->implode($query);
