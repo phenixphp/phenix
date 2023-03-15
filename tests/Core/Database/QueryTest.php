@@ -7,7 +7,7 @@ namespace Tests\Core\Database;
 use Core\Database\Constants\Operators;
 use Core\Database\Query;
 
-it('generates query to select all columns of users table', function () {
+it('generates query to select all columns of table', function () {
     $query = new Query();
 
     $sql = $query->table('users')
@@ -22,7 +22,7 @@ it('generates query to select all columns of users table', function () {
     expect($params)->toBeEmpty($params);
 });
 
-it('generates query to select all columns from users table', function () {
+it('generates query to select all columns from table', function () {
     $query = new Query();
 
     $sql = $query->selectAllColumns()
@@ -37,7 +37,7 @@ it('generates query to select all columns from users table', function () {
     expect($params)->toBeEmpty($params);
 });
 
-it('generates query to select an users by identifier', function () {
+it('generates query to select a record by column', function () {
     $query = new Query();
 
     $sql = $query->table('users')
@@ -53,7 +53,7 @@ it('generates query to select an users by identifier', function () {
     expect($params)->toBe([1]);
 });
 
-it('generates query to select an user using many clausules', function () {
+it('generates query to select a record using many clausules', function () {
     $query = new Query();
 
     $sql = $query->table('users')
