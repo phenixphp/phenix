@@ -20,6 +20,7 @@ class Query implements QueryBuilder
     protected array $arguments;
     protected Operators|null $logicalConnector;
     protected readonly array $orderBy;
+    protected readonly array $limit;
 
     public function __construct()
     {
@@ -170,6 +171,20 @@ class Query implements QueryBuilder
         return $this;
     }
 
+    public function limit(int $number): self
+    {
+        $this->limit = [Operators::LIMIT->value, abs($number)];
+
+        return $this;
+    }
+
+    public function first(): self
+    {
+        $this->limit(1);
+
+        return $this;
+    }
+
     public function toSql(): array
     {
         $sql = match ($this->action) {
@@ -238,6 +253,10 @@ class Query implements QueryBuilder
 
         if (isset($this->orderBy)) {
             $query[] = $this->implode($this->orderBy);
+        }
+
+        if (isset($this->limit)) {
+            $query[] = $this->implode($this->limit);
         }
 
         return $this->implode($query);

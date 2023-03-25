@@ -24,4 +24,5 @@ enum Operators: string
     case BETWEEN = 'BETWEEN';
     case NOT_BETWEEN = 'NOT BETWEEN';
     case ORDER_BY = 'ORDER BY';
+    case LIMIT = 'LIMIT';
 }

@@ -242,3 +242,28 @@ it('generates a column-ordered query', function (array|string $column, string $o
     ['id', Order::DESC->value],
     [['id', 'created_at'], Order::DESC->value],
 ]);
+
+it('generates a limited query', function (array|string $column, string $order) {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->whereEqual('id', 1)
+        ->selectAllColumns()
+        ->orderBy($column, Order::from($order))
+        ->first()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $operator = Operators::ORDER_BY->value;
+
+    $column = implode(', ', (array) $column);
+
+    expect($dml)->toBe("SELECT * FROM users WHERE id = ? {$operator} {$column} {$order} LIMIT 1");
+    expect($params)->toBe([1]);
+})->with([
+    ['id', Order::ASC->value],
+    [['id', 'created_at'], Order::ASC->value],
+    ['id', Order::DESC->value],
+    [['id', 'created_at'], Order::DESC->value],
+]);
