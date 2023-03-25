@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Database;
 
+use BadMethodCallException;
+use Closure;
 use Core\Contracts\Database\QueryBuilder;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
@@ -162,7 +164,19 @@ class Query implements QueryBuilder
         return $this;
     }
 
-    // TODO: whereSubquery, move where to trait
+    public function whereExists(Closure $subquery): self
+    {
+        $this->whereSubquery($subquery, Operators::EXISTS);
+
+        return $this;
+    }
+
+    public function whereNotExists(Closure $subquery): self
+    {
+        $this->whereSubquery($subquery, Operators::NOT_EXISTS);
+
+        return $this;
+    }
 
     public function orderBy(array|string $column, Order $order = Order::DESC)
     {
@@ -197,7 +211,7 @@ class Query implements QueryBuilder
         ];
     }
 
-    public function __call(string $method, array $arguments)
+    public function __call(string $method, array $arguments = [])
     {
         if (str_starts_with($method, 'or')) {
             $method = lcfirst(str_replace('or', '', $method));
@@ -207,7 +221,11 @@ class Query implements QueryBuilder
                 ->setLogicalConnector(null);
         }
 
+        if (method_exists($this, $method)) {
         return $this->{$method}(...$arguments);
+        }
+
+        throw new BadMethodCallException("The method does not exist: {$method}");
     }
 
     protected function setLogicalConnector(Operators|null $operator): self
@@ -260,6 +278,21 @@ class Query implements QueryBuilder
         }
 
         return $this->implode($query);
+    }
+
+    private function whereSubquery(Closure $subquery, Operators $operator): void
+    {
+        $builder = new self();
+
+        $subquery($builder);
+
+        [$dml, $arguments] = $builder->toSql();
+
+        $value = '(' . $dml . ')';
+
+        $this->pushWhere([$operator, $value]);
+
+        $this->arguments = array_merge($this->arguments, $arguments);
     }
 
     protected function prepareClauses(): array

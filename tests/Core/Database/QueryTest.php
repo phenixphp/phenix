@@ -267,3 +267,29 @@ it('generates a limited query', function (array|string $column, string $order) {
     ['id', Order::DESC->value],
     [['id', 'created_at'], Order::DESC->value],
 ]);
+
+it('generates a query with a exists subquery in where clause', function (string $method, string $operator) {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->selectAllColumns()
+        ->{$method}(function (Query $query) {
+            $query->table('user_role')
+                ->selectAllColumns()
+                ->whereEqual('user_id', 1)
+                ->whereEqual('role_id', 9)
+                ->first();
+        })
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT * FROM users WHERE {$operator} "
+        . "(SELECT * FROM user_role WHERE user_id = ? AND role_id = ? LIMIT 1)";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1, 9]);
+})->with([
+    ['whereExists', Operators::EXISTS->value],
+    ['whereNotExists', Operators::NOT_EXISTS->value],
+]);

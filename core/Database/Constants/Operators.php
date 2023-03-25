@@ -23,6 +23,8 @@ enum Operators: string
     case OR = 'OR';
     case BETWEEN = 'BETWEEN';
     case NOT_BETWEEN = 'NOT BETWEEN';
+    case EXISTS = 'EXISTS';
+    case NOT_EXISTS = 'NOT EXISTS';
     case ORDER_BY = 'ORDER BY';
     case LIMIT = 'LIMIT';
 }
