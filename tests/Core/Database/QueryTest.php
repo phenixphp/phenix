@@ -55,7 +55,7 @@ it('generates query to select a record by column', function () {
     expect($params)->toBe([1]);
 });
 
-it('generates query to select a record using many clausules', function () {
+it('generates query to select a record using many clause', function () {
     $query = new Query();
 
     $sql = $query->table('users')
@@ -73,7 +73,7 @@ it('generates query to select a record using many clausules', function () {
     expect($params)->toBe(['john', 'john@mail.com', 123456]);
 });
 
-it('generates query to select using comparison clausules', function (
+it('generates query to select using comparison clause', function (
     string $method,
     string $column,
     string $operator,
@@ -308,11 +308,42 @@ it('generates a query using sql functions', function (Functions $function, strin
     expect($params)->toBeEmpty();
 })->with([
     [Functions::avg('price'), 'AVG(price)'],
-    [Functions::avg('price')->as('value'), 'AVG(price) AS price_avg'],
+    [Functions::avg('price')->as('value'), 'AVG(price) AS value'],
     [Functions::sum('price'), 'SUM(price)'],
-    [Functions::sum('price')->as('value'), 'SUM(price) AS total'],
+    [Functions::sum('price')->as('value'), 'SUM(price) AS value'],
     [Functions::min('price'), 'MIN(price)'],
-    [Functions::min('price')->as('value'), 'MIN(price) AS min_price'],
+    [Functions::min('price')->as('value'), 'MIN(price) AS value'],
     [Functions::max('price'), 'MAX(price)'],
-    [Functions::max('price')->as('value'), 'MAX(price) AS max_price'],
+    [Functions::max('price')->as('value'), 'MAX(price) AS value'],
+]);
+
+it('generates query to select using comparison clause with scalar operands', function (
+    string $method,
+    string $column,
+    string $operator,
+    Functions $function
+) {
+    $query = new Query();
+
+    $sql = $query->table('products')
+        ->{$method}($column, function (Query $subquery) use ($function) {
+            $subquery->select([$function])->from('products');
+        })
+        ->selectAllColumns()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT * FROM products WHERE {$column} {$operator} "
+        . "(SELECT {$function} FROM products)";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+})->with([
+    ['whereEqual', 'price', Operators::EQUAL->value, Functions::max('price')],
+    ['whereDistinct', 'price', Operators::DISTINCT->value, Functions::max('price')],
+    ['whereGreatherThan', 'price', Operators::GREATHER_THAN->value, Functions::max('price')],
+    ['whereGreatherThanOrEqual', 'price', Operators::GREATHER_THAN_OR_EQUAL->value, Functions::max('price')],
+    ['whereLessThan', 'price', Operators::LESS_THAN->value, Functions::max('price')],
+    ['whereLessThanOrEqual', 'price', Operators::LESS_THAN_OR_EQUAL->value, Functions::max('price')],
 ]);
