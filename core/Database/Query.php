@@ -10,6 +10,7 @@ use Core\Contracts\Database\QueryBuilder;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
+use Stringable;
 
 class Query implements QueryBuilder
 {
@@ -259,7 +260,7 @@ class Query implements QueryBuilder
     {
         $query = [
             'SELECT',
-            $this->implode($this->fields, ', '),
+            $this->prepareFields(),
             'FROM',
             $this->table,
         ];
@@ -293,6 +294,18 @@ class Query implements QueryBuilder
         $this->pushWhere([$operator, $value]);
 
         $this->arguments = array_merge($this->arguments, $arguments);
+    }
+
+    protected function prepareFields(): string
+    {
+        $fields = array_map(function ($field) {
+            return match (true) {
+                $field instanceof Stringable => (string) $field,
+                default => $field,
+            };
+        }, $this->fields);
+
+        return $this->implode($fields, ', ');
     }
 
     protected function prepareClauses(): array

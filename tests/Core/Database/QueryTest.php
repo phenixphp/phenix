@@ -6,6 +6,7 @@ namespace Tests\Core\Database;
 
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
+use Core\Database\Functions;
 use Core\Database\Query;
 
 it('generates query to select all columns of table', function () {
@@ -292,4 +293,26 @@ it('generates a query with a exists subquery in where clause', function (string 
 })->with([
     ['whereExists', Operators::EXISTS->value],
     ['whereNotExists', Operators::NOT_EXISTS->value],
+]);
+
+it('generates a query using sql functions', function (Functions $function, string $rawFunction) {
+    $query = new Query();
+
+    $sql = $query->table('products')
+        ->select([$function])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT {$rawFunction} FROM products");
+    expect($params)->toBeEmpty();
+})->with([
+    [Functions::avg('price'), 'AVG(price)'],
+    [Functions::avg('price')->as('value'), 'AVG(price) AS price_avg'],
+    [Functions::sum('price'), 'SUM(price)'],
+    [Functions::sum('price')->as('value'), 'SUM(price) AS total'],
+    [Functions::min('price'), 'MIN(price)'],
+    [Functions::min('price')->as('value'), 'MIN(price) AS min_price'],
+    [Functions::max('price'), 'MAX(price)'],
+    [Functions::max('price')->as('value'), 'MAX(price) AS max_price'],
 ]);
