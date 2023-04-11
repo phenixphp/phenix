@@ -65,66 +65,42 @@ class Query implements QueryBuilder
 
     public function whereEqual(string $column, Closure|string|int $value): self
     {
-        if ($value instanceof Closure) {
-            $this->whereColumnSubquery($column, Operators::EQUAL, $value);
-        } else {
-        $this->pushWhereWithArgs($column, Operators::EQUAL, $value);
-        }
+        $this->resolveWhereMethod($column, Operators::EQUAL, $value);
 
         return $this;
     }
 
     public function whereDistinct(string $column, Closure|string|int $value): self
     {
-        if ($value instanceof Closure) {
-            $this->whereColumnSubquery($column, Operators::DISTINCT, $value);
-        } else {
-        $this->pushWhereWithArgs($column, Operators::DISTINCT, $value);
-        }
+        $this->resolveWhereMethod($column, Operators::DISTINCT, $value);
 
         return $this;
     }
 
     public function whereGreatherThan(string $column, Closure|string|int $value): self
     {
-        if ($value instanceof Closure) {
-            $this->whereColumnSubquery($column, Operators::GREATHER_THAN, $value);
-        } else {
-        $this->pushWhereWithArgs($column, Operators::GREATHER_THAN, $value);
-        }
+        $this->resolveWhereMethod($column, Operators::GREATHER_THAN, $value);
 
         return $this;
     }
 
     public function whereGreatherThanOrEqual(string $column, Closure|string|int $value): self
     {
-        if ($value instanceof Closure) {
-            $this->whereColumnSubquery($column, Operators::GREATHER_THAN_OR_EQUAL, $value);
-        } else {
-        $this->pushWhereWithArgs($column, Operators::GREATHER_THAN_OR_EQUAL, $value);
-        }
+        $this->resolveWhereMethod($column, Operators::GREATHER_THAN_OR_EQUAL, $value);
 
         return $this;
     }
 
     public function whereLessThan(string $column, Closure|string|int $value): self
     {
-        if ($value instanceof Closure) {
-            $this->whereColumnSubquery($column, Operators::LESS_THAN, $value);
-        } else {
-        $this->pushWhereWithArgs($column, Operators::LESS_THAN, $value);
-        }
+        $this->resolveWhereMethod($column, Operators::LESS_THAN, $value);
 
         return $this;
     }
 
     public function whereLessThanOrEqual(string $column, Closure|string|int $value): self
     {
-        if ($value instanceof Closure) {
-            $this->whereColumnSubquery($column, Operators::LESS_THAN_OR_EQUAL, $value);
-        } else {
-        $this->pushWhereWithArgs($column, Operators::LESS_THAN_OR_EQUAL, $value);
-        }
+        $this->resolveWhereMethod($column, Operators::LESS_THAN_OR_EQUAL, $value);
 
         return $this;
     }
@@ -305,9 +281,13 @@ class Query implements QueryBuilder
         return $this->implode($query);
     }
 
-    private function whereColumnSubquery(string $column, Operators $operator, Closure $subquery): void
+    private function resolveWhereMethod(string $column, Operators $operator, Closure|array|string|int $value): void
     {
-        $this->whereSubquery($subquery, $operator, $column);
+        if ($value instanceof Closure) {
+            $this->whereSubquery($value, $operator, $column);
+        } else {
+            $this->pushWhereWithArgs($column, $operator, $value);
+        }
     }
 
     private function whereSubquery(Closure $subquery, Operators $operator, string|null $column = null): void

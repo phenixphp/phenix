@@ -317,7 +317,7 @@ it('generates a query using sql functions', function (Functions $function, strin
     [Functions::max('price')->as('value'), 'MAX(price) AS value'],
 ]);
 
-it('generates query to select using comparison clause with scalar operands', function (
+it('generates query to select using comparison clause using comparisons', function (
     string $method,
     string $column,
     string $operator,
