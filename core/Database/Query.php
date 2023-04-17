@@ -105,16 +105,16 @@ class Query implements QueryBuilder
         return $this;
     }
 
-    public function whereIn(string $column, array $value): self
+    public function whereIn(string $column, Closure|array $value): self
     {
-        $this->pushWhereWithArgs($column, Operators::IN, $value);
+        $this->resolveWhereMethod($column, Operators::IN, $value);
 
         return $this;
     }
 
-    public function whereNotIn(string $column, array $value): self
+    public function whereNotIn(string $column, Closure|array $value): self
     {
-        $this->pushWhereWithArgs($column, Operators::NOT_IN, $value);
+        $this->resolveWhereMethod($column, Operators::NOT_IN, $value);
 
         return $this;
     }

@@ -130,6 +130,32 @@ it('generates query using in and not in operators', function (string $method, st
     ['whereNotIn', Operators::NOT_IN->value],
 ]);
 
+it('generates query using in and not in operators with subquery', function (string $method, string $operator) {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->{$method}('id', function (Query $query) {
+            $query->select(['id'])
+                ->from('users')
+                ->whereGreatherThanOrEqual('created_at', date('Y-m-d'));
+        })
+        ->selectAllColumns()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $date = date('Y-m-d');
+
+    $expected = "SELECT * FROM users WHERE id {$operator} "
+        . "(SELECT id FROM users WHERE created_at >= ?)";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([$date]);
+})->with([
+    ['whereIn', Operators::IN->value],
+    ['whereNotIn', Operators::NOT_IN->value],
+]);
+
 it('generates query to select null or not null columns', function (string $method, string $operator) {
     $query = new Query();
 
