@@ -343,7 +343,7 @@ it('generates a query using sql functions', function (Functions $function, strin
     [Functions::max('price')->as('value'), 'MAX(price) AS value'],
 ]);
 
-it('generates query to select using comparison clause using comparisons', function (
+it('generates query to select using comparison clause with subqueries and functions', function (
     string $method,
     string $column,
     string $operator,
@@ -372,4 +372,50 @@ it('generates query to select using comparison clause using comparisons', functi
     ['whereGreatherThanOrEqual', 'price', Operators::GREATHER_THAN_OR_EQUAL->value, Functions::max('price')],
     ['whereLessThan', 'price', Operators::LESS_THAN->value, Functions::max('price')],
     ['whereLessThanOrEqual', 'price', Operators::LESS_THAN_OR_EQUAL->value, Functions::max('price')],
+]);
+
+it('generates query using comparison clause with subqueries and any, all, some operators', function (
+    string $method,
+    string $comparisonOperator,
+    string $operator
+) {
+    $query = new Query();
+
+    $sql = $query->table('products')
+        ->{$method}('id', function (Query $subquery) {
+            $subquery->select(['product_id'])
+                ->from('orders')
+                ->whereGreatherThan('quantity', 10);
+        })
+        ->select(['description'])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT description FROM products WHERE id {$comparisonOperator} {$operator}"
+        . "(SELECT product_id FROM orders WHERE quantity > ?)";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([10]);
+})->with([
+    ['whereAnyEqual', Operators::EQUAL->value, Operators::ANY->value],
+    ['whereAnyDistinct', Operators::DISTINCT->value, Operators::ANY->value],
+    ['whereAnyGreatherThan', Operators::GREATHER_THAN->value, Operators::ANY->value],
+    ['whereAnyGreatherThanOrEqual', Operators::GREATHER_THAN_OR_EQUAL->value, Operators::ANY->value],
+    ['whereAnyLessThan', Operators::LESS_THAN->value, Operators::ANY->value],
+    ['whereAnyLessThanOrEqual', Operators::LESS_THAN_OR_EQUAL->value, Operators::ANY->value],
+
+    ['whereAllEqual', Operators::EQUAL->value, Operators::ALL->value],
+    ['whereAllDistinct', Operators::DISTINCT->value, Operators::ALL->value],
+    ['whereAllGreatherThan', Operators::GREATHER_THAN->value, Operators::ALL->value],
+    ['whereAllGreatherThanOrEqual', Operators::GREATHER_THAN_OR_EQUAL->value, Operators::ALL->value],
+    ['whereAllLessThan', Operators::LESS_THAN->value, Operators::ALL->value],
+    ['whereAllLessThanOrEqual', Operators::LESS_THAN_OR_EQUAL->value, Operators::ALL->value],
+
+    ['whereSomeEqual', Operators::EQUAL->value, Operators::SOME->value],
+    ['whereSomeDistinct', Operators::DISTINCT->value, Operators::SOME->value],
+    ['whereSomeGreatherThan', Operators::GREATHER_THAN->value, Operators::SOME->value],
+    ['whereSomeGreatherThanOrEqual', Operators::GREATHER_THAN_OR_EQUAL->value, Operators::SOME->value],
+    ['whereSomeLessThan', Operators::LESS_THAN->value, Operators::SOME->value],
+    ['whereSomeLessThanOrEqual', Operators::LESS_THAN_OR_EQUAL->value, Operators::SOME->value],
 ]);

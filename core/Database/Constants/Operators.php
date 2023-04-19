@@ -27,4 +27,7 @@ enum Operators: string
     case NOT_EXISTS = 'NOT EXISTS';
     case ORDER_BY = 'ORDER BY';
     case LIMIT = 'LIMIT';
+    case ALL = 'ALL';
+    case ANY = 'ANY';
+    case SOME = 'SOME';
 }

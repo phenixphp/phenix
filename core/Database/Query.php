@@ -7,6 +7,7 @@ namespace Core\Database;
 use BadMethodCallException;
 use Closure;
 use Core\Contracts\Database\QueryBuilder;
+use Core\Database\Concerns\Query\HasWhereClause;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
@@ -14,7 +15,9 @@ use Stringable;
 
 class Query implements QueryBuilder
 {
-    private const PLACEHOLDER = '?';
+    use HasWhereClause;
+
+    public const PLACEHOLDER = '?';
 
     protected readonly string $table;
     protected readonly Actions $action;
@@ -63,121 +66,7 @@ class Query implements QueryBuilder
         return $this;
     }
 
-    public function whereEqual(string $column, Closure|string|int $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::EQUAL, $value);
 
-        return $this;
-    }
-
-    public function whereDistinct(string $column, Closure|string|int $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::DISTINCT, $value);
-
-        return $this;
-    }
-
-    public function whereGreatherThan(string $column, Closure|string|int $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::GREATHER_THAN, $value);
-
-        return $this;
-    }
-
-    public function whereGreatherThanOrEqual(string $column, Closure|string|int $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::GREATHER_THAN_OR_EQUAL, $value);
-
-        return $this;
-    }
-
-    public function whereLessThan(string $column, Closure|string|int $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::LESS_THAN, $value);
-
-        return $this;
-    }
-
-    public function whereLessThanOrEqual(string $column, Closure|string|int $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::LESS_THAN_OR_EQUAL, $value);
-
-        return $this;
-    }
-
-    public function whereIn(string $column, Closure|array $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::IN, $value);
-
-        return $this;
-    }
-
-    public function whereNotIn(string $column, Closure|array $value): self
-    {
-        $this->resolveWhereMethod($column, Operators::NOT_IN, $value);
-
-        return $this;
-    }
-
-    public function whereNull(string $column): self
-    {
-        $this->pushWhere([$column, Operators::IS_NULL]);
-
-        return $this;
-    }
-
-    public function whereNotNull(string $column): self
-    {
-        $this->pushWhere([$column, Operators::IS_NOT_NULL]);
-
-        return $this;
-    }
-
-    public function whereTrue(string $column): self
-    {
-        $this->pushWhere([$column, Operators::IS_TRUE]);
-
-        return $this;
-    }
-
-    public function whereFalse(string $column): self
-    {
-        $this->pushWhere([$column, Operators::IS_FALSE]);
-
-        return $this;
-    }
-
-    public function whereBetween(string $column, array $values): self
-    {
-        $this->pushWhere([$column,  Operators::BETWEEN, self::PLACEHOLDER, Operators::AND, self::PLACEHOLDER]);
-
-        $this->arguments = array_merge($this->arguments, (array) $values);
-
-        return $this;
-    }
-
-    public function whereNotBetween(string $column, array $values): self
-    {
-        $this->pushWhere([$column,  Operators::NOT_BETWEEN, self::PLACEHOLDER, Operators::AND, self::PLACEHOLDER]);
-
-        $this->arguments = array_merge($this->arguments, (array) $values);
-
-        return $this;
-    }
-
-    public function whereExists(Closure $subquery): self
-    {
-        $this->whereSubquery($subquery, Operators::EXISTS);
-
-        return $this;
-    }
-
-    public function whereNotExists(Closure $subquery): self
-    {
-        $this->whereSubquery($subquery, Operators::NOT_EXISTS);
-
-        return $this;
-    }
 
     public function orderBy(array|string $column, Order $order = Order::DESC)
     {
@@ -223,7 +112,7 @@ class Query implements QueryBuilder
         }
 
         if (method_exists($this, $method)) {
-        return $this->{$method}(...$arguments);
+            return $this->{$method}(...$arguments);
         }
 
         throw new BadMethodCallException("The method does not exist: {$method}");
@@ -290,17 +179,21 @@ class Query implements QueryBuilder
         }
     }
 
-    private function whereSubquery(Closure $subquery, Operators $operator, string|null $column = null): void
-    {
+    private function whereSubquery(
+        Closure $subquery,
+        Operators $comparisonOperator,
+        string|null $column = null,
+        Operators|null $operator = null
+    ): void {
         $builder = new self();
 
         $subquery($builder);
 
         [$dml, $arguments] = $builder->toSql();
 
-        $value = '(' . $dml . ')';
+        $value = $operator?->value . '(' . $dml . ')';
 
-        $this->pushWhere(array_filter([$column, $operator, $value]));
+        $this->pushWhere(array_filter([$column, $comparisonOperator, $value]));
 
         $this->arguments = array_merge($this->arguments, $arguments);
     }
