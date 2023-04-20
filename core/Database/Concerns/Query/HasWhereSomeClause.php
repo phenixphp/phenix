@@ -9,44 +9,44 @@ use Core\Database\Constants\Operators;
 
 trait HasWhereSomeClause
 {
-    public function whereSomeEqual(string $column, Closure $callback): self
+    public function whereSomeEqual(string $column, Closure $subquery): self
     {
-        $this->whereSubquery($callback, Operators::EQUAL, $column, Operators::SOME);
+        $this->whereSubquery($subquery, Operators::EQUAL, $column, Operators::SOME);
 
         return $this;
     }
 
-    public function whereSomeDistinct(string $column, Closure $callback): self
+    public function whereSomeDistinct(string $column, Closure $subquery): self
     {
-        $this->whereSubquery($callback, Operators::DISTINCT, $column, Operators::SOME);
+        $this->whereSubquery($subquery, Operators::DISTINCT, $column, Operators::SOME);
 
         return $this;
     }
 
-    public function whereSomeGreatherThan(string $column, Closure $callback): self
+    public function whereSomeGreatherThan(string $column, Closure $subquery): self
     {
-        $this->whereSubquery($callback, Operators::GREATHER_THAN, $column, Operators::SOME);
+        $this->whereSubquery($subquery, Operators::GREATHER_THAN, $column, Operators::SOME);
 
         return $this;
     }
 
-    public function whereSomeGreatherThanOrEqual(string $column, Closure $callback): self
+    public function whereSomeGreatherThanOrEqual(string $column, Closure $subquery): self
     {
-        $this->whereSubquery($callback, Operators::GREATHER_THAN_OR_EQUAL, $column, Operators::SOME);
+        $this->whereSubquery($subquery, Operators::GREATHER_THAN_OR_EQUAL, $column, Operators::SOME);
 
         return $this;
     }
 
-    public function whereSomeLessThan(string $column, Closure $callback): self
+    public function whereSomeLessThan(string $column, Closure $subquery): self
     {
-        $this->whereSubquery($callback, Operators::LESS_THAN, $column, Operators::SOME);
+        $this->whereSubquery($subquery, Operators::LESS_THAN, $column, Operators::SOME);
 
         return $this;
     }
 
-    public function whereSomeLessThanOrEqual(string $column, Closure $callback): self
+    public function whereSomeLessThanOrEqual(string $column, Closure $subquery): self
     {
-        $this->whereSubquery($callback, Operators::LESS_THAN_OR_EQUAL, $column, Operators::SOME);
+        $this->whereSubquery($subquery, Operators::LESS_THAN_OR_EQUAL, $column, Operators::SOME);
 
         return $this;
     }
