@@ -346,14 +346,13 @@ it('generates a query using sql functions', function (Functions $function, strin
 it('generates query to select using comparison clause with subqueries and functions', function (
     string $method,
     string $column,
-    string $operator,
-    Functions $function
+    string $operator
 ) {
     $query = new Query();
 
     $sql = $query->table('products')
-        ->{$method}($column, function (Query $subquery) use ($function) {
-            $subquery->select([$function])->from('products');
+        ->{$method}($column, function (Query $subquery) {
+            $subquery->select([Functions::max('price')])->from('products');
         })
         ->selectAllColumns()
         ->toSql();
@@ -361,17 +360,17 @@ it('generates query to select using comparison clause with subqueries and functi
     [$dml, $params] = $sql;
 
     $expected = "SELECT * FROM products WHERE {$column} {$operator} "
-        . "(SELECT {$function} FROM products)";
+        . '(SELECT ' . Functions::max('price') . ' FROM products)';
 
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
 })->with([
-    ['whereEqual', 'price', Operators::EQUAL->value, Functions::max('price')],
-    ['whereDistinct', 'price', Operators::DISTINCT->value, Functions::max('price')],
-    ['whereGreatherThan', 'price', Operators::GREATHER_THAN->value, Functions::max('price')],
-    ['whereGreatherThanOrEqual', 'price', Operators::GREATHER_THAN_OR_EQUAL->value, Functions::max('price')],
-    ['whereLessThan', 'price', Operators::LESS_THAN->value, Functions::max('price')],
-    ['whereLessThanOrEqual', 'price', Operators::LESS_THAN_OR_EQUAL->value, Functions::max('price')],
+    ['whereEqual', 'price', Operators::EQUAL->value],
+    ['whereDistinct', 'price', Operators::DISTINCT->value],
+    ['whereGreatherThan', 'price', Operators::GREATHER_THAN->value],
+    ['whereGreatherThanOrEqual', 'price', Operators::GREATHER_THAN_OR_EQUAL->value],
+    ['whereLessThan', 'price', Operators::LESS_THAN->value],
+    ['whereLessThanOrEqual', 'price', Operators::LESS_THAN_OR_EQUAL->value],
 ]);
 
 it('generates query using comparison clause with subqueries and any, all, some operators', function (
