@@ -66,8 +66,6 @@ class Query implements QueryBuilder
         return $this;
     }
 
-
-
     public function orderBy(array|string $column, Order $order = Order::DESC)
     {
         $this->orderBy = [Operators::ORDER_BY->value, $this->implode((array) $column, ', '), $order->value];
@@ -149,7 +147,7 @@ class Query implements QueryBuilder
     {
         $query = [
             'SELECT',
-            $this->prepareFields(),
+            $this->prepareFields($this->fields),
             'FROM',
             $this->table,
         ];
@@ -198,14 +196,14 @@ class Query implements QueryBuilder
         $this->arguments = array_merge($this->arguments, $arguments);
     }
 
-    protected function prepareFields(): string
+    protected function prepareFields(array $fields): string
     {
         $fields = array_map(function ($field) {
             return match (true) {
                 $field instanceof Stringable => (string) $field,
                 default => $field,
             };
-        }, $this->fields);
+        }, $fields);
 
         return $this->implode($fields, ', ');
     }

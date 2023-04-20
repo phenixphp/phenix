@@ -10,8 +10,9 @@ use Core\Database\Query;
 
 trait HasWhereClause
 {
-    use HasWhereAnyClause;
     use HasWhereAllClause;
+    use HasWhereAnyClause;
+    use HasWhereRowClause;
     use HasWhereSomeClause;
 
     public function whereEqual(string $column, Closure|string|int $value): self

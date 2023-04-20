@@ -419,3 +419,35 @@ it('generates query using comparison clause with subqueries and any, all, some o
     ['whereSomeLessThan', Operators::LESS_THAN->value, Operators::SOME->value],
     ['whereSomeLessThanOrEqual', Operators::LESS_THAN_OR_EQUAL->value, Operators::SOME->value],
 ]);
+
+it('generates query with row subquery', function (string $method, string $operator) {
+    $query = new Query();
+
+    $sql = $query->table('employees')
+        ->{$method}(['manager_id', 'department_id'], function (Query $subquery) {
+            $subquery->select(['id, department_id'])
+                ->from('managers')
+                ->whereEqual('location_id', 1);
+        })
+        ->select(['name'])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $subquery = 'SELECT id, department_id FROM managers WHERE location_id = ?';
+
+    $expected = "SELECT name FROM employees "
+        . "WHERE ROW(manager_id, department_id) {$operator} ({$subquery})";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1]);
+})->with([
+    ['whereRowEqual', Operators::EQUAL->value],
+    ['whereRowDistinct', Operators::DISTINCT->value],
+    ['whereRowGreatherThan', Operators::GREATHER_THAN->value],
+    ['whereRowGreatherThanOrEqual', Operators::GREATHER_THAN_OR_EQUAL->value],
+    ['whereRowLessThan', Operators::LESS_THAN->value],
+    ['whereRowLessThanOrEqual', Operators::LESS_THAN_OR_EQUAL->value],
+    ['whereRowIn', Operators::IN->value],
+    ['whereRowNotIn', Operators::NOT_IN->value],
+]);
