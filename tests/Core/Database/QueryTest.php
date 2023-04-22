@@ -450,3 +450,23 @@ it('generates query with row subquery', function (string $method, string $operat
     ['whereRowIn', Operators::IN->value],
     ['whereRowNotIn', Operators::NOT_IN->value],
 ]);
+
+it('selects field from subquery', function () {
+    $query = new Query();
+
+    $date = date('Y-m-d');
+    $sql = $query->select(['id', 'name', 'email'])
+        ->from(function (Query $subquery) use ($date) {
+            $subquery->selectAllColumns()
+                ->from('users')
+                ->whereEqual('verified_at', $date);
+        })
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT id, name, email FROM (SELECT * FROM users WHERE verified_at = ?)";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([$date]);
+});

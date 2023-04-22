@@ -43,9 +43,23 @@ class Query implements QueryBuilder
         return $this;
     }
 
-    public function from(string $table): self
+    public function from(Closure|string $table): self
     {
-        $this->table($table);
+        if ($table instanceof Closure) {
+            $builder = new self();
+
+            $table($builder);
+
+            [$dml, $arguments] = $builder->toSql();
+
+            $this->table('(' . $dml . ')');
+
+            $this->arguments = array_merge($this->arguments, $arguments);
+
+        } else {
+            $this->table($table);
+        }
+
 
         return $this;
     }
