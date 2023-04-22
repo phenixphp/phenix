@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Core\Constants\Http;
+namespace Core\Constants;
 
-enum Methods: string
+enum HttpMethods: string
 {
     case HEAD = 'HEAD';
     case GET = 'GET';
