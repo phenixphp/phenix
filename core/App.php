@@ -120,7 +120,7 @@ class App implements AppContract, Makeable
 
     private function setupServer(): void
     {
-        $this->server = new SocketHttpServer($this->logger);
+        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
 
         /** @var int $port */
         $port = Config::get('app.port');
