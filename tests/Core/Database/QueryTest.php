@@ -9,6 +9,7 @@ use Core\Database\Constants\Order;
 use Core\Database\Functions;
 use Core\Database\Query;
 use Core\Database\Subquery;
+use Core\Exceptions\QueryError;
 
 it('generates query to select all columns of table', function () {
     $query = new Query();
@@ -494,4 +495,21 @@ it('generate query using subqueries in column selection', function () {
 
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
+});
+
+it('throws exception on generate query using subqueries in column selection with limit missing', function () {
+    expect(function () {
+        $query = new Query();
+
+        $query->select([
+                'id',
+                'name',
+                Subquery::make()->select(['name'])
+                    ->from('countries')
+                    ->whereColumn('users.country_id', 'countries.id')
+                    ->as('country_name'),
+            ])
+            ->from('users')
+            ->toSql();
+    })->toThrow(QueryError::class);
 });

@@ -11,6 +11,7 @@ use Core\Database\Concerns\Query\HasWhereClause;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
+use Core\Exceptions\QueryError;
 use Stringable;
 
 class Query implements QueryBuilder
@@ -247,6 +248,10 @@ class Query implements QueryBuilder
     private function resolveSubquery(Subquery $subquery): string
     {
         [$dml, $arguments] = $subquery->toSql();
+
+        if (! str_contains($dml, 'LIMIT 1')) {
+            throw new QueryError('The subquery must be limited to one record');
+        }
 
         $this->arguments = array_merge($this->arguments, $arguments);
 
