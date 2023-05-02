@@ -8,8 +8,6 @@ class Subquery extends Query
 {
     protected readonly string $alias;
 
-    // Only allow SELECT
-
     public function as(string $alias): self
     {
         $this->alias = $alias;
@@ -22,10 +20,10 @@ class Subquery extends Query
         [$dml, $arguments] = parent::toSql();
 
         if (isset($this->alias)) {
-            $dml = "({$dml}) AS {$this->alias}";
+            return ["({$dml}) AS {$this->alias}", $arguments];
         }
 
-        return [$dml, $arguments];
+        return ["({$dml})", $arguments];
     }
 
     public static function make(): self

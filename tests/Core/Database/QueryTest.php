@@ -135,7 +135,7 @@ it('generates query using in and not in operators with subquery', function (stri
     $query = new Query();
 
     $sql = $query->table('users')
-        ->{$method}('id', function (Query $query) {
+        ->{$method}('id', function (Subquery $query) {
             $query->select(['id'])
                 ->from('users')
                 ->whereGreatherThanOrEqual('created_at', date('Y-m-d'));
@@ -301,7 +301,7 @@ it('generates a query with a exists subquery in where clause', function (string 
 
     $sql = $query->table('users')
         ->selectAllColumns()
-        ->{$method}(function (Query $query) {
+        ->{$method}(function (Subquery $query) {
             $query->table('user_role')
                 ->selectAllColumns()
                 ->whereEqual('user_id', 1)
@@ -352,7 +352,7 @@ it('generates query to select using comparison clause with subqueries and functi
     $query = new Query();
 
     $sql = $query->table('products')
-        ->{$method}($column, function (Query $subquery) {
+        ->{$method}($column, function (Subquery $subquery) {
             $subquery->select([Functions::max('price')])->from('products');
         })
         ->selectAllColumns()
@@ -382,7 +382,7 @@ it('generates query using comparison clause with subqueries and any, all, some o
     $query = new Query();
 
     $sql = $query->table('products')
-        ->{$method}('id', function (Query $subquery) {
+        ->{$method}('id', function (Subquery $subquery) {
             $subquery->select(['product_id'])
                 ->from('orders')
                 ->whereGreatherThan('quantity', 10);
@@ -424,7 +424,7 @@ it('generates query with row subquery', function (string $method, string $operat
     $query = new Query();
 
     $sql = $query->table('employees')
-        ->{$method}(['manager_id', 'department_id'], function (Query $subquery) {
+        ->{$method}(['manager_id', 'department_id'], function (Subquery $subquery) {
             $subquery->select(['id, department_id'])
                 ->from('managers')
                 ->whereEqual('location_id', 1);
@@ -457,7 +457,7 @@ it('selects field from subquery', function () {
 
     $date = date('Y-m-d');
     $sql = $query->select(['id', 'name', 'email'])
-        ->from(function (Query $subquery) use ($date) {
+        ->from(function (Subquery $subquery) use ($date) {
             $subquery->selectAllColumns()
                 ->from('users')
                 ->whereEqual('verified_at', $date);

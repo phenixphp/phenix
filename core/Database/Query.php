@@ -46,20 +46,19 @@ class Query implements QueryBuilder
     public function from(Closure|string $table): self
     {
         if ($table instanceof Closure) {
-            $builder = new self();
+            $builder = new Subquery();
 
             $table($builder);
 
             [$dml, $arguments] = $builder->toSql();
 
-            $this->table('(' . $dml . ')');
+            $this->table($dml);
 
             $this->arguments = array_merge($this->arguments, $arguments);
 
         } else {
             $this->table($table);
         }
-
 
         return $this;
     }
@@ -154,8 +153,6 @@ class Query implements QueryBuilder
             array_unshift($where, $this->logicalConnector ?? Operators::AND);
         }
 
-        $where[0] = trim($where[0]);
-
         $this->where[] = $where;
     }
 
@@ -199,13 +196,13 @@ class Query implements QueryBuilder
         string|null $column = null,
         Operators|null $operator = null
     ): void {
-        $builder = new self();
+        $builder = new Subquery();
 
         $subquery($builder);
 
         [$dml, $arguments] = $builder->toSql();
 
-        $value = $operator?->value . '(' . $dml . ')';
+        $value = $operator?->value . $dml;
 
         $this->pushWhere(array_filter([$column, $comparisonOperator, $value]));
 
