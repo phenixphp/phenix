@@ -8,6 +8,7 @@ use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Database\Functions;
 use Core\Database\Query;
+use Core\Database\Subquery;
 
 it('generates query to select all columns of table', function () {
     $query = new Query();
@@ -469,4 +470,28 @@ it('selects field from subquery', function () {
 
     expect($dml)->toBe($expected);
     expect($params)->toBe([$date]);
+});
+
+it('generate query using subqueries in column selection', function () {
+    $query = new Query();
+
+    $sql = $query->select([
+            'id',
+            'name',
+            Subquery::make()->select(['name'])
+                ->from('countries')
+                ->whereColumn('users.country_id', 'countries.id')
+                ->as('country_name')
+                ->limit(1),
+        ])
+        ->from('users')
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $subquery = "SELECT name FROM countries WHERE users.country_id = countries.id LIMIT 1";
+    $expected = "SELECT id, name, ({$subquery}) AS country_name FROM users";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
 });

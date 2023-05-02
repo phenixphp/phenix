@@ -154,6 +154,8 @@ class Query implements QueryBuilder
             array_unshift($where, $this->logicalConnector ?? Operators::AND);
         }
 
+        $where[0] = trim($where[0]);
+
         $this->where[] = $where;
     }
 
@@ -182,7 +184,7 @@ class Query implements QueryBuilder
         return $this->implode($query);
     }
 
-    private function resolveWhereMethod(string $column, Operators $operator, Closure|array|string|int $value): void
+    protected function resolveWhereMethod(string $column, Operators $operator, Closure|array|string|int $value): void
     {
         if ($value instanceof Closure) {
             $this->whereSubquery($value, $operator, $column);
@@ -191,7 +193,7 @@ class Query implements QueryBuilder
         }
     }
 
-    private function whereSubquery(
+    protected function whereSubquery(
         Closure $subquery,
         Operators $comparisonOperator,
         string|null $column = null,
@@ -215,6 +217,7 @@ class Query implements QueryBuilder
         $fields = array_map(function ($field) {
             return match (true) {
                 $field instanceof Stringable => (string) $field,
+                $field instanceof Subquery => $this->resolveSubquery($field),
                 default => $field,
             };
         }, $fields);
@@ -242,5 +245,14 @@ class Query implements QueryBuilder
         }, array_filter($statements));
 
         return implode($separator, $statements);
+    }
+
+    private function resolveSubquery(Subquery $subquery): string
+    {
+        [$dml, $arguments] = $subquery->toSql();
+
+        $this->arguments = array_merge($this->arguments, $arguments);
+
+        return $dml;
     }
 }

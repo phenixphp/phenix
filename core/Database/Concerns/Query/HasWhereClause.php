@@ -130,4 +130,11 @@ trait HasWhereClause
 
         return $this;
     }
+
+    public function whereColumn(string $localColumn, string $foreignColumn): self
+    {
+        $this->pushWhere([$localColumn, Operators::EQUAL, $foreignColumn]);
+
+        return $this;
+    }
 }
