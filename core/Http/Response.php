@@ -19,6 +19,8 @@ class Response
      */
     public function json(array $content, int $status = HttpStatus::OK): ServerResponse
     {
-        return new ServerResponse($status, ['content-type' => 'application/javascript'], json_encode($content));
+        $body = json_encode(['data' => $content]);
+
+        return new ServerResponse($status, ['content-type' => 'application/javascript'], $body);
     }
 }
