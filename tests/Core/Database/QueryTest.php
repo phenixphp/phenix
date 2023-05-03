@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\Database;
 
+use Core\Database\Alias;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Database\Functions;
@@ -473,7 +474,7 @@ it('selects field from subquery', function () {
     expect($params)->toBe([$date]);
 });
 
-it('generate query using subqueries in column selection', function () {
+it('generates query using subqueries in column selection', function () {
     $query = new Query();
 
     $sql = $query->select([
@@ -512,4 +513,22 @@ it('throws exception on generate query using subqueries in column selection with
             ->from('users')
             ->toSql();
     })->toThrow(QueryError::class);
+});
+
+it('generates query with column alias', function () {
+    $query = new Query();
+
+    $sql = $query->select([
+            'id',
+            Alias::of('name')->as('full_name'),
+        ])
+        ->from('users')
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT id, name AS full_name FROM users";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
 });
