@@ -10,7 +10,7 @@ class Alias implements Stringable
 {
     protected readonly string $alias;
 
-    public function __construct(protected readonly string $column)
+    public function __construct(protected readonly string $name)
     {
         // ..
     }
@@ -24,11 +24,11 @@ class Alias implements Stringable
 
     public function __toString(): string
     {
-        return "{$this->column} AS {$this->alias}";
+        return "{$this->name} AS {$this->alias}";
     }
 
-    public static function of(string $column): self
+    public static function of(string $name): self
     {
-        return new self($column);
+        return new self($name);
     }
 }

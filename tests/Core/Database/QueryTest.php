@@ -8,6 +8,7 @@ use Core\Database\Alias;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Database\Functions;
+use Core\Database\Join;
 use Core\Database\Query;
 use Core\Database\Subquery;
 use Core\Exceptions\QueryError;
@@ -528,6 +529,31 @@ it('generates query with column alias', function () {
     [$dml, $params] = $sql;
 
     $expected = "SELECT id, name AS full_name FROM users";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+});
+
+it('generates query with inner join', function () {
+    $query = new Query();
+
+    $sql = $query->select([
+            'products.id',
+            'products.description',
+            'categories.description',
+        ])
+        ->from('products')
+        ->innerJoin('categories', function (Join $join) {
+            $join->onEqual('products.category_id', 'categories.id');
+        })
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT products.id, products.description, categories.description "
+        . "FROM products "
+        . "INNER JOIN categories "
+        . "ON products.category_id = categories.id";
 
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();

@@ -7,23 +7,27 @@ namespace Core\Database;
 use BadMethodCallException;
 use Closure;
 use Core\Contracts\Database\QueryBuilder;
+use Core\Database\Concerns\Query\HasJoinClause;
 use Core\Database\Concerns\Query\HasWhereClause;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Exceptions\QueryError;
+use Core\Util\Arr;
 use Stringable;
 
 class Query implements QueryBuilder
 {
+    use HasJoinClause;
     use HasWhereClause;
 
     public const PLACEHOLDER = '?';
 
     protected readonly string $table;
     protected readonly Actions $action;
-    protected array $where;
     protected array $fields;
+    protected array $where;
+    protected array $joins;
     protected array $arguments;
     protected Operators|null $logicalConnector;
     protected readonly array $orderBy;
@@ -31,6 +35,7 @@ class Query implements QueryBuilder
 
     public function __construct()
     {
+        $this->joins = [];
         $this->where = [];
         $this->fields = [];
         $this->arguments = [];
@@ -82,7 +87,7 @@ class Query implements QueryBuilder
 
     public function orderBy(array|string $column, Order $order = Order::DESC)
     {
-        $this->orderBy = [Operators::ORDER_BY->value, $this->implode((array) $column, ', '), $order->value];
+        $this->orderBy = [Operators::ORDER_BY->value, Arr::implodeDeeply((array) $column, ', '), $order->value];
 
         return $this;
     }
@@ -166,20 +171,22 @@ class Query implements QueryBuilder
             $this->table,
         ];
 
+        $query[] = $this->joins;
+
         if (! empty($this->where)) {
             $query[] = 'WHERE';
-            $query[] = $this->prepareClauses();
+            $query[] = $this->prepareClauses($this->where);
         }
 
         if (isset($this->orderBy)) {
-            $query[] = $this->implode($this->orderBy);
+            $query[] = Arr::implodeDeeply($this->orderBy);
         }
 
         if (isset($this->limit)) {
-            $query[] = $this->implode($this->limit);
+            $query[] = Arr::implodeDeeply($this->limit);
         }
 
-        return $this->implode($query);
+        return Arr::implodeDeeply($query);
     }
 
     protected function resolveWhereMethod(string $column, Operators $operator, Closure|array|string|int $value): void
@@ -220,29 +227,20 @@ class Query implements QueryBuilder
             };
         }, $fields);
 
-        return $this->implode($fields, ', ');
+        return Arr::implodeDeeply($fields, ', ');
     }
 
-    protected function prepareClauses(): array
+    protected function prepareClauses(array $clauses): array
     {
         return array_map(function (array $clause): array {
             return array_map(function ($value) {
                 return match (true) {
                     $value instanceof Operators => $value->value,
-                    \is_array($value) => '(' . $this->implode($value, ', ') . ')',
+                    \is_array($value) => '(' . Arr::implodeDeeply($value, ', ') . ')',
                     default => $value,
                 };
             }, $clause);
-        }, $this->where);
-    }
-
-    protected function implode(array $statements, string $separator = ' '): string
-    {
-        $statements = array_map(function ($statement) {
-            return \is_array($statement) ? $this->implode($statement) : $statement;
-        }, array_filter($statements));
-
-        return implode($separator, $statements);
+        }, $clauses);
     }
 
     private function resolveSubquery(Subquery $subquery): string
