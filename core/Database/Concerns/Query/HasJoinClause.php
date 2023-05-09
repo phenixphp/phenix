@@ -24,9 +24,30 @@ trait HasJoinClause
         return $this;
     }
 
+    public function leftOuterJoin(string $relationship, Closure $callback): self
+    {
+        $this->jointIt($relationship, $callback, Joins::LEFT_OUTER);
+
+        return $this;
+    }
+
     public function rightJoin(string $relationship, Closure $callback): self
     {
         $this->jointIt($relationship, $callback, Joins::RIGHT);
+
+        return $this;
+    }
+
+    public function rightOuterJoin(string $relationship, Closure $callback): self
+    {
+        $this->jointIt($relationship, $callback, Joins::RIGHT_OUTER);
+
+        return $this;
+    }
+
+    public function crossJoin(string $relationship, Closure $callback): self
+    {
+        $this->jointIt($relationship, $callback, Joins::CROSS);
 
         return $this;
     }
