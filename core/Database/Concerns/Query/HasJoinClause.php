@@ -58,6 +58,10 @@ trait HasJoinClause
 
         $callback($join);
 
-        $this->joins[] = (string) $join;
+        [$dml, $arguments] = $join->toSql();
+
+        $this->joins[] = $dml;
+
+        $this->arguments = array_merge($this->arguments, $arguments);
     }
 }

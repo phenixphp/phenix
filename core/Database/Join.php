@@ -4,48 +4,86 @@ declare(strict_types=1);
 
 namespace Core\Database;
 
+use Core\Contracts\Database\Builder;
 use Core\Database\Constants\Joins;
 use Core\Database\Constants\Operators;
+use Core\Database\Constants\SQL;
 use Core\Util\Arr;
-use Stringable;
 
-class Join implements Stringable
+class Join implements Builder
 {
     /**
      * @var array<int, array<int, string|\Core\Database\Constants\Operators>>
      */
     protected array $clauses;
 
+    /**
+     * @var array<int, string|int>
+     */
+    protected array $arguments;
+
     public function __construct(
         protected Alias|string $relationship,
         protected Joins $type
     ) {
         $this->clauses = [];
+        $this->arguments = [];
     }
 
-    public function onEqual(string $leftColumn, string $rightColumn): self
+    public function onEqual(string $column, string $value): self
     {
-        $this->pushClause([$leftColumn, Operators::EQUAL, $rightColumn]);
+        $this->pushClause([$column, Operators::EQUAL, $value]);
 
         return $this;
     }
 
-    public function orOnEqual(string $leftColumn, string $rightColumn): self
+    public function orOnEqual(string $column, string $value): self
     {
-        $this->pushClause([$leftColumn, Operators::EQUAL, $rightColumn, Operators::OR]);
+        $this->pushClause([$column, Operators::EQUAL, $value], Operators::OR);
 
         return $this;
     }
 
-    public function __toString(): string
+    public function onDistinct(string $column, string $value): self
     {
-        if ($this->relationship instanceof Alias) {
-            $this->relationship = (string) $this->relationship;
-        }
+        $this->pushClause([$column, Operators::DISTINCT, $value]);
 
+        return $this;
+    }
+
+    public function orOnDistinct(string $column, string $value): self
+    {
+        $this->pushClause([$column, Operators::DISTINCT, $value], Operators::OR);
+
+        return $this;
+    }
+
+    public function whereEqual(string $column, string|int $value): self
+    {
+        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER]);
+
+        $this->arguments = array_merge($this->arguments, (array) $value);
+
+        return $this;
+    }
+
+    public function orWhereEqual(string $column, string|int $value): self
+    {
+        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER], Operators::OR);
+
+        $this->arguments = array_merge($this->arguments, (array) $value);
+
+        return $this;
+    }
+
+    public function toSql(): array
+    {
         $clauses = Arr::implodeDeeply($this->prepareClauses());
 
-        return "{$this->type->value} {$this->relationship} ON {$clauses}";
+        return [
+            "{$this->type->value} {$this->relationship} ON {$clauses}",
+            $this->arguments,
+        ];
     }
 
     /**
@@ -55,7 +93,7 @@ class Join implements Stringable
      */
     protected function pushClause(array $clause, Operators $logicalConnector = Operators::AND): void
     {
-        if (!empty($this->clauses)) {
+        if (! empty($this->clauses)) {
             array_unshift($clause, $logicalConnector);
         }
 
