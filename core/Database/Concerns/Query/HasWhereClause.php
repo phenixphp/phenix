@@ -6,7 +6,7 @@ namespace Core\Database\Concerns\Query;
 
 use Closure;
 use Core\Database\Constants\Operators;
-use Core\Database\Query;
+use Core\Database\Constants\SQL;
 
 trait HasWhereClause
 {
@@ -73,35 +73,41 @@ trait HasWhereClause
 
     public function whereNull(string $column): self
     {
-        $this->pushWhere([$column, Operators::IS_NULL]);
+        $this->pushClause([$column, Operators::IS_NULL]);
 
         return $this;
     }
 
     public function whereNotNull(string $column): self
     {
-        $this->pushWhere([$column, Operators::IS_NOT_NULL]);
+        $this->pushClause([$column, Operators::IS_NOT_NULL]);
 
         return $this;
     }
 
     public function whereTrue(string $column): self
     {
-        $this->pushWhere([$column, Operators::IS_TRUE]);
+        $this->pushClause([$column, Operators::IS_TRUE]);
 
         return $this;
     }
 
     public function whereFalse(string $column): self
     {
-        $this->pushWhere([$column, Operators::IS_FALSE]);
+        $this->pushClause([$column, Operators::IS_FALSE]);
 
         return $this;
     }
 
     public function whereBetween(string $column, array $values): self
     {
-        $this->pushWhere([$column,  Operators::BETWEEN, Query::PLACEHOLDER, Operators::AND, Query::PLACEHOLDER]);
+        $this->pushClause([
+            $column,
+            Operators::BETWEEN,
+            SQL::PLACEHOLDER->value,
+            Operators::AND,
+            SQL::PLACEHOLDER->value,
+        ]);
 
         $this->arguments = array_merge($this->arguments, (array) $values);
 
@@ -110,7 +116,13 @@ trait HasWhereClause
 
     public function whereNotBetween(string $column, array $values): self
     {
-        $this->pushWhere([$column,  Operators::NOT_BETWEEN, Query::PLACEHOLDER, Operators::AND, Query::PLACEHOLDER]);
+        $this->pushClause([
+            $column,
+            Operators::NOT_BETWEEN,
+            SQL::PLACEHOLDER->value,
+            Operators::AND,
+            SQL::PLACEHOLDER->value,
+        ]);
 
         $this->arguments = array_merge($this->arguments, (array) $values);
 
@@ -133,7 +145,7 @@ trait HasWhereClause
 
     public function whereColumn(string $localColumn, string $foreignColumn): self
     {
-        $this->pushWhere([$localColumn, Operators::EQUAL, $foreignColumn]);
+        $this->pushClause([$localColumn, Operators::EQUAL, $foreignColumn]);
 
         return $this;
     }

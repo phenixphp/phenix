@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\Database\Query;
 
-use Core\Database\Constants\Joins;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Database\Functions;
-use Core\Database\Join;
 use Core\Database\Query;
 use Core\Database\Subquery;
 

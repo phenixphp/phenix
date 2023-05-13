@@ -24,7 +24,7 @@ class Join implements Builder
 
     public function __construct(
         protected Alias|string $relationship,
-        protected Joins $type
+        protected readonly Joins $type
     ) {
         $this->clauses = [];
         $this->arguments = [];
@@ -60,7 +60,7 @@ class Join implements Builder
 
     public function whereEqual(string $column, string|int $value): self
     {
-        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER]);
+        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER->value]);
 
         $this->arguments = array_merge($this->arguments, (array) $value);
 
@@ -69,7 +69,7 @@ class Join implements Builder
 
     public function orWhereEqual(string $column, string|int $value): self
     {
-        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER], Operators::OR);
+        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER->value], Operators::OR);
 
         $this->arguments = array_merge($this->arguments, (array) $value);
 
