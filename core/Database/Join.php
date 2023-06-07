@@ -8,7 +8,6 @@ use Core\Contracts\Database\Builder;
 use Core\Database\Constants\Joins;
 use Core\Database\Constants\LogicalOperators;
 use Core\Database\Constants\Operators;
-use Core\Database\Constants\SQL;
 use Core\Util\Arr;
 
 class Join extends Clause implements Builder
