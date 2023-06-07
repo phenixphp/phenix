@@ -10,4 +10,5 @@ enum Functions
     case SUM;
     case MIN;
     case MAX;
+    case COUNT;
 }

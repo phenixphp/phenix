@@ -40,11 +40,11 @@ it('generates query to select all columns from table', function () {
     expect($params)->toBeEmpty($params);
 });
 
-it('generates a query using sql functions', function (Functions $function, string $rawFunction) {
+it('generates a query using sql functions', function (string $function, string $column, string $rawFunction) {
     $query = new Query();
 
     $sql = $query->table('products')
-        ->select([$function])
+        ->select([Functions::{$function}($column)])
         ->toSql();
 
     [$dml, $params] = $sql;
@@ -52,14 +52,35 @@ it('generates a query using sql functions', function (Functions $function, strin
     expect($dml)->toBe("SELECT {$rawFunction} FROM products");
     expect($params)->toBeEmpty();
 })->with([
-    [Functions::avg('price'), 'AVG(price)'],
-    [Functions::avg('price')->as('value'), 'AVG(price) AS value'],
-    [Functions::sum('price'), 'SUM(price)'],
-    [Functions::sum('price')->as('value'), 'SUM(price) AS value'],
-    [Functions::min('price'), 'MIN(price)'],
-    [Functions::min('price')->as('value'), 'MIN(price) AS value'],
-    [Functions::max('price'), 'MAX(price)'],
-    [Functions::max('price')->as('value'), 'MAX(price) AS value'],
+    ['avg', 'price', 'AVG(price)'],
+    ['sum', 'price', 'SUM(price)'],
+    ['min', 'price', 'MIN(price)'],
+    ['max', 'price', 'MAX(price)'],
+    ['count', 'id', 'COUNT(id)'],
+]);
+
+it('generates a query using sql functions with alias', function (
+    string $function,
+    string $column,
+    string $alias,
+    string $rawFunction
+) {
+    $query = new Query();
+
+    $sql = $query->table('products')
+        ->select([Functions::{$function}($column)->as($alias)])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT {$rawFunction} FROM products");
+    expect($params)->toBeEmpty();
+})->with([
+    ['avg', 'price', 'value', 'AVG(price) AS value'],
+    ['sum', 'price', 'value', 'SUM(price) AS value'],
+    ['min', 'price', 'value', 'MIN(price) AS value'],
+    ['max', 'price', 'value', 'MAX(price) AS value'],
+    ['count', 'id', 'value', 'COUNT(id) AS value'],
 ]);
 
 it('selects field from subquery', function () {

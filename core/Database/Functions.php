@@ -55,4 +55,9 @@ class Functions implements Stringable
     {
         return new self(FunctionNames::MAX, $field);
     }
+
+    public static function count(string $field): self
+    {
+        return new self(FunctionNames::COUNT, $field);
+    }
 }
