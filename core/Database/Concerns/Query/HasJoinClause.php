@@ -19,10 +19,7 @@ trait HasJoinClause
 
     public function innerJoinOnEqual(string $relationship, string $column, string $value): self
     {
-        $join = new Join($relationship, Joins::INNER);
-        $join->onEqual($column, $value);
-
-        $this->pushJoin($join);
+        $this->jointFrom($relationship, $column, $value, Joins::INNER);
 
         return $this;
     }
@@ -36,10 +33,7 @@ trait HasJoinClause
 
     public function leftJoinOnEqual(string $relationship, string $column, string $value): self
     {
-        $join = new Join($relationship, Joins::LEFT);
-        $join->onEqual($column, $value);
-
-        $this->pushJoin($join);
+        $this->jointFrom($relationship, $column, $value, Joins::LEFT);
 
         return $this;
     }
@@ -54,6 +48,13 @@ trait HasJoinClause
     public function rightJoin(string $relationship, Closure $callback): self
     {
         $this->jointIt($relationship, $callback, Joins::RIGHT);
+
+        return $this;
+    }
+
+    public function rightJoinOnEqual(string $relationship, string $column, string $value): self
+    {
+        $this->jointFrom($relationship, $column, $value, Joins::RIGHT);
 
         return $this;
     }
@@ -81,9 +82,9 @@ trait HasJoinClause
         $this->pushJoin($join);
     }
 
-    protected function jointFrom(string $relationship, string $column, string $value): void
+    protected function jointFrom(string $relationship, string $column, string $value, Joins $joinType): void
     {
-        $join = new Join($relationship, Joins::INNER);
+        $join = new Join($relationship, $joinType);
         $join->onEqual($column, $value);
 
         $this->pushJoin($join);

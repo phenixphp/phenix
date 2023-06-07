@@ -120,3 +120,30 @@ it('generates query with join and multi clauses', function (
         ['php'],
     ],
 ]);
+
+it('generates query with shortcut methods for all join types', function (string $method, string $joinType) {
+    $query = new Query();
+
+    $sql = $query->select([
+            'products.id',
+            'products.description',
+            'categories.description',
+        ])
+        ->from('products')
+        ->{$method}('categories', 'products.category_id', 'categories.id')
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT products.id, products.description, categories.description "
+        . "FROM products "
+        . "{$joinType} categories "
+        . "ON products.category_id = categories.id";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+})->with([
+    ['innerJoinOnEqual', Joins::INNER->value],
+    ['leftJoinOnEqual', Joins::LEFT->value],
+    ['rightJoinOnEqual', Joins::RIGHT->value],
+]);
