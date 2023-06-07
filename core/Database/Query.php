@@ -29,7 +29,7 @@ class Query extends Clause implements QueryBuilder, Builder
     public function __construct()
     {
         $this->joins = [];
-        $this->where = [];
+        $this->clauses = [];
         $this->fields = [];
         $this->arguments = [];
     }
@@ -121,9 +121,9 @@ class Query extends Clause implements QueryBuilder, Builder
 
         $query[] = $this->joins;
 
-        if (! empty($this->where)) {
+        if (! empty($this->clauses)) {
             $query[] = 'WHERE';
-            $query[] = $this->prepareClauses($this->where);
+            $query[] = $this->prepareClauses($this->clauses);
         }
 
         if (isset($this->orderBy)) {

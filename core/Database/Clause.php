@@ -16,7 +16,7 @@ abstract class Clause implements Builder
 {
     use HasWhereClause;
 
-    protected array $where;
+    protected array $clauses;
     protected array $arguments;
 
     protected function resolveWhereMethod(
@@ -74,11 +74,11 @@ abstract class Clause implements Builder
 
     protected function pushClause(array $where, LogicalOperators $logicalConnector = LogicalOperators::AND): void
     {
-        if (count($this->where) > 0) {
+        if (count($this->clauses) > 0) {
             array_unshift($where, $logicalConnector);
         }
 
-        $this->where[] = $where;
+        $this->clauses[] = $where;
     }
 
     protected function prepareClauses(array $clauses): array
