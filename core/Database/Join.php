@@ -6,6 +6,7 @@ namespace Core\Database;
 
 use Core\Contracts\Database\Builder;
 use Core\Database\Constants\Joins;
+use Core\Database\Constants\LogicalOperators;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\SQL;
 use Core\Util\Arr;
@@ -39,7 +40,7 @@ class Join implements Builder
 
     public function orOnEqual(string $column, string $value): self
     {
-        $this->pushClause([$column, Operators::EQUAL, $value], Operators::OR);
+        $this->pushClause([$column, Operators::EQUAL, $value], LogicalOperators::OR);
 
         return $this;
     }
@@ -53,7 +54,7 @@ class Join implements Builder
 
     public function orOnDistinct(string $column, string $value): self
     {
-        $this->pushClause([$column, Operators::DISTINCT, $value], Operators::OR);
+        $this->pushClause([$column, Operators::DISTINCT, $value], LogicalOperators::OR);
 
         return $this;
     }
@@ -69,7 +70,7 @@ class Join implements Builder
 
     public function orWhereEqual(string $column, string|int $value): self
     {
-        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER->value], Operators::OR);
+        $this->pushClause([$column, Operators::EQUAL, SQL::PLACEHOLDER->value], LogicalOperators::OR);
 
         $this->arguments = array_merge($this->arguments, (array) $value);
 
@@ -88,10 +89,10 @@ class Join implements Builder
 
     /**
      * @param array<int, string|\Core\Database\Constants\Operators> $clause
-     * @param \Core\Database\Constants\Operators $logicalConnector
+     * @param \Core\Database\Constants\LogicalOperators $logicalConnector
      * @return void
      */
-    protected function pushClause(array $clause, Operators $logicalConnector = Operators::AND): void
+    protected function pushClause(array $clause, LogicalOperators $logicalConnector = LogicalOperators::AND): void
     {
         if (! empty($this->clauses)) {
             array_unshift($clause, $logicalConnector);
@@ -109,6 +110,7 @@ class Join implements Builder
             return array_map(function ($value) {
                 return match (true) {
                     $value instanceof Operators => $value->value,
+                    $value instanceof LogicalOperators => $value->value,
                     default => $value,
                 };
             }, $clause);

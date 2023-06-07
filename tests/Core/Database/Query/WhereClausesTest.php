@@ -144,6 +144,26 @@ it('generates query to select null or not null columns', function (string $metho
     ['whereNotNull', Operators::IS_NOT_NULL->value],
 ]);
 
+it('generates query to select by column or null or not null columns', function (string $method, string $operator) {
+    $query = new Query();
+
+    $date = date('Y-m-d');
+
+    $sql = $query->table('users')
+        ->whereGreatherThan('created_at', $date)
+        ->{$method}('verified_at')
+        ->selectAllColumns()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users WHERE created_at > ? OR verified_at {$operator}");
+    expect($params)->toBe([$date]);
+})->with([
+    ['orWhereNull', Operators::IS_NULL->value],
+    ['orWhereNotNull', Operators::IS_NOT_NULL->value],
+]);
+
 it('generates query to select boolean columns', function (string $method, string $operator) {
     $query = new Query();
 
@@ -159,6 +179,26 @@ it('generates query to select boolean columns', function (string $method, string
 })->with([
     ['whereTrue', Operators::IS_TRUE->value],
     ['whereFalse', Operators::IS_FALSE->value],
+]);
+
+it('generates query to select by column or boolean column', function (string $method, string $operator) {
+    $query = new Query();
+
+    $date = date('Y-m-d');
+
+    $sql = $query->table('users')
+        ->whereGreatherThan('created_at', $date)
+        ->{$method}('enabled')
+        ->selectAllColumns()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users WHERE created_at > ? OR enabled {$operator}");
+    expect($params)->toBe([$date]);
+})->with([
+    ['orWhereTrue', Operators::IS_TRUE->value],
+    ['orWhereFalse', Operators::IS_FALSE->value],
 ]);
 
 it('generates query using logical connectors', function () {
@@ -201,6 +241,46 @@ it('generates query using the or operator between the and operators', function (
     expect($params)->toBe([$date, $date]);
 });
 
+it('generates queries using logical connectors', function (
+    string $method,
+    string $column,
+    array|string $value,
+    string $operator
+) {
+    $placeholders = '?';
+
+    if (\is_array($value)) {
+        $params = array_pad([], count($value), '?');
+
+        $placeholders = '(' . implode(', ', $params) . ')';
+    }
+
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->whereNotNull('verified_at')
+        ->{$method}($column, $value)
+        ->selectAllColumns()
+        ->toSql();
+
+    expect($sql)->toBeArray();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users WHERE verified_at IS NOT NULL OR {$column} {$operator} {$placeholders}");
+    expect($params)->toBe([...(array)$value]);
+})->with([
+    ['orWhereLessThan', 'updated_at', date('Y-m-d'), Operators::LESS_THAN->value],
+    ['orWhereEqual', 'updated_at', date('Y-m-d'), Operators::EQUAL->value],
+    ['orWhereDistinct', 'updated_at', date('Y-m-d'), Operators::DISTINCT->value],
+    ['orWhereGreatherThan', 'updated_at', date('Y-m-d'), Operators::GREATHER_THAN->value],
+    ['orWhereGreatherThanOrEqual', 'updated_at', date('Y-m-d'), Operators::GREATHER_THAN_OR_EQUAL->value],
+    ['orWhereLessThan', 'updated_at', date('Y-m-d'), Operators::LESS_THAN->value],
+    ['orWhereLessThanOrEqual', 'updated_at', date('Y-m-d'), Operators::LESS_THAN_OR_EQUAL->value],
+    ['orWhereIn', 'status', ['enabled', 'verified'], Operators::IN->value],
+    ['orWhereNotIn', 'status', ['disabled', 'banned'], Operators::NOT_IN->value],
+]);
+
 it('generates query to select between columns', function (string $method, string $operator) {
     $query = new Query();
 
@@ -216,6 +296,28 @@ it('generates query to select between columns', function (string $method, string
 })->with([
     ['whereBetween', Operators::BETWEEN->value],
     ['whereNotBetween', Operators::NOT_BETWEEN->value],
+]);
+
+it('generates query to select by column or between columns', function (string $method, string $operator) {
+    $query = new Query();
+
+    $date = date('Y-m-d');
+    $startDate = date('Y-m-d');
+    $endDate = date('Y-m-d');
+
+    $sql = $query->table('users')
+        ->whereGreatherThan('created_at', $date)
+        ->{$method}('updated_at', [$startDate, $endDate])
+        ->selectAllColumns()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users WHERE created_at > ? OR updated_at {$operator} ? AND ?");
+    expect($params)->toBe([$date, $startDate, $endDate]);
+})->with([
+    ['orWhereBetween', Operators::BETWEEN->value],
+    ['orWhereNotBetween', Operators::NOT_BETWEEN->value],
 ]);
 
 it('generates a column-ordered query', function (array|string $column, string $order) {
@@ -290,6 +392,35 @@ it('generates a query with a exists subquery in where clause', function (string 
 })->with([
     ['whereExists', Operators::EXISTS->value],
     ['whereNotExists', Operators::NOT_EXISTS->value],
+]);
+
+it('generates a query to select by column or when exists or not exists subquery', function (
+    string $method,
+    string $operator
+) {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->selectAllColumns()
+        ->whereTrue('is_admin')
+        ->{$method}(function (Subquery $query) {
+            $query->table('user_role')
+                ->selectAllColumns()
+                ->whereEqual('user_id', 1)
+                ->first();
+        })
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT * FROM users WHERE is_admin IS TRUE OR {$operator} "
+        . "(SELECT * FROM user_role WHERE user_id = ? LIMIT 1)";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1]);
+})->with([
+    ['orWhereExists', Operators::EXISTS->value],
+    ['orWhereNotExists', Operators::NOT_EXISTS->value],
 ]);
 
 it('generates query to select using comparison clause with subqueries and functions', function (

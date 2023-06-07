@@ -32,7 +32,6 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->where = [];
         $this->fields = [];
         $this->arguments = [];
-        $this->logicalConnector = null;
     }
 
     public function table(string $table): self

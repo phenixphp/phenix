@@ -19,8 +19,6 @@ enum Operators: string
     case IS_NOT_NULL = 'IS NOT NULL';
     case IS_NULL = 'IS NULL';
     case LIKE = 'LIKE';
-    case AND = 'AND';
-    case OR = 'OR';
     case BETWEEN = 'BETWEEN';
     case NOT_BETWEEN = 'NOT BETWEEN';
     case EXISTS = 'EXISTS';
