@@ -12,4 +12,5 @@ enum Functions
     case MAX;
     case COUNT;
     case DATE;
+    case MONTH;
 }

@@ -81,6 +81,76 @@ trait HasWhereDateClause
         return $this;
     }
 
+    public function whereMonthEqual(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::EQUAL, $value);
+
+        return $this;
+    }
+
+    public function orWhereMonthEqual(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::EQUAL, $value, LogicalOperators::OR);
+
+        return $this;
+    }
+
+    public function whereMonthGreatherThan(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::GREATHER_THAN, $value);
+
+        return $this;
+    }
+
+    public function orWhereMonthGreatherThan(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::GREATHER_THAN, $value, LogicalOperators::OR);
+
+        return $this;
+    }
+
+    public function whereMonthGreatherThanOrEqual(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::GREATHER_THAN_OR_EQUAL, $value);
+
+        return $this;
+    }
+
+    public function orWhereMonthGreatherThanOrEqual(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::GREATHER_THAN_OR_EQUAL, $value, LogicalOperators::OR);
+
+        return $this;
+    }
+
+    public function whereMonthLessThan(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::LESS_THAN, $value);
+
+        return $this;
+    }
+
+    public function orWhereMonthLessThan(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::LESS_THAN, $value, LogicalOperators::OR);
+
+        return $this;
+    }
+
+    public function whereMonthLessThanOrEqual(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::LESS_THAN_OR_EQUAL, $value);
+
+        return $this;
+    }
+
+    public function orWhereMonthLessThanOrEqual(string $column, CarbonInterface|int $value): self
+    {
+        $this->pushMonthClause($column, Operators::LESS_THAN_OR_EQUAL, $value, LogicalOperators::OR);
+
+        return $this;
+    }
+
     protected function pushDateClause(
         string $column,
         Operators $operator,
@@ -99,10 +169,28 @@ trait HasWhereDateClause
         );
     }
 
+    protected function pushMonthClause(
+        string $column,
+        Operators $operator,
+        CarbonInterface|int $value,
+        LogicalOperators $logicalConnector = LogicalOperators::AND
+    ): void {
+        if ($value instanceof CarbonInterface) {
+            $value = (int) $value->format('m');
+        }
+
+        $this->pushTimeClause(
+            Functions::month($column),
+            $operator,
+            $value,
+            $logicalConnector
+        );
+    }
+
     protected function pushTimeClause(
         Functions $function,
         Operators $operator,
-        CarbonInterface|string $value,
+        CarbonInterface|string|int $value,
         LogicalOperators $logicalConnector = LogicalOperators::AND
     ): void {
         $this->pushWhereWithArgs((string) $function, $operator, $value, $logicalConnector);
