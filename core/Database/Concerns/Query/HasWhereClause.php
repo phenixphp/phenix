@@ -15,6 +15,7 @@ trait HasWhereClause
     use HasWhereAnyClause;
     use HasWhereRowClause;
     use HasWhereSomeClause;
+    use HasWhereDateClause;
 
     public function whereEqual(string $column, Closure|string|int $value): self
     {

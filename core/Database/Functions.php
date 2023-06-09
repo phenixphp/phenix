@@ -13,7 +13,7 @@ class Functions implements Stringable
 
     public function __construct(
         protected readonly FunctionNames $function,
-        protected readonly string $field
+        protected readonly string $column
     ) {
         // ..
     }
@@ -27,7 +27,7 @@ class Functions implements Stringable
 
     public function __toString(): string
     {
-        $function = $this->function->name . '(' . $this->field . ')';
+        $function = $this->function->name . '(' . $this->column . ')';
 
         if (isset($this->alias)) {
             $function .= ' AS ' . $this->alias;
@@ -36,28 +36,33 @@ class Functions implements Stringable
         return $function;
     }
 
-    public static function avg(string $field): self
+    public static function avg(string $column): self
     {
-        return new self(FunctionNames::AVG, $field);
+        return new self(FunctionNames::AVG, $column);
     }
 
-    public static function sum(string $field): self
+    public static function sum(string $column): self
     {
-        return new self(FunctionNames::SUM, $field);
+        return new self(FunctionNames::SUM, $column);
     }
 
-    public static function min(string $field): self
+    public static function min(string $column): self
     {
-        return new self(FunctionNames::MIN, $field);
+        return new self(FunctionNames::MIN, $column);
     }
 
-    public static function max(string $field): self
+    public static function max(string $column): self
     {
-        return new self(FunctionNames::MAX, $field);
+        return new self(FunctionNames::MAX, $column);
     }
 
-    public static function count(string $field): self
+    public static function count(string $column): self
     {
-        return new self(FunctionNames::COUNT, $field);
+        return new self(FunctionNames::COUNT, $column);
+    }
+
+    public static function date(string $column): self
+    {
+        return new self(FunctionNames::DATE, $column);
     }
 }

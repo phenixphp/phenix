@@ -11,4 +11,5 @@ enum Functions
     case MIN;
     case MAX;
     case COUNT;
+    case DATE;
 }
