@@ -70,4 +70,9 @@ class Functions implements Stringable
     {
         return new self(FunctionNames::MONTH, $column);
     }
+
+    public static function year(string $column): self
+    {
+        return new self(FunctionNames::YEAR, $column);
+    }
 }

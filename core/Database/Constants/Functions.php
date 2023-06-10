@@ -13,4 +13,5 @@ enum Functions
     case COUNT;
     case DATE;
     case MONTH;
+    case YEAR;
 }
