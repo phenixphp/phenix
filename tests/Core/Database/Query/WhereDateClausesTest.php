@@ -171,7 +171,7 @@ it('generates query to select a record by condition or by year', function (
     expect($dml)->toBe("SELECT * FROM users WHERE active IS FALSE OR YEAR(created_at) {$operator} ?");
     expect($params)->toBe([$value]);
 })->with([
-    // ['orWhereYearEqual', Carbon::now(), Carbon::now()->format('Y'), Operators::EQUAL->value],
+    ['orWhereYearEqual', Carbon::now(), Carbon::now()->format('Y'), Operators::EQUAL->value],
     ['orWhereYearEqual', date('Y'), date('Y'), Operators::EQUAL->value],
     ['orWhereYearGreatherThan', date('Y'), date('Y'), Operators::GREATHER_THAN->value],
     ['orWhereYearGreatherThanOrEqual', date('Y'), date('Y'), Operators::GREATHER_THAN_OR_EQUAL->value],
