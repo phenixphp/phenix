@@ -343,6 +343,24 @@ it('generates a column-ordered query', function (array|string $column, string $o
     [['id', 'created_at'], Order::DESC->value],
 ]);
 
+it('generates a column-ordered query using select-case', function () {
+    $case = Functions::case()
+        ->whenNull('city', 'country')
+        ->defaultResult('city');
+
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->selectAllColumns()
+        ->orderBy($case, Order::ASC)
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    expect($dml)->toBe("SELECT * FROM users ORDER BY (CASE WHEN city IS NULL THEN country ELSE city END) ASC");
+    expect($params)->toBeEmpty($params);
+});
+
 it('generates a limited query', function (array|string $column, string $order) {
     $query = new Query();
 

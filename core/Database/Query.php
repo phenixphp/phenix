@@ -77,8 +77,13 @@ class Query extends Clause implements QueryBuilder, Builder
         return $this;
     }
 
-    public function orderBy(array|string $column, Order $order = Order::DESC)
+    public function orderBy(SelectCase|array|string $column, Order $order = Order::DESC)
     {
+        $column = match (true) {
+            $column instanceof SelectCase => '(' . $column . ')',
+            default => $column,
+        };
+
         $this->orderBy = [Operators::ORDER_BY->value, Arr::implodeDeeply((array) $column, ', '), $order->value];
 
         return $this;
