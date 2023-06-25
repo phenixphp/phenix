@@ -270,3 +270,30 @@ it('generates query with select-cases with multiple conditions and string values
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
 });
+
+it('generates query with select-cases without default value', function () {
+    $date = date('Y-m-d H:i:s');
+
+    $query = new Query();
+
+    $case = Functions::case()
+        ->whenNull('created_at', Value::from('inactive'))
+        ->whenGreatherThan('created_at', Value::from($date), Value::from('new user'))
+        ->as('status');
+
+    $sql = $query->select([
+            'id',
+            'name',
+            $case,
+        ])
+        ->from('users')
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT id, name, (CASE WHEN created_at IS NULL THEN 'inactive' "
+        . "WHEN created_at > '{$date}' THEN 'new user' END) AS status FROM users";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+});
