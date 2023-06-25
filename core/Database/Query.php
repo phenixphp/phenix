@@ -13,7 +13,6 @@ use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Exceptions\QueryError;
 use Core\Util\Arr;
-use Stringable;
 
 class Query extends Clause implements QueryBuilder, Builder
 {
@@ -146,7 +145,8 @@ class Query extends Clause implements QueryBuilder, Builder
     {
         $fields = array_map(function ($field) {
             return match (true) {
-                $field instanceof Stringable => (string) $field,
+                $field instanceof Functions => (string) $field,
+                $field instanceof SelectCase => (string) $field,
                 $field instanceof Subquery => $this->resolveSubquery($field),
                 default => $field,
             };
