@@ -75,4 +75,9 @@ class Functions implements Stringable
     {
         return new self(FunctionNames::YEAR, $column);
     }
+
+    public static function case(): SelectCase
+    {
+        return new SelectCase();
+    }
 }
