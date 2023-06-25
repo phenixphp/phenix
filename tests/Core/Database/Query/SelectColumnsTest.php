@@ -297,3 +297,29 @@ it('generates query with select-cases without default value', function () {
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
 });
+
+it('generates query with select-case using functions', function () {
+    $query = new Query();
+
+    $case = Functions::case()
+        ->whenGreatherThanOrEqual(Functions::avg('price'), 4, Value::from('expensive'))
+        ->defaultResult(Value::from('cheap'))
+        ->as('message');
+
+    $sql = $query->select([
+            'id',
+            'description',
+            'price',
+            $case,
+        ])
+        ->from('products')
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT id, description, price, (CASE WHEN AVG(price) >= 4 THEN 'expensive' ELSE 'cheap' END) "
+        . "AS message FROM products";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+});
