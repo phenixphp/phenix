@@ -76,6 +76,18 @@ class Query extends Clause implements QueryBuilder, Builder
         return $this;
     }
 
+    public function groupBy(Functions|array|string $column)
+    {
+        $column = match (true) {
+            $column instanceof Functions => (string) $column,
+            default => $column,
+        };
+
+        $this->orderBy = [Operators::GROUP_BY->value, Arr::implodeDeeply((array) $column, ', ')];
+
+        return $this;
+    }
+
     public function orderBy(SelectCase|array|string $column, Order $order = Order::DESC)
     {
         $column = match (true) {
