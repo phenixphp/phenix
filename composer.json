@@ -17,12 +17,10 @@
             "Tests\\": "tests/"
         }
     },
-    "authors": [
-        {
-            "name": "Omar Barbosa",
-            "email": "contacto@omarbarbosa.com"
-        }
-    ],
+    "authors": [{
+        "name": "Omar Barbosa",
+        "email": "contacto@omarbarbosa.com"
+    }],
     "require": {
         "php": "^8.1",
         "adbario/php-dot-notation": "^3.1",
@@ -31,9 +29,10 @@
         "amphp/http-server": "^v3.0.0-beta.3",
         "amphp/http-server-router": "^v2.0.0-beta.1",
         "amphp/log": "^v2.0.0-beta.1",
-        "amphp/mysql": "v3.0.0-beta.4",
+        "amphp/mysql": "^v3.0.0-beta.5",
+        "amphp/socket": "^2.1.0",
         "league/container": "^4.2",
-        "nesbot/carbon": "^2.62",
+        "nesbot/carbon": "^2.67",
         "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4"
     },
