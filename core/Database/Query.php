@@ -22,6 +22,7 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly Actions $action;
     protected array $fields;
     protected array $joins;
+    protected string $having;
     protected readonly array $orderBy;
     protected readonly array $limit;
 
@@ -88,6 +89,21 @@ class Query extends Clause implements QueryBuilder, Builder
         return $this;
     }
 
+    public function having(Closure $clause): self
+    {
+        $having = new Having();
+
+        $clause($having);
+
+        [$dml, $arguments] = $having->toSql();
+
+        $this->having = $dml;
+
+        $this->arguments = array_merge($this->arguments, $arguments);
+
+        return $this;
+    }
+
     public function orderBy(SelectCase|array|string $column, Order $order = Order::DESC)
     {
         $column = match (true) {
@@ -148,6 +164,10 @@ class Query extends Clause implements QueryBuilder, Builder
 
         if (isset($this->limit)) {
             $query[] = Arr::implodeDeeply($this->limit);
+        }
+
+        if (isset($this->having)) {
+            $query[] = $this->having;
         }
 
         return Arr::implodeDeeply($query);
