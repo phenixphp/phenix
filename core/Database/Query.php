@@ -22,7 +22,8 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly Actions $action;
     protected array $fields;
     protected array $joins;
-    protected string $having;
+    protected readonly string $having;
+    protected readonly array $groupBy;
     protected readonly array $orderBy;
     protected readonly array $limit;
 
@@ -84,7 +85,7 @@ class Query extends Clause implements QueryBuilder, Builder
             default => $column,
         };
 
-        $this->orderBy = [Operators::GROUP_BY->value, Arr::implodeDeeply((array) $column, ', ')];
+        $this->groupBy = [Operators::GROUP_BY->value, Arr::implodeDeeply((array) $column, ', ')];
 
         return $this;
     }
@@ -158,16 +159,20 @@ class Query extends Clause implements QueryBuilder, Builder
             $query[] = $this->prepareClauses($this->clauses);
         }
 
+        if (isset($this->having)) {
+            $query[] = $this->having;
+        }
+
+        if (isset($this->groupBy)) {
+            $query[] = Arr::implodeDeeply($this->groupBy);
+        }
+
         if (isset($this->orderBy)) {
             $query[] = Arr::implodeDeeply($this->orderBy);
         }
 
         if (isset($this->limit)) {
             $query[] = Arr::implodeDeeply($this->limit);
-        }
-
-        if (isset($this->having)) {
-            $query[] = $this->having;
         }
 
         return Arr::implodeDeeply($query);
