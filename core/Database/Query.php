@@ -26,6 +26,7 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly array $groupBy;
     protected readonly array $orderBy;
     protected readonly array $limit;
+    protected array $data;
 
     public function __construct()
     {
@@ -74,6 +75,15 @@ class Query extends Clause implements QueryBuilder, Builder
     public function selectAllColumns(): self
     {
         $this->select(['*']);
+
+        return $this;
+    }
+
+    public function insert(array $data): self
+    {
+        $this->action = Actions::INSERT;
+
+        $this->prepareDataToInsert($data);
 
         return $this;
     }
@@ -135,6 +145,7 @@ class Query extends Clause implements QueryBuilder, Builder
     {
         $sql = match ($this->action) {
             Actions::SELECT => $this->buildSelectQuery(),
+            Actions::INSERT => $this->buildInsertSentence(),
         };
 
         return [
@@ -150,9 +161,8 @@ class Query extends Clause implements QueryBuilder, Builder
             $this->prepareFields($this->fields),
             'FROM',
             $this->table,
+            $this->joins,
         ];
-
-        $query[] = $this->joins;
 
         if (! empty($this->clauses)) {
             $query[] = 'WHERE';
@@ -203,5 +213,46 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->arguments = array_merge($this->arguments, $arguments);
 
         return $dml;
+    }
+
+    private function prepareDataToInsert(array $data): void
+    {
+        if (\array_is_list($data)) {
+            foreach ($data as $record) {
+                $this->prepareDataToInsert($record);
+            }
+
+            return;
+        }
+
+        $this->fields = \array_unique([...$this->fields, ...\array_keys($data)]);
+
+        \sort($this->fields);
+
+        \ksort($data);
+
+        $this->data[] = array_map(function ($value) {
+            return \is_string($value) ? Value::from($value) : $value;
+        }, \array_values($data));
+    }
+
+    private function buildInsertSentence(): string
+    {
+        $dml = [
+            'INSERT INTO',
+            $this->table,
+            '(' . Arr::implodeDeeply($this->fields, ', ') . ')',
+            'VALUES',
+        ];
+
+        $values = [];
+
+        foreach ($this->data as $record) {
+            $values[] = '(' . Arr::implodeDeeply($record, ', ') . ')';
+        }
+
+        $dml[] = Arr::implodeDeeply($values, ', ');
+
+        return Arr::implodeDeeply($dml);
     }
 }
