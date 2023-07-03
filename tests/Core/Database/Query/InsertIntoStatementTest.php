@@ -76,3 +76,25 @@ it('generates insert ignore into statement', function () {
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
 });
+
+it('generates upsert statement to handle duplicate keys', function () {
+    $query = new Query();
+
+    $name = faker()->name;
+    $email = faker()->freeEmail;
+
+    $sql = $query->table('users')
+        ->upsert([
+            'name' => $name,
+            'email' => $email,
+        ], ['email'])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "INSERT INTO users (email, name) VALUES ('{$email}', '{$name}') "
+        . "ON DUPLICATE KEY UPDATE email = VALUES(email)";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+});

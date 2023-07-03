@@ -28,6 +28,7 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly array $limit;
     protected array $data;
     protected bool $ignore = false;
+    protected readonly array $uniqueColumns;
 
     public function __construct()
     {
@@ -94,6 +95,17 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->ignore = true;
 
         $this->insert($data);
+
+        return $this;
+    }
+
+    public function upsert(array $data, array $update): self
+    {
+        $this->action = Actions::INSERT;
+
+        $this->uniqueColumns = $update;
+
+        $this->prepareDataToInsert($data);
 
         return $this;
     }
@@ -262,6 +274,14 @@ class Query extends Clause implements QueryBuilder, Builder
         }
 
         $dml[] = Arr::implodeDeeply($values, ', ');
+
+        if (isset($this->uniqueColumns)) {
+            $dml[] = 'ON DUPLICATE KEY UPDATE';
+
+            foreach ($this->uniqueColumns as $column) {
+                $dml[] = "{$column} = VALUES({$column})";
+            }
+        }
 
         return Arr::implodeDeeply($dml);
     }
