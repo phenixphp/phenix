@@ -55,3 +55,24 @@ it('generates insert into statement with data collection', function () {
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
 });
+
+it('generates insert ignore into statement', function () {
+    $query = new Query();
+
+    $name = faker()->name;
+    $email = faker()->freeEmail;
+
+    $sql = $query->table('users')
+        ->insertOrIgnore([
+            'name' => $name,
+            'email' => $email,
+        ])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "INSERT IGNORE INTO users (email, name) VALUES ('{$email}', '{$name}')";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+});

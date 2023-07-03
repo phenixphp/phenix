@@ -27,6 +27,7 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly array $orderBy;
     protected readonly array $limit;
     protected array $data;
+    protected bool $ignore = false;
 
     public function __construct()
     {
@@ -84,6 +85,15 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->action = Actions::INSERT;
 
         $this->prepareDataToInsert($data);
+
+        return $this;
+    }
+
+    public function insertOrIgnore(array $data): self
+    {
+        $this->ignore = true;
+
+        $this->insert($data);
 
         return $this;
     }
@@ -239,7 +249,7 @@ class Query extends Clause implements QueryBuilder, Builder
     private function buildInsertSentence(): string
     {
         $dml = [
-            'INSERT INTO',
+            $this->ignore ? 'INSERT IGNORE INTO' : 'INSERT INTO',
             $this->table,
             '(' . Arr::implodeDeeply($this->fields, ', ') . ')',
             'VALUES',
