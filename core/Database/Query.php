@@ -11,6 +11,7 @@ use Core\Database\Concerns\Query\HasJoinClause;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
+use Core\Database\Constants\SQL;
 use Core\Exceptions\QueryError;
 use Core\Util\Arr;
 
@@ -28,14 +29,18 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly array $limit;
     protected array $data;
     protected bool $ignore = false;
-    protected readonly array $uniqueColumns;
+    protected array $uniqueColumns;
 
     public function __construct()
     {
+        $this->ignore = false;
+
+        $this->data = [];
         $this->joins = [];
-        $this->clauses = [];
         $this->fields = [];
+        $this->clauses = [];
         $this->arguments = [];
+        $this->uniqueColumns = [];
     }
 
     public function table(string $table): self
@@ -253,9 +258,11 @@ class Query extends Clause implements QueryBuilder, Builder
 
         \ksort($data);
 
-        $this->data[] = array_map(function ($value) {
-            return \is_string($value) ? Value::from($value) : $value;
-        }, \array_values($data));
+        $values = \array_values($data);
+
+        $this->arguments = array_merge($this->arguments, $values);
+
+        $this->data[] = count($values);
     }
 
     private function buildInsertSentence(): string
@@ -269,19 +276,26 @@ class Query extends Clause implements QueryBuilder, Builder
 
         $values = [];
 
-        foreach ($this->data as $record) {
-            $values[] = '(' . Arr::implodeDeeply($record, ', ') . ')';
+        foreach ($this->data as $placeholderNumber) {
+            $placeholders = array_fill(0, $placeholderNumber, SQL::PLACEHOLDER->value);
+
+            $values[] = '(' . Arr::implodeDeeply($placeholders, ', ') . ')';
         }
 
         $dml[] = Arr::implodeDeeply($values, ', ');
 
-        if (isset($this->uniqueColumns)) {
+        if (! empty($this->uniqueColumns)) {
             $dml[] = 'ON DUPLICATE KEY UPDATE';
 
+            $values = [];
+
             foreach ($this->uniqueColumns as $column) {
-                $dml[] = "{$column} = VALUES({$column})";
+                $values[] = "{$column} = VALUES({$column})";
             }
+
+            $dml[] = Arr::implodeDeeply($values, ', ');
         }
+
 
         return Arr::implodeDeeply($dml);
     }

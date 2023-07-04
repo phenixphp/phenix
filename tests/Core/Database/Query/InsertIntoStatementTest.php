@@ -23,10 +23,10 @@ it('generates insert into statement', function () {
 
     [$dml, $params] = $sql;
 
-    $expected = "INSERT INTO users (email, name) VALUES ('{$email}', '{$name}')";
+    $expected = "INSERT INTO users (email, name) VALUES (?, ?)";
 
     expect($dml)->toBe($expected);
-    expect($params)->toBeEmpty();
+    expect($params)->toBe([$email, $name]);
 });
 
 it('generates insert into statement with data collection', function () {
@@ -50,10 +50,10 @@ it('generates insert into statement with data collection', function () {
 
     [$dml, $params] = $sql;
 
-    $expected = "INSERT INTO users (email, name) VALUES ('{$email}', '{$name}'), ('{$email}', '{$name}')";
+    $expected = "INSERT INTO users (email, name) VALUES (?, ?), (?, ?)";
 
     expect($dml)->toBe($expected);
-    expect($params)->toBeEmpty();
+    expect($params)->toBe([$email, $name, $email, $name]);
 });
 
 it('generates insert ignore into statement', function () {
@@ -71,10 +71,10 @@ it('generates insert ignore into statement', function () {
 
     [$dml, $params] = $sql;
 
-    $expected = "INSERT IGNORE INTO users (email, name) VALUES ('{$email}', '{$name}')";
+    $expected = "INSERT IGNORE INTO users (email, name) VALUES (?, ?)";
 
     expect($dml)->toBe($expected);
-    expect($params)->toBeEmpty();
+    expect($params)->toBe([$email, $name]);
 });
 
 it('generates upsert statement to handle duplicate keys', function () {
@@ -87,14 +87,38 @@ it('generates upsert statement to handle duplicate keys', function () {
         ->upsert([
             'name' => $name,
             'email' => $email,
-        ], ['email'])
+        ], ['name'])
         ->toSql();
 
     [$dml, $params] = $sql;
 
-    $expected = "INSERT INTO users (email, name) VALUES ('{$email}', '{$name}') "
-        . "ON DUPLICATE KEY UPDATE email = VALUES(email)";
+    $expected = "INSERT INTO users (email, name) VALUES (?, ?) "
+        . "ON DUPLICATE KEY UPDATE name = VALUES(name)";
 
     expect($dml)->toBe($expected);
-    expect($params)->toBeEmpty();
+    expect($params)->toBe([$email, $name]);
+});
+
+it('generates upsert statement to handle duplicate keys with many unique columns', function () {
+    $query = new Query();
+
+    $data = [
+        'name' => faker()->name,
+        'username' => faker()->userName,
+        'email' => faker()->freeEmail,
+    ];
+
+    $sql = $query->table('users')
+        ->upsert($data, ['name', 'username'])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "INSERT INTO users (email, name, username) VALUES (?, ?, ?) "
+        . "ON DUPLICATE KEY UPDATE name = VALUES(name), username = VALUES(username)";
+
+    \ksort($data);
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe(\array_values($data));
 });
