@@ -335,7 +335,7 @@ it('generates a column-ordered query', function (array|string $column, string $o
     $column = implode(', ', (array) $column);
 
     expect($dml)->toBe("SELECT * FROM users {$operator} {$column} {$order}");
-    expect($params)->toBeEmpty($params);
+    expect($params)->toBe($params);
 })->with([
     ['id', Order::ASC->value],
     [['id', 'created_at'], Order::ASC->value],
@@ -358,7 +358,7 @@ it('generates a column-ordered query using select-case', function () {
     [$dml, $params] = $sql;
 
     expect($dml)->toBe("SELECT * FROM users ORDER BY (CASE WHEN city IS NULL THEN country ELSE city END) ASC");
-    expect($params)->toBeEmpty($params);
+    expect($params)->toBe($params);
 });
 
 it('generates a limited query', function (array|string $column, string $order) {
