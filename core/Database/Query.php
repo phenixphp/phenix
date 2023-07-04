@@ -21,13 +21,14 @@ class Query extends Clause implements QueryBuilder, Builder
 
     protected readonly string $table;
     protected readonly Actions $action;
-    protected array $fields;
+    protected array $columns;
     protected array $joins;
     protected readonly string $having;
     protected readonly array $groupBy;
     protected readonly array $orderBy;
     protected readonly array $limit;
-    protected array $data;
+    protected readonly int $rowsCount;
+    protected readonly array|string $rows;
     protected bool $ignore = false;
     protected array $uniqueColumns;
 
@@ -35,9 +36,8 @@ class Query extends Clause implements QueryBuilder, Builder
     {
         $this->ignore = false;
 
-        $this->data = [];
         $this->joins = [];
-        $this->fields = [];
+        $this->columns = [];
         $this->clauses = [];
         $this->arguments = [];
         $this->uniqueColumns = [];
@@ -70,11 +70,11 @@ class Query extends Clause implements QueryBuilder, Builder
         return $this;
     }
 
-    public function select(array $fields): self
+    public function select(array $columns): self
     {
         $this->action = Actions::SELECT;
 
-        $this->fields = $fields;
+        $this->columns = $columns;
 
         return $this;
     }
@@ -91,6 +91,8 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->action = Actions::INSERT;
 
         $this->prepareDataToInsert($data);
+
+        $this->rowsCount = \array_is_list($data) ? count($data) : 1;
 
         return $this;
     }
@@ -111,6 +113,29 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->uniqueColumns = $update;
 
         $this->prepareDataToInsert($data);
+
+        $this->rowsCount = \array_is_list($data) ? count($data) : 1;
+
+        return $this;
+    }
+
+    public function insertFrom(Closure $subquery, array $columns, bool $ignore = false): self
+    {
+        $builder = new Subquery();
+
+        $subquery($builder);
+
+        [$dml, $arguments] = $builder->toSql();
+
+        $this->rows = trim($dml, '()');
+
+        $this->arguments = array_merge($this->arguments, $arguments);
+
+        $this->action = Actions::INSERT;
+
+        $this->ignore = $ignore;
+
+        $this->columns = $columns;
 
         return $this;
     }
@@ -185,7 +210,7 @@ class Query extends Clause implements QueryBuilder, Builder
     {
         $query = [
             'SELECT',
-            $this->prepareFields($this->fields),
+            $this->prepareColumns($this->columns),
             'FROM',
             $this->table,
             $this->joins,
@@ -215,18 +240,18 @@ class Query extends Clause implements QueryBuilder, Builder
         return Arr::implodeDeeply($query);
     }
 
-    protected function prepareFields(array $fields): string
+    protected function prepareColumns(array $columns): string
     {
-        $fields = array_map(function ($field) {
+        $columns = array_map(function ($column) {
             return match (true) {
-                $field instanceof Functions => (string) $field,
-                $field instanceof SelectCase => (string) $field,
-                $field instanceof Subquery => $this->resolveSubquery($field),
-                default => $field,
+                $column instanceof Functions => (string) $column,
+                $column instanceof SelectCase => (string) $column,
+                $column instanceof Subquery => $this->resolveSubquery($column),
+                default => $column,
             };
-        }, $fields);
+        }, $columns);
 
-        return Arr::implodeDeeply($fields, ', ');
+        return Arr::implodeDeeply($columns, ', ');
     }
 
     private function resolveSubquery(Subquery $subquery): string
@@ -252,17 +277,15 @@ class Query extends Clause implements QueryBuilder, Builder
             return;
         }
 
-        $this->fields = \array_unique([...$this->fields, ...\array_keys($data)]);
+        $this->columns = \array_unique([...$this->columns, ...\array_keys($data)]);
 
-        \sort($this->fields);
+        \sort($this->columns);
 
         \ksort($data);
 
         $values = \array_values($data);
 
         $this->arguments = array_merge($this->arguments, $values);
-
-        $this->data[] = count($values);
     }
 
     private function buildInsertSentence(): string
@@ -270,32 +293,37 @@ class Query extends Clause implements QueryBuilder, Builder
         $dml = [
             $this->ignore ? 'INSERT IGNORE INTO' : 'INSERT INTO',
             $this->table,
-            '(' . Arr::implodeDeeply($this->fields, ', ') . ')',
-            'VALUES',
+            '(' . Arr::implodeDeeply($this->columns, ', ') . ')',
         ];
 
-        $values = [];
-
-        foreach ($this->data as $placeholderNumber) {
-            $placeholders = array_fill(0, $placeholderNumber, SQL::PLACEHOLDER->value);
-
-            $values[] = '(' . Arr::implodeDeeply($placeholders, ', ') . ')';
-        }
-
-        $dml[] = Arr::implodeDeeply($values, ', ');
-
-        if (! empty($this->uniqueColumns)) {
-            $dml[] = 'ON DUPLICATE KEY UPDATE';
+        if (isset($this->rows) && \is_string($this->rows)) {
+            $dml[] = $this->rows;
+        } else {
+            $dml[] = 'VALUES';
 
             $values = [];
+            $columnsCount = count($this->columns);
 
-            foreach ($this->uniqueColumns as $column) {
-                $values[] = "{$column} = VALUES({$column})";
+            for ($i = 0; $i < $this->rowsCount; $i++) {
+                $placeholders = array_fill(0, $columnsCount, SQL::PLACEHOLDER->value);
+
+                $values[] = '(' . Arr::implodeDeeply($placeholders, ', ') . ')';
             }
 
             $dml[] = Arr::implodeDeeply($values, ', ');
-        }
 
+            if (! empty($this->uniqueColumns)) {
+                $dml[] = 'ON DUPLICATE KEY UPDATE';
+
+                $values = [];
+
+                foreach ($this->uniqueColumns as $column) {
+                    $values[] = "{$column} = VALUES({$column})";
+                }
+
+                $dml[] = Arr::implodeDeeply($values, ', ');
+            }
+        }
 
         return Arr::implodeDeeply($dml);
     }

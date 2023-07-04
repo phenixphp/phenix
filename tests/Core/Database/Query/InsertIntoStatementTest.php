@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\Database\Query;
 
 use Core\Database\Query;
+use Core\Database\Subquery;
 
 use function Pest\Faker\faker;
 
@@ -121,4 +122,44 @@ it('generates upsert statement to handle duplicate keys with many unique columns
 
     expect($dml)->toBe($expected);
     expect($params)->toBe(\array_values($data));
+});
+
+
+it('generates insert statement from subquery', function () {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->insertFrom(function (Subquery $subquery) {
+            $subquery->table('customers')
+                ->select(['name', 'email'])
+                ->whereNotNull('verified_at');
+        }, ['name', 'email'])
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "INSERT INTO users (name, email) SELECT name, email FROM customers WHERE verified_at IS NOT NULL";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+});
+
+it('generates insert ignore statement from subquery', function () {
+    $query = new Query();
+
+    $sql = $query->table('users')
+        ->insertFrom(function (Subquery $subquery) {
+            $subquery->table('customers')
+                ->select(['name', 'email'])
+                ->whereNotNull('verified_at');
+        }, ['name', 'email'], true)
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "INSERT IGNORE INTO users (name, email) "
+        . "SELECT name, email FROM customers WHERE verified_at IS NOT NULL";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
 });
