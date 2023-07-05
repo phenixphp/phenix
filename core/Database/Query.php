@@ -22,6 +22,7 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly string $table;
     protected readonly Actions $action;
     protected array $columns;
+    protected array $values;
     protected array $joins;
     protected readonly string $having;
     protected readonly array $groupBy;
@@ -38,6 +39,7 @@ class Query extends Clause implements QueryBuilder, Builder
 
         $this->joins = [];
         $this->columns = [];
+        $this->values = [];
         $this->clauses = [];
         $this->arguments = [];
         $this->uniqueColumns = [];
@@ -140,6 +142,15 @@ class Query extends Clause implements QueryBuilder, Builder
         return $this;
     }
 
+    public function update(array $values): self
+    {
+        $this->action = Actions::UPDATE;
+
+        $this->values = $values;
+
+        return $this;
+    }
+
     public function groupBy(Functions|array|string $column)
     {
         $column = match (true) {
@@ -198,6 +209,7 @@ class Query extends Clause implements QueryBuilder, Builder
         $sql = match ($this->action) {
             Actions::SELECT => $this->buildSelectQuery(),
             Actions::INSERT => $this->buildInsertSentence(),
+            Actions::UPDATE => $this->buildUpdateSentence(),
         };
 
         return [
@@ -323,6 +335,35 @@ class Query extends Clause implements QueryBuilder, Builder
 
                 $dml[] = Arr::implodeDeeply($values, ', ');
             }
+        }
+
+        return Arr::implodeDeeply($dml);
+    }
+
+    private function buildUpdateSentence(): string
+    {
+        $dml = [
+            'UPDATE',
+            $this->table,
+            'SET',
+        ];
+
+        $columns = [];
+        $arguments = [];
+
+        foreach ($this->values as $column => $value) {
+            $arguments[] = $value;
+
+            $columns[] = "{$column} = " . SQL::PLACEHOLDER->value;
+        }
+
+        $this->arguments = [...$arguments, ...$this->arguments];
+
+        $dml[] = Arr::implodeDeeply($columns, ', ');
+
+        if (! empty($this->clauses)) {
+            $dml[] = 'WHERE';
+            $dml[] = $this->prepareClauses($this->clauses);
         }
 
         return Arr::implodeDeeply($dml);
