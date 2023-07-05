@@ -28,7 +28,6 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly array $groupBy;
     protected readonly array $orderBy;
     protected readonly array $limit;
-    protected readonly int $rowsCount;
     protected readonly string $rawStatement;
     protected bool $ignore = false;
     protected array $uniqueColumns;
@@ -94,8 +93,6 @@ class Query extends Clause implements QueryBuilder, Builder
 
         $this->prepareDataToInsert($data);
 
-        $this->rowsCount = \array_is_list($data) ? count($data) : 1;
-
         return $this;
     }
 
@@ -115,8 +112,6 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->uniqueColumns = $columns;
 
         $this->prepareDataToInsert($values);
-
-        $this->rowsCount = \array_is_list($values) ? count($values) : 1;
 
         return $this;
     }
@@ -294,6 +289,8 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->columns = \array_unique([...$this->columns, ...\array_keys($data)]);
 
         $this->arguments = \array_merge($this->arguments, \array_values($data));
+
+        $this->values[] = array_fill(0, count($data), SQL::PLACEHOLDER->value);
     }
 
     private function buildInsertSentence(): string
@@ -309,27 +306,20 @@ class Query extends Clause implements QueryBuilder, Builder
         } else {
             $dml[] = 'VALUES';
 
-            $values = [];
-            $columnsCount = count($this->columns);
+            $placeholders = array_map(function (array $value): string {
+                return '(' . Arr::implodeDeeply($value, ', ') . ')';
+            }, $this->values);
 
-            for ($i = 0; $i < $this->rowsCount; $i++) {
-                $placeholders = array_fill(0, $columnsCount, SQL::PLACEHOLDER->value);
-
-                $values[] = '(' . Arr::implodeDeeply($placeholders, ', ') . ')';
-            }
-
-            $dml[] = Arr::implodeDeeply($values, ', ');
+            $dml[] = Arr::implodeDeeply($placeholders, ', ');
 
             if (! empty($this->uniqueColumns)) {
                 $dml[] = 'ON DUPLICATE KEY UPDATE';
 
-                $values = [];
+                $columns = array_map(function (string $column): string {
+                    return "{$column} = VALUES({$column})";
+                }, $this->uniqueColumns);
 
-                foreach ($this->uniqueColumns as $column) {
-                    $values[] = "{$column} = VALUES({$column})";
-                }
-
-                $dml[] = Arr::implodeDeeply($values, ', ');
+                $dml[] = Arr::implodeDeeply($columns, ', ');
             }
         }
 
