@@ -29,7 +29,7 @@ class Query extends Clause implements QueryBuilder, Builder
     protected readonly array $orderBy;
     protected readonly array $limit;
     protected readonly int $rowsCount;
-    protected readonly array|string $rows;
+    protected readonly string $rawStatement;
     protected bool $ignore = false;
     protected array $uniqueColumns;
 
@@ -99,24 +99,24 @@ class Query extends Clause implements QueryBuilder, Builder
         return $this;
     }
 
-    public function insertOrIgnore(array $data): self
+    public function insertOrIgnore(array $values): self
     {
         $this->ignore = true;
 
-        $this->insert($data);
+        $this->insert($values);
 
         return $this;
     }
 
-    public function upsert(array $data, array $update): self
+    public function upsert(array $values, array $columns): self
     {
         $this->action = Actions::INSERT;
 
-        $this->uniqueColumns = $update;
+        $this->uniqueColumns = $columns;
 
-        $this->prepareDataToInsert($data);
+        $this->prepareDataToInsert($values);
 
-        $this->rowsCount = \array_is_list($data) ? count($data) : 1;
+        $this->rowsCount = \array_is_list($values) ? count($values) : 1;
 
         return $this;
     }
@@ -129,7 +129,7 @@ class Query extends Clause implements QueryBuilder, Builder
 
         [$dml, $arguments] = $builder->toSql();
 
-        $this->rows = trim($dml, '()');
+        $this->rawStatement = trim($dml, '()');
 
         $this->arguments = array_merge($this->arguments, $arguments);
 
@@ -289,15 +289,11 @@ class Query extends Clause implements QueryBuilder, Builder
             return;
         }
 
-        $this->columns = \array_unique([...$this->columns, ...\array_keys($data)]);
-
-        \sort($this->columns);
-
         \ksort($data);
 
-        $values = \array_values($data);
+        $this->columns = \array_unique([...$this->columns, ...\array_keys($data)]);
 
-        $this->arguments = array_merge($this->arguments, $values);
+        $this->arguments = \array_merge($this->arguments, \array_values($data));
     }
 
     private function buildInsertSentence(): string
@@ -308,8 +304,8 @@ class Query extends Clause implements QueryBuilder, Builder
             '(' . Arr::implodeDeeply($this->columns, ', ') . ')',
         ];
 
-        if (isset($this->rows) && \is_string($this->rows)) {
-            $dml[] = $this->rows;
+        if (isset($this->rawStatement)) {
+            $dml[] = $this->rawStatement;
         } else {
             $dml[] = 'VALUES';
 
