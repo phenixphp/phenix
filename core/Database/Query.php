@@ -146,6 +146,13 @@ class Query extends Clause implements QueryBuilder, Builder
         return $this;
     }
 
+    public function delete(): self
+    {
+        $this->action = Actions::DELETE;
+
+        return $this;
+    }
+
     public function groupBy(Functions|array|string $column)
     {
         $column = match (true) {
@@ -205,6 +212,7 @@ class Query extends Clause implements QueryBuilder, Builder
             Actions::SELECT => $this->buildSelectQuery(),
             Actions::INSERT => $this->buildInsertSentence(),
             Actions::UPDATE => $this->buildUpdateSentence(),
+            Actions::DELETE => $this->buildDeleteSentence(),
         };
 
         return [
@@ -346,6 +354,21 @@ class Query extends Clause implements QueryBuilder, Builder
         $this->arguments = [...$arguments, ...$this->arguments];
 
         $dml[] = Arr::implodeDeeply($columns, ', ');
+
+        if (! empty($this->clauses)) {
+            $dml[] = 'WHERE';
+            $dml[] = $this->prepareClauses($this->clauses);
+        }
+
+        return Arr::implodeDeeply($dml);
+    }
+
+    private function buildDeleteSentence(): string
+    {
+        $dml = [
+            'DELETE FROM',
+            $this->table,
+        ];
 
         if (! empty($this->clauses)) {
             $dml[] = 'WHERE';
