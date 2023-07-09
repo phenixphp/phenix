@@ -79,6 +79,6 @@ trait HasWhereRowClause
 
     private function prepareRowFields(array $fields)
     {
-        return 'ROW(' . $this->prepareFields($fields) . ')';
+        return 'ROW(' . $this->prepareColumns($fields) . ')';
     }
 }
