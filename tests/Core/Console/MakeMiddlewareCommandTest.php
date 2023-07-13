@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Tests\Core\Console;
 
 use Core\Contracts\Filesystem\File;
+use Tests\Util\Mock;
 
 it('creates middleware successfully', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: function (string $path) {
@@ -33,7 +34,7 @@ it('creates middleware successfully', function () {
 });
 
 it('does not create the middleware because it already exists', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => true,
     );
 
@@ -61,7 +62,7 @@ it('creates middleware successfully with force option', function () {
 
     $this->assertEquals('old content', file_get_contents($tempPath));
 
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => 'new content',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
@@ -85,7 +86,7 @@ it('creates middleware successfully with force option', function () {
 });
 
 it('creates middleware successfully in nested namespace', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: function (string $path) {
