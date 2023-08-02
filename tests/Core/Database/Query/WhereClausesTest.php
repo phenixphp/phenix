@@ -368,7 +368,7 @@ it('generates a limited query', function (array|string $column, string $order) {
         ->whereEqual('id', 1)
         ->selectAllColumns()
         ->orderBy($column, Order::from($order))
-        ->first()
+        ->limit(1)
         ->toSql();
 
     [$dml, $params] = $sql;
@@ -396,7 +396,7 @@ it('generates a query with a exists subquery in where clause', function (string 
                 ->selectAllColumns()
                 ->whereEqual('user_id', 1)
                 ->whereEqual('role_id', 9)
-                ->first();
+                ->limit(1);
         })
         ->toSql();
 
@@ -425,7 +425,7 @@ it('generates a query to select by column or when exists or not exists subquery'
             $query->table('user_role')
                 ->selectAllColumns()
                 ->whereEqual('user_id', 1)
-                ->first();
+                ->limit(1);
         })
         ->toSql();
 
