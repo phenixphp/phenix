@@ -7,7 +7,7 @@ namespace Core\Database;
 use Core\Database\Concerns\Query\BuildsQuery;
 use Core\Database\Concerns\Query\HasJoinClause;
 
-class Query extends QueryBase
+class QueryGenerator extends QueryBase
 {
     use BuildsQuery;
     use HasJoinClause;

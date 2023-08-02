@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Core\Database\Constants\Operators;
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 
 it('generates query to select a record by date', function (
     string $method,
@@ -15,7 +15,7 @@ it('generates query to select a record by date', function (
     string $value,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('created_at', $date)
@@ -43,7 +43,7 @@ it('generates query to select a record by condition or by date', function (
     string $value,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereFalse('active')
@@ -71,7 +71,7 @@ it('generates query to select a record by month', function (
     int $value,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('created_at', $date)
@@ -99,7 +99,7 @@ it('generates query to select a record by condition or by month', function (
     int $value,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereFalse('active')
@@ -128,7 +128,7 @@ it('generates query to select a record by year', function (
     int $value,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('created_at', $date)
@@ -156,7 +156,7 @@ it('generates query to select a record by condition or by year', function (
     int $value,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereFalse('active')

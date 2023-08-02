@@ -34,7 +34,7 @@ class QueryBuilder extends QueryBase
     }
 
     /**
-     * @return Collection<int, stdClass>
+     * @return Collection<int, array>
      */
     public function get(): Collection
     {

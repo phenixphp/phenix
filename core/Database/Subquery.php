@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Database;
 
-class Subquery extends Query
+class Subquery extends QueryGenerator
 {
     protected readonly string $alias;
 

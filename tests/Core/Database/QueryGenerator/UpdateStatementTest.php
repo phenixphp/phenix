@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 
 use function Pest\Faker\faker;
 
 it('generates update statement', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $name = faker()->name;
 
@@ -27,7 +27,7 @@ it('generates update statement', function () {
 });
 
 it('generates update statement with many conditions and columns', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $name = faker()->name;
 

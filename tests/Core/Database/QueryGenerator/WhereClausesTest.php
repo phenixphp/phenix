@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Database\Functions;
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 use Core\Database\Subquery;
 
 it('generates query to select a record by column', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereEqual('id', 1)
@@ -27,7 +27,7 @@ it('generates query to select a record by column', function () {
 });
 
 it('generates query to select a record using many clause', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereEqual('username', 'john')
@@ -50,7 +50,7 @@ it('generates query to select using comparison clause', function (
     string $operator,
     string|int $value
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}($column, $value)
@@ -70,7 +70,7 @@ it('generates query to select using comparison clause', function (
 ]);
 
 it('generates query selecting specific columns', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereEqual('id', 1)
@@ -85,7 +85,7 @@ it('generates query selecting specific columns', function () {
 
 
 it('generates query using in and not in operators', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('id', [1, 2, 3])
@@ -102,7 +102,7 @@ it('generates query using in and not in operators', function (string $method, st
 ]);
 
 it('generates query using in and not in operators with subquery', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('id', function (Subquery $query) {
@@ -128,7 +128,7 @@ it('generates query using in and not in operators with subquery', function (stri
 ]);
 
 it('generates query to select null or not null columns', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('verified_at')
@@ -145,7 +145,7 @@ it('generates query to select null or not null columns', function (string $metho
 ]);
 
 it('generates query to select by column or null or not null columns', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $date = date('Y-m-d');
 
@@ -165,7 +165,7 @@ it('generates query to select by column or null or not null columns', function (
 ]);
 
 it('generates query to select boolean columns', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('enabled')
@@ -182,7 +182,7 @@ it('generates query to select boolean columns', function (string $method, string
 ]);
 
 it('generates query to select by column or boolean column', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $date = date('Y-m-d');
 
@@ -202,7 +202,7 @@ it('generates query to select by column or boolean column', function (string $me
 ]);
 
 it('generates query using logical connectors', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $date = date('Y-m-d');
 
@@ -222,7 +222,7 @@ it('generates query using logical connectors', function () {
 });
 
 it('generates query using the or operator between the and operators', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $date = date('Y-m-d');
 
@@ -255,7 +255,7 @@ it('generates queries using logical connectors', function (
         $placeholders = '(' . implode(', ', $params) . ')';
     }
 
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereNotNull('verified_at')
@@ -282,7 +282,7 @@ it('generates queries using logical connectors', function (
 ]);
 
 it('generates query to select between columns', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->{$method}('age', [20, 30])
@@ -299,7 +299,7 @@ it('generates query to select between columns', function (string $method, string
 ]);
 
 it('generates query to select by column or between columns', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $date = date('Y-m-d');
     $startDate = date('Y-m-d');
@@ -321,7 +321,7 @@ it('generates query to select by column or between columns', function (string $m
 ]);
 
 it('generates a column-ordered query', function (array|string $column, string $order) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->selectAllColumns()
@@ -348,7 +348,7 @@ it('generates a column-ordered query using select-case', function () {
         ->whenNull('city', 'country')
         ->defaultResult('city');
 
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->selectAllColumns()
@@ -362,7 +362,7 @@ it('generates a column-ordered query using select-case', function () {
 });
 
 it('generates a limited query', function (array|string $column, string $order) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereEqual('id', 1)
@@ -387,7 +387,7 @@ it('generates a limited query', function (array|string $column, string $order) {
 ]);
 
 it('generates a query with a exists subquery in where clause', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->selectAllColumns()
@@ -416,7 +416,7 @@ it('generates a query to select by column or when exists or not exists subquery'
     string $method,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->selectAllColumns()
@@ -446,7 +446,7 @@ it('generates query to select using comparison clause with subqueries and functi
     string $column,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('products')
         ->{$method}($column, function (Subquery $subquery) {
@@ -476,7 +476,7 @@ it('generates query using comparison clause with subqueries and any, all, some o
     string $comparisonOperator,
     string $operator
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('products')
         ->{$method}('id', function (Subquery $subquery) {
@@ -518,7 +518,7 @@ it('generates query using comparison clause with subqueries and any, all, some o
 ]);
 
 it('generates query with row subquery', function (string $method, string $operator) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('employees')
         ->{$method}(['manager_id', 'department_id'], function (Subquery $subquery) {
