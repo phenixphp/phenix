@@ -9,7 +9,6 @@ use Core\Database\Concerns\Query\BuildsQuery;
 use Core\Database\Concerns\Query\HasJoinClause;
 use Core\Database\Constants\Connections;
 use Core\Facades\Config;
-use stdClass;
 use Throwable;
 
 class QueryBuilder extends QueryBase
