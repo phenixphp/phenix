@@ -8,16 +8,8 @@ use Core\Runtime\Config;
 
 class ConfigServiceProvider extends ServiceProvider
 {
-    public function provides(string $id): bool
-    {
-        return in_array($id, [Config::class], true);
-    }
-
     public function boot(): void
     {
-        $this->getContainer()->add(
-            Config::class,
-            Config::build(...)
-        )->setShared(true);
+        $this->bind(Config::class, Config::build(...))->setShared(true);
     }
 }
