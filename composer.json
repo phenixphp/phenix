@@ -1,6 +1,6 @@
 {
-    "name": "barbosa/amp",
-    "description": "Amphp framework",
+    "name": "barbosa89/phenix",
+    "description": "Phenix framework",
     "type": "project",
     "license": "MIT",
     "autoload": {
