@@ -14,8 +14,9 @@ use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
 use Core\Database\ConfigFactory;
 use Core\Facades\Config;
-use Core\Facades\File;
 use Core\Logging\LoggerFactory;
+use Core\Providers\ConfigServiceProvider;
+use Core\Providers\FilesystemServiceProvider;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Argument\ResolvableArgument;
@@ -162,20 +163,8 @@ class App implements AppContract, Makeable
 
     private function registerElementalFacades(): void
     {
-        self::$container->add(
-            Config::getKeyName(),
-            \Core\Runtime\Config::build(...)
-        )->setShared(true);
-
-        self::$container->add(
-            \Core\Facades\Storage::getKeyName(),
-            \Core\Filesystem\Storage::class
-        );
-
-        self::$container->add(
-            File::getKeyName(),
-            \Core\Filesystem\File::class
-        );
+        self::$container->addServiceProvider(new ConfigServiceProvider());
+        self::$container->addServiceProvider(new FilesystemServiceProvider());
     }
 
     private function registerControllers(): void

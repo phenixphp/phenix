@@ -13,6 +13,6 @@ class Storage extends Facade
 {
     public static function getKeyName(): string
     {
-        return 'storage';
+        return \Core\Filesystem\Storage::class;
     }
 }
