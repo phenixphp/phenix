@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
 use Core\Database\Functions;
 use Core\Database\Join;
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 
 it('generates a grouped query', function (Functions|string $column, Functions|array|string $groupBy, string $rawGroup) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             $column,
@@ -43,7 +43,7 @@ it('generates a grouped and ordered query', function (
     Functions|array|string $groupBy,
     string $rawGroup
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             $column,

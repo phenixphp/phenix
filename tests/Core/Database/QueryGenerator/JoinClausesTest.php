@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
 use Core\Database\Constants\Joins;
 use Core\Database\Join;
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 
 it('generates query for all join types', function (string $method, string $joinType) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             'products.id',
@@ -41,7 +41,7 @@ it('generates query for all join types', function (string $method, string $joinT
 ]);
 
 it('generates query using join with distinct clasue', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             'products.id',
@@ -71,7 +71,7 @@ it('generates query with join and multi clauses', function (
     string $clause,
     array|null $joinParams
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             'products.id',
@@ -122,7 +122,7 @@ it('generates query with join and multi clauses', function (
 ]);
 
 it('generates query with shortcut methods for all join types', function (string $method, string $joinType) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             'products.id',

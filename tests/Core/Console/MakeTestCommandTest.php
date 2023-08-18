@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Tests\Core\Console;
 
 use Core\Contracts\Filesystem\File;
+use Tests\Util\Mock;
 
 it('creates test successfully', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: function (string $path) {
@@ -33,7 +34,7 @@ it('creates test successfully', function () {
 });
 
 it('does not create the test because it already exists', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => true,
     );
 
@@ -61,7 +62,7 @@ it('creates test successfully with force option', function () {
 
     expect('old content')->toBe(file_get_contents($tempPath));
 
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => 'new content',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
@@ -85,7 +86,7 @@ it('creates test successfully with force option', function () {
 });
 
 it('creates test successfully in nested namespace', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: fn (string $path) => true,
@@ -107,7 +108,7 @@ it('creates test successfully in nested namespace', function () {
 });
 
 it('creates test successfully with unit option', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: function (string $path) {
@@ -134,7 +135,7 @@ it('creates test successfully with unit option', function () {
 });
 
 it('creates test successfully with core option', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: function (string $path) {

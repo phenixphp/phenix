@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
 use Core\Database\Alias;
 use Core\Database\Constants\Operators;
 use Core\Database\Functions;
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 use Core\Database\Subquery;
 use Core\Database\Value;
 use Core\Exceptions\QueryError;
 
 it('generates query to select all columns of table', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->selectAllColumns()
@@ -28,7 +28,7 @@ it('generates query to select all columns of table', function () {
 });
 
 it('generates query to select all columns from table', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->selectAllColumns()
         ->from('users')
@@ -43,7 +43,7 @@ it('generates query to select all columns from table', function () {
 });
 
 it('generates a query using sql functions', function (string $function, string $column, string $rawFunction) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('products')
         ->select([Functions::{$function}($column)])
@@ -67,7 +67,7 @@ it('generates a query using sql functions with alias', function (
     string $alias,
     string $rawFunction
 ) {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('products')
         ->select([Functions::{$function}($column)->as($alias)])
@@ -86,7 +86,7 @@ it('generates a query using sql functions with alias', function (
 ]);
 
 it('selects field from subquery', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $date = date('Y-m-d');
     $sql = $query->select(['id', 'name', 'email'])
@@ -107,7 +107,7 @@ it('selects field from subquery', function () {
 
 
 it('generates query using subqueries in column selection', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             'id',
@@ -132,7 +132,7 @@ it('generates query using subqueries in column selection', function () {
 
 it('throws exception on generate query using subqueries in column selection with limit missing', function () {
     expect(function () {
-        $query = new Query();
+        $query = new QueryGenerator();
 
         $query->select([
                 'id',
@@ -148,7 +148,7 @@ it('throws exception on generate query using subqueries in column selection with
 });
 
 it('generates query with column alias', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             'id',
@@ -175,7 +175,7 @@ it('generates query with select-cases using comparisons', function (
 
     $value = Value::from($value);
 
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $case = Functions::case()
         ->{$method}($column, $value, $result)
@@ -214,7 +214,7 @@ it('generates query with select-cases using logical comparisons', function (
 ) {
     [$column, $result] = $data;
 
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $case = Functions::case()
         ->{$method}(...$data)
@@ -246,7 +246,7 @@ it('generates query with select-cases using logical comparisons', function (
 it('generates query with select-cases with multiple conditions and string values', function () {
     $date = date('Y-m-d H:i:s');
 
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $case = Functions::case()
         ->whenNull('created_at', Value::from('inactive'))
@@ -274,7 +274,7 @@ it('generates query with select-cases with multiple conditions and string values
 it('generates query with select-cases without default value', function () {
     $date = date('Y-m-d H:i:s');
 
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $case = Functions::case()
         ->whenNull('created_at', Value::from('inactive'))
@@ -299,7 +299,7 @@ it('generates query with select-cases without default value', function () {
 });
 
 it('generates query with select-case using functions', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $case = Functions::case()
         ->whenGreatherThanOrEqual(Functions::avg('price'), 4, Value::from('expensive'))

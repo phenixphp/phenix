@@ -2,48 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Core\Database;
+namespace Core\Database\Concerns\Query;
 
 use Closure;
-use Core\Contracts\Database\Builder;
-use Core\Contracts\Database\QueryBuilder;
-use Core\Database\Concerns\Query\HasJoinClause;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
 use Core\Database\Constants\SQL;
+use Core\Database\Functions;
+use Core\Database\Having;
+use Core\Database\SelectCase;
+use Core\Database\Subquery;
 use Core\Exceptions\QueryError;
 use Core\Util\Arr;
 
-class Query extends Clause implements QueryBuilder, Builder
+trait BuildsQuery
 {
-    use HasJoinClause;
-
-    protected readonly string $table;
-    protected readonly Actions $action;
-    protected array $columns;
-    protected array $values;
-    protected array $joins;
-    protected readonly string $having;
-    protected readonly array $groupBy;
-    protected readonly array $orderBy;
-    protected readonly array $limit;
-    protected readonly string $rawStatement;
-    protected bool $ignore = false;
-    protected array $uniqueColumns;
-
-    public function __construct()
-    {
-        $this->ignore = false;
-
-        $this->joins = [];
-        $this->columns = [];
-        $this->values = [];
-        $this->clauses = [];
-        $this->arguments = [];
-        $this->uniqueColumns = [];
-    }
-
     public function table(string $table): self
     {
         $this->table = $table;
@@ -195,13 +169,6 @@ class Query extends Clause implements QueryBuilder, Builder
     public function limit(int $number): self
     {
         $this->limit = [Operators::LIMIT->value, abs($number)];
-
-        return $this;
-    }
-
-    public function first(): self
-    {
-        $this->limit(1);
 
         return $this;
     }

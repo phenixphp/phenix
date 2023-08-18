@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
 use Core\Database\Functions;
 use Core\Database\Having;
 use Core\Database\Join;
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 
 it('generates a query using having clause', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             Functions::count('products.id')->as('identifiers'),
@@ -39,7 +39,7 @@ it('generates a query using having clause', function () {
 });
 
 it('generates a query using having with many clauses', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->select([
             Functions::count('products.id')->as('identifiers'),

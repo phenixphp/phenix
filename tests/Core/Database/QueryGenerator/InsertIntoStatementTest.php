@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 use Core\Database\Subquery;
 
 use function Pest\Faker\faker;
 
 it('generates insert into statement', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $name = faker()->name;
     $email = faker()->freeEmail;
@@ -31,7 +31,7 @@ it('generates insert into statement', function () {
 });
 
 it('generates insert into statement with data collection', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $name = faker()->name;
     $email = faker()->freeEmail;
@@ -58,7 +58,7 @@ it('generates insert into statement with data collection', function () {
 });
 
 it('generates insert ignore into statement', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $name = faker()->name;
     $email = faker()->freeEmail;
@@ -79,7 +79,7 @@ it('generates insert ignore into statement', function () {
 });
 
 it('generates upsert statement to handle duplicate keys', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $name = faker()->name;
     $email = faker()->freeEmail;
@@ -101,7 +101,7 @@ it('generates upsert statement to handle duplicate keys', function () {
 });
 
 it('generates upsert statement to handle duplicate keys with many unique columns', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $data = [
         'name' => faker()->name,
@@ -126,7 +126,7 @@ it('generates upsert statement to handle duplicate keys with many unique columns
 
 
 it('generates insert statement from subquery', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->insertFrom(function (Subquery $subquery) {
@@ -145,7 +145,7 @@ it('generates insert statement from subquery', function () {
 });
 
 it('generates insert ignore statement from subquery', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->insertFrom(function (Subquery $subquery) {

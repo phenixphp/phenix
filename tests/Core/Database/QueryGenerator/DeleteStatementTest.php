@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Query;
+namespace Tests\Core\Database\QueryGenerator;
 
-use Core\Database\Query;
+use Core\Database\QueryGenerator;
 
 it('generates delete statement', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->whereEqual('id', 1)
@@ -23,7 +23,7 @@ it('generates delete statement', function () {
 });
 
 it('generates delete statement without clauses', function () {
-    $query = new Query();
+    $query = new QueryGenerator();
 
     $sql = $query->table('users')
         ->delete()

@@ -21,6 +21,6 @@ class Response
     {
         $body = json_encode(['data' => $content]);
 
-        return new ServerResponse($status, ['content-type' => 'application/javascript'], $body);
+        return new ServerResponse($status, ['content-type' => 'application/javascript'], $body . PHP_EOL);
     }
 }
