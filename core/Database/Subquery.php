@@ -6,7 +6,7 @@ namespace Core\Database;
 
 class Subquery extends QueryGenerator
 {
-    protected readonly string $alias;
+    protected string $alias;
 
     public function as(string $alias): self
     {

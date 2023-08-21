@@ -11,8 +11,8 @@ use Stringable;
 class SelectCase implements Stringable
 {
     protected array $cases;
-    protected readonly Value|string $default;
-    protected readonly string $alias;
+    protected Value|string $default;
+    protected string $alias;
 
     public function __construct()
     {
@@ -155,7 +155,7 @@ class SelectCase implements Stringable
     public function __toString(): string
     {
         $cases = array_map(function (array $case): array {
-            return array_map(function (Operators|string|int $item): string|int {
+            return array_map(function (Operators|string $item): string {
                 return match (true) {
                     $item instanceof Operators => $item->value,
                     default => (string) $item,

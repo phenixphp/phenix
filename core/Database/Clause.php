@@ -7,6 +7,7 @@ namespace Core\Database;
 use Closure;
 use Core\Contracts\Database\Builder;
 use Core\Database\Concerns\Query\HasWhereClause;
+use Core\Database\Concerns\Query\PrepareColumns;
 use Core\Database\Constants\LogicalOperators;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\SQL;
@@ -15,6 +16,7 @@ use Core\Util\Arr;
 abstract class Clause implements Builder
 {
     use HasWhereClause;
+    use PrepareColumns;
 
     protected array $clauses;
     protected array $arguments;

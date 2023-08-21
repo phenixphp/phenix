@@ -8,7 +8,7 @@ use Stringable;
 
 class Alias implements Stringable
 {
-    protected readonly string $alias;
+    protected string $alias;
 
     public function __construct(protected readonly string $name)
     {

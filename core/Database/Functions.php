@@ -9,7 +9,7 @@ use Stringable;
 
 class Functions implements Stringable
 {
-    protected readonly string $alias;
+    protected string $alias;
 
     public function __construct(
         protected readonly FunctionNames $function,
