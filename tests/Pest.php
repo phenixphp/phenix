@@ -13,7 +13,7 @@
 
 use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
-use Core\Constants\Http\Methods;
+use Core\Constants\HttpMethods;
 use Core\Facades\Config;
 use Tests\Util\TestResponse;
 
@@ -48,7 +48,7 @@ expect()->extend('toBeOne', function () {
 */
 
 function call(
-    Methods $method,
+    HttpMethods $method,
     string $path,
     array $parameters = [],
     array|string|null $body = null,
@@ -85,25 +85,25 @@ function call(
 
 function get(string $path, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(method: Methods::GET, path: $path, parameters: $parameters, headers: $headers);
+    return call(method: HttpMethods::GET, path: $path, parameters: $parameters, headers: $headers);
 }
 
 function post(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(Methods::POST, $path, $parameters, $body, $headers);
+    return call(HttpMethods::POST, $path, $parameters, $body, $headers);
 }
 
 function put(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(Methods::PUT, $path, $parameters, $body, $headers);
+    return call(HttpMethods::PUT, $path, $parameters, $body, $headers);
 }
 
 function patch(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(Methods::PATCH, $path, $parameters, $body, $headers);
+    return call(HttpMethods::PATCH, $path, $parameters, $body, $headers);
 }
 
 function delete(string $path, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(method: Methods::DELETE, path: $path, parameters: $parameters, headers: $headers);
+    return call(method: HttpMethods::DELETE, path: $path, parameters: $parameters, headers: $headers);
 }

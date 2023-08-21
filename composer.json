@@ -1,6 +1,6 @@
 {
-    "name": "barbosa/amp",
-    "description": "Amphp framework",
+    "name": "barbosa89/phenix",
+    "description": "Phenix framework",
     "type": "project",
     "license": "MIT",
     "autoload": {
@@ -17,22 +17,24 @@
             "Tests\\": "tests/"
         }
     },
-    "authors": [
-        {
-            "name": "Omar Barbosa",
-            "email": "contacto@omarbarbosa.com"
-        }
-    ],
+    "authors": [{
+        "name": "Omar Barbosa",
+        "email": "contacto@omarbarbosa.com"
+    }],
     "require": {
         "php": "^8.1",
         "adbario/php-dot-notation": "^3.1",
-        "amphp/file": "^v3.0.0-beta.3",
-        "amphp/http-client": "^v5.0.0-beta.6",
-        "amphp/http-server": "^v3.0.0-beta.3",
-        "amphp/http-server-router": "^v2.0.0-beta.1",
-        "amphp/log": "^v2.0.0-beta.1",
+        "amphp/file": "^v3.0.0",
+        "amphp/http-client": "^v5.0.0-beta.11",
+        "amphp/http-server": "^v3.0.0-beta.8",
+        "amphp/http-server-router": "^v2.0.0-beta.3",
+        "amphp/log": "^v2.0.0-beta.2",
+        "amphp/mysql": "^v3.0.0",
+        "amphp/postgres": "v2.0.0-beta-4",
+        "amphp/socket": "^2.1.0",
         "league/container": "^4.2",
-        "nesbot/carbon": "^2.62",
+        "nesbot/carbon": "^2.67",
+        "ramsey/collection": "^2.0",
         "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4"
     },
@@ -46,6 +48,7 @@
         "pestphp/pest-plugin-global-assertions": "^1.0",
         "pestphp/pest-plugin-mock": "^1.0",
         "pestphp/pest-plugin-parallel": "^1.2",
+        "phpmyadmin/sql-parser": "^5.7",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-deprecation-rules": "^1.1",

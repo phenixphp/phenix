@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Util;
 
-use Core\Constants\Http\Methods;
+use Core\Constants\HttpMethods;
 use Core\Routing\Route;
 
 class AssertRoute
@@ -23,7 +23,7 @@ class AssertRoute
         return new self($route);
     }
 
-    public function methodIs(Methods $method): self
+    public function methodIs(HttpMethods $method): self
     {
         expect($this->route[0])->toBe($method);
 

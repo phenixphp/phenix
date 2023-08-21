@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'channel' => env('LOG_CHANNEL', fn () => 'file'),
+    'default' => env('LOG_CHANNEL', fn () => 'file'),
 
     /*
     |--------------------------------------------------------------------------

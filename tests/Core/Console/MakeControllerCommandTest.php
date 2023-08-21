@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Tests\Core\Console;
 
 use Core\Contracts\Filesystem\File;
+use Tests\Util\Mock;
 
 it('creates controller successfully', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: fn (string $path) => true,
@@ -29,7 +30,7 @@ it('creates controller successfully', function () {
 });
 
 it('does not create the controller because it already exists', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => true,
     );
 
@@ -57,7 +58,7 @@ it('creates controller successfully with force option', function () {
 
     $this->assertEquals('old content', file_get_contents($tempPath));
 
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => 'new content',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),
@@ -81,7 +82,7 @@ it('creates controller successfully with force option', function () {
 });
 
 it('creates controller successfully in nested namespace', function () {
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => '',
         put: fn (string $path) => true,
@@ -106,7 +107,7 @@ it('creates controller successfully with api option', function () {
     $tempDir = sys_get_temp_dir();
     $tempPath = $tempDir . DIRECTORY_SEPARATOR . 'TestController.php';
 
-    $mock = mock(File::class)->expect(
+    $mock = Mock::of(File::class)->expect(
         exists: fn (string $path) => false,
         get: fn (string $path) => 'Hello, world!',
         put: fn (string $path, string $content) => file_put_contents($tempPath, $content),

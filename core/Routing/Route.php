@@ -7,7 +7,7 @@ namespace Core\Routing;
 use Amp\Http\Server\RequestHandler\ClosureRequestHandler;
 use Closure;
 use Core\App;
-use Core\Constants\Http\Methods;
+use Core\Constants\HttpMethods;
 use Core\Contracts\Arrayable;
 
 class Route implements Arrayable
@@ -27,27 +27,27 @@ class Route implements Arrayable
      */
     public function get(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::GET, $path, $handler);
+        return $this->addRoute(HttpMethods::GET, $path, $handler);
     }
 
     public function post(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::POST, $path, $handler);
+        return $this->addRoute(HttpMethods::POST, $path, $handler);
     }
 
     public function put(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::PUT, $path, $handler);
+        return $this->addRoute(HttpMethods::PUT, $path, $handler);
     }
 
     public function patch(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::PATCH, $path, $handler);
+        return $this->addRoute(HttpMethods::PATCH, $path, $handler);
     }
 
     public function delete(string $path, Closure|array $handler): RouteBuilder
     {
-        return $this->addRoute(Methods::DELETE, $path, $handler);
+        return $this->addRoute(HttpMethods::DELETE, $path, $handler);
     }
 
     public function group(Closure $closure): RouteGroupBuilder
@@ -106,7 +106,7 @@ class Route implements Arrayable
         }, []);
     }
 
-    private function addRoute(Methods $method, string $path, Closure|array $handler): RouteBuilder
+    private function addRoute(HttpMethods $method, string $path, Closure|array $handler): RouteBuilder
     {
         $route = new RouteBuilder(
             $method,
