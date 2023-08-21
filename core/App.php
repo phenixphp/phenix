@@ -7,19 +7,17 @@ namespace Core;
 use Amp\Http\Server\DefaultErrorHandler;
 use Amp\Http\Server\Router;
 use Amp\Http\Server\SocketHttpServer;
-use Amp\Mysql\MysqlConnectionPool;
 use Amp\Socket;
 use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
-use Core\Database\ConfigFactory;
 use Core\Facades\Config;
 use Core\Logging\LoggerFactory;
 use Core\Providers\ConfigServiceProvider;
+use Core\Providers\DatabaseServiceProvider;
 use Core\Providers\FilesystemServiceProvider;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
-use League\Container\Argument\ResolvableArgument;
 use League\Container\Container;
 use Monolog\Logger;
 
@@ -44,25 +42,9 @@ class App implements AppContract, Makeable
 
     public function setup(): void
     {
-        $this->registerElementalFacades();
-
-        /** @var string $connection */
-        $connection = Config::get('database.default');
-
-        self::$container->add(
-            'db.connection.default',
-            static function () use ($connection) {
-
-                $config = ConfigFactory::make($connection);
-
-                return new MysqlConnectionPool($config);
-            }
-        )->setShared(true);
-
-        self::$container->add(
-            "db.connection.{$connection}",
-            new ResolvableArgument('db.connection.default')
-        );
+        self::$container->addServiceProvider(new ConfigServiceProvider());
+        self::$container->addServiceProvider(new FilesystemServiceProvider());
+        self::$container->addServiceProvider(new DatabaseServiceProvider());
 
         /** @var string $channel */
         $channel = Config::get('logging.default');
@@ -159,12 +141,6 @@ class App implements AppContract, Makeable
             \Core\Facades\DB::getKeyName(),
             \Core\Database\QueryBuilder::class
         );
-    }
-
-    private function registerElementalFacades(): void
-    {
-        self::$container->addServiceProvider(new ConfigServiceProvider());
-        self::$container->addServiceProvider(new FilesystemServiceProvider());
     }
 
     private function registerControllers(): void

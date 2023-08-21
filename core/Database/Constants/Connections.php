@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace Core\Database\Constants;
 
-use Amp\Sql\Common\ConnectionPool;
-use Core\App;
-
 enum Connections: string
 {
-    case MYSQL = 'mysql';
-    case POSTGRESQL = 'postgresql';
+    case PREFIX = 'database.connections.';
 
-    public static function default(): ConnectionPool
+    public static function default(): string
     {
-        return App::make('db.connection.default');
+        return self::name('default');
     }
 
-    public function get(): ConnectionPool
+    public static function name(string $connection): string
     {
-        return App::make("db.connection.{$this->value}");
-
+        return self::PREFIX->value . $connection;
     }
 }

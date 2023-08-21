@@ -7,7 +7,7 @@ namespace Core\Facades;
 use Core\Runtime\Facade;
 
 /**
- * @method static \Core\Database\QueryBuilder connection(\Core\Database\Constants\Connections $connection)
+ * @method static \Core\Database\QueryBuilder connection(string $connection)
  * @method static \Core\Database\QueryBuilder table(string $table)
  * @method static \Core\Database\QueryBuilder from(\Closure|string $table)
  * @method static \Core\Database\QueryBuilder select(array $columns)

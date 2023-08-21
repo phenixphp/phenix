@@ -14,7 +14,7 @@ it('gets all records from database', function () {
         ['id' => 1, 'name' => 'John Doe'],
     ];
 
-    $this->app->swap('db.connection.default', MysqlConnectionPool::fake($data));
+    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data));
 
     $query = new QueryBuilder();
 
@@ -30,7 +30,7 @@ it('gets all records from database using facade', function () {
         ['id' => 1, 'name' => 'John Doe'],
     ];
 
-    $this->app->swap('db.connection.default', MysqlConnectionPool::fake($data));
+    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data));
 
     $result = DB::from('users')
         ->select(['id', 'name'])
@@ -44,7 +44,7 @@ it('gets the first record from database', function () {
         ['id' => 1, 'name' => 'John Doe'],
     ];
 
-    $this->app->swap('db.connection.default', MysqlConnectionPool::fake($data));
+    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data));
 
     $query = new QueryBuilder();
 
@@ -60,9 +60,9 @@ it('sets custom connection', function () {
         ['id' => 1, 'name' => 'John Doe'],
     ];
 
-    $this->app->swap('db.connection.default', MysqlConnectionPool::fake($data));
+    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data));
 
-    $result = DB::connection(Connections::MYSQL)
+    $result = DB::connection('mysql')
         ->from('users')
         ->select(['id', 'name'])
         ->get();
@@ -75,7 +75,7 @@ it('updates records', function () {
         ['id' => 1, 'name' => 'John Doe'],
     ];
 
-    $this->app->swap('db.connection.default', MysqlConnectionPool::fake($data));
+    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data));
 
     $result = DB::from('users')
         ->whereEqual('id', 1)
@@ -89,7 +89,7 @@ it('fails on record update', function () {
         ['id' => 1, 'name' => 'John Doe'],
     ];
 
-    $this->app->swap('db.connection.default', MysqlConnectionPool::fake($data)->throwDatabaseException());
+    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data)->throwDatabaseException());
 
     $result = DB::from('users')
         ->whereEqual('id', 1)
