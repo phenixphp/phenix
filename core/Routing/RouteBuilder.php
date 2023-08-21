@@ -6,7 +6,7 @@ namespace Core\Routing;
 
 use Amp\Http\Server\Middleware;
 use Amp\Http\Server\RequestHandler\ClosureRequestHandler;
-use Core\Constants\Http\Methods;
+use Core\Constants\HttpMethods;
 use Core\Contracts\Arrayable;
 
 class RouteBuilder implements Arrayable
@@ -26,7 +26,7 @@ class RouteBuilder implements Arrayable
     protected array $middlewares = [];
 
     public function __construct(
-        protected Methods $method,
+        protected HttpMethods $method,
         protected string $path,
         protected ClosureRequestHandler $closure,
         string|null $name = null,

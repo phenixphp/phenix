@@ -12,8 +12,10 @@ use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
 use Core\Facades\Config;
-use Core\Facades\File;
 use Core\Logging\LoggerFactory;
+use Core\Providers\ConfigServiceProvider;
+use Core\Providers\DatabaseServiceProvider;
+use Core\Providers\FilesystemServiceProvider;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Container;
@@ -40,10 +42,12 @@ class App implements AppContract, Makeable
 
     public function setup(): void
     {
-        $this->registerElementalFacades();
+        self::$container->addServiceProvider(new ConfigServiceProvider());
+        self::$container->addServiceProvider(new FilesystemServiceProvider());
+        self::$container->addServiceProvider(new DatabaseServiceProvider());
 
         /** @var string $channel */
-        $channel = Config::get('logging.channel');
+        $channel = Config::get('logging.default');
 
         $this->logger = LoggerFactory::make($channel);
 
@@ -106,7 +110,7 @@ class App implements AppContract, Makeable
 
     private function setupServer(): void
     {
-        $this->server = new SocketHttpServer($this->logger);
+        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
 
         /** @var int $port */
         $port = Config::get('app.port');
@@ -132,23 +136,10 @@ class App implements AppContract, Makeable
             \Core\Facades\Route::getKeyName(),
             \Core\Routing\Route::class
         )->setShared(true);
-    }
-
-    private function registerElementalFacades(): void
-    {
-        self::$container->add(
-            Config::getKeyName(),
-            \Core\Runtime\Config::build(...)
-        )->setShared(true);
 
         self::$container->add(
-            \Core\Facades\Storage::getKeyName(),
-            \Core\Filesystem\Storage::class
-        );
-
-        self::$container->add(
-            File::getKeyName(),
-            \Core\Filesystem\File::class
+            \Core\Facades\DB::getKeyName(),
+            \Core\Database\QueryBuilder::class
         );
     }
 

@@ -16,6 +16,6 @@ class Config extends Facade
 {
     public static function getKeyName(): string
     {
-        return 'config';
+        return \Core\Runtime\Config::class;
     }
 }

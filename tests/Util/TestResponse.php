@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Util;
 
 use Amp\Http\Client\Response;
-use Amp\Http\Status;
+use Amp\Http\HttpStatus;
 
 class TestResponse
 {
@@ -18,14 +18,14 @@ class TestResponse
 
     public function assertOk(): self
     {
-        expect($this->response->getStatus())->toBe(Status::OK);
+        expect($this->response->getStatus())->toBe(HttpStatus::OK);
 
         return $this;
     }
 
     public function assertNotAcceptable(): self
     {
-        expect($this->response->getStatus())->toBe(Status::NOT_ACCEPTABLE);
+        expect($this->response->getStatus())->toBe(HttpStatus::NOT_ACCEPTABLE);
 
         return $this;
     }

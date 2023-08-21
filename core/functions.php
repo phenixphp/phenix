@@ -22,10 +22,18 @@ if (! function_exists('response')) {
 }
 
 if (! function_exists('env')) {
-    function env(string $key, callable $default): string|int|bool
+    function env(string $key, Closure|null $default = null): string|int|bool|null
     {
-        $value = getenv($key);
+        $value = $_ENV[$key] ?? null;
 
-        return $value ? $value : $default();
+        if ($value) {
+            return match ($value) {
+                'true' => true,
+                'false' => false,
+                default => $value,
+            };
+        }
+
+        return $default instanceof Closure ? $default() : $default;
     }
 }
