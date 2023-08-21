@@ -29,7 +29,6 @@ class QueryBuilder extends QueryBase
     public function connection(string $connection): self
     {
         $this->connection = App::make(Connections::name($connection));
-        ;
 
         return $this;
     }
