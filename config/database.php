@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use Core\Database\Constants\Drivers;
+
 return [
     'default' => env('DB_CONNECTION', fn () => 'mysql'),
 
     'connections' => [
         'mysql' => [
-            'driver' => 'mysql',
+            'driver' => Drivers::MYSQL,
             'host' => env('DB_HOST', fn () => '127.0.0.1'),
             'port' => env('DB_PORT', fn () => '3306'),
             'database' => env('DB_DATABASE'),
@@ -19,7 +21,7 @@ return [
             'prefix' => '',
         ],
         'postgresql' => [
-            'driver' => 'postgresql',
+            'driver' => Drivers::POSTGRESQL,
             'host' => env('DB_HOST', fn () => '127.0.0.1'),
             'port' => env('DB_PORT', fn () => '3306'),
             'database' => env('DB_DATABASE'),

@@ -60,7 +60,7 @@ it('sets custom connection', function () {
         ['id' => 1, 'name' => 'John Doe'],
     ];
 
-    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data));
+    $this->app->swap(Connections::name('mysql'), MysqlConnectionPool::fake($data));
 
     $result = DB::connection('mysql')
         ->from('users')
