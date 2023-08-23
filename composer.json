@@ -71,6 +71,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
         "test": "XDEBUG_MODE=off vendor/bin/pest",
         "test:debug": "vendor/bin/pest",
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",
