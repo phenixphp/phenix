@@ -9,6 +9,7 @@ use Core\Database\Console\MakeMigration;
 use Core\Database\Console\MakeSeeder;
 use Core\Database\Console\Migrate;
 use Core\Database\Console\Rollback;
+use Core\Database\Console\SeedRun;
 use Core\Database\Constants\Connections;
 use Core\Database\Constants\Drivers;
 use Core\Facades\Config;
@@ -54,6 +55,7 @@ class DatabaseServiceProvider extends ServiceProvider
             MakeSeeder::class,
             Migrate::class,
             Rollback::class,
+            SeedRun::class,
         ]);
     }
 }
