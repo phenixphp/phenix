@@ -14,8 +14,6 @@ use Core\Contracts\Makeable;
 use Core\Facades\Config;
 use Core\Logging\LoggerFactory;
 use Core\Providers\ConfigServiceProvider;
-use Core\Providers\DatabaseServiceProvider;
-use Core\Providers\FilesystemServiceProvider;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Container;
@@ -43,8 +41,13 @@ class App implements AppContract, Makeable
     public function setup(): void
     {
         self::$container->addServiceProvider(new ConfigServiceProvider());
-        self::$container->addServiceProvider(new FilesystemServiceProvider());
-        self::$container->addServiceProvider(new DatabaseServiceProvider());
+
+        /** @var array $providers */
+        $providers = Config::get('app.providers');
+
+        foreach ($providers as $provider) {
+            self::$container->addServiceProvider(new $provider());
+        }
 
         /** @var string $channel */
         $channel = Config::get('logging.default');

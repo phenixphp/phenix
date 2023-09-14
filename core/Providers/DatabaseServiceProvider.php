@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Providers;
 
+use Core\Console\Commands\Database\MakeMigration;
+use Core\Console\Commands\Database\Migrate;
+use Core\Console\Commands\Database\Rollback;
 use Core\Database\Connections\ConnectionFactory;
 use Core\Database\Constants\Connections;
 use Core\Database\Constants\Drivers;
@@ -44,5 +47,11 @@ class DatabaseServiceProvider extends ServiceProvider
         $this->bind(Connections::name('default'), new ResolvableArgument(Connections::name($defaultConnection)));
 
         $this->bind(Connections::name($defaultConnection), $callback);
+
+        $this->commands([
+            MakeMigration::class,
+            Migrate::class,
+            Rollback::class,
+        ]);
     }
 }
