@@ -23,6 +23,7 @@ class App implements AppContract, Makeable
 {
     private static string $path;
     private static Container $container;
+    private static string|null $logginChannel = null;
 
     private Router $router;
     private Logger $logger;
@@ -50,7 +51,7 @@ class App implements AppContract, Makeable
         }
 
         /** @var string $channel */
-        $channel = Config::get('logging.default');
+        $channel = self::$logginChannel ?? Config::get('logging.default');
 
         $this->logger = LoggerFactory::make($channel);
 
@@ -99,6 +100,11 @@ class App implements AppContract, Makeable
     public static function path(): string
     {
         return self::$path;
+    }
+
+    public static function setLoggingChannel(string $channel): void
+    {
+        self::$logginChannel = $channel;
     }
 
     public function swap(string $key, object $concrete): void
