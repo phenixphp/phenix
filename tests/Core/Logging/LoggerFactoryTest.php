@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Console;
-
 use Amp\Log\ConsoleFormatter;
 use Core\Exceptions\RuntimeError;
 use Core\Logging\LoggerFactory;

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Filesystem;
-
 use Amp\File\File as FileHandler;
 use Core\Filesystem\File;
 

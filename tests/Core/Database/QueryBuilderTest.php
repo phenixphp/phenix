@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database;
-
 use Core\Database\Constants\Connections;
 use Core\Database\QueryBuilder;
 use Core\Facades\DB;

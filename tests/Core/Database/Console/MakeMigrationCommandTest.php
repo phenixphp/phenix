@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\Console;
-
 use Core\Contracts\Filesystem\File;
 use Tests\Util\Mock;
 

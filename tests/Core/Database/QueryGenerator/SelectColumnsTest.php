@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\QueryGenerator;
-
 use Core\Database\Alias;
 use Core\Database\Constants\Operators;
 use Core\Database\Functions;
