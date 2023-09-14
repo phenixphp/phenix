@@ -38,7 +38,7 @@ abstract class Maker extends Command
         $namespace = $this->prepareNamespace($namespace);
 
         if (File::exists($filePath) && ! $force) {
-            $output->writeln(["{$this->commonName()} already exists!", self::EMPTY_LINE]);
+            $output->writeln(["<comment>{$this->commonName()} already exists!</comment>", self::EMPTY_LINE]);
 
             return Command::SUCCESS;
         }
@@ -48,7 +48,7 @@ abstract class Maker extends Command
 
         File::put($filePath, $stub);
 
-        $output->writeln(["{$this->commonName()} successfully generated!", self::EMPTY_LINE]);
+        $output->writeln(["<info>{$this->commonName()} successfully generated!</info>", self::EMPTY_LINE]);
 
         return Command::SUCCESS;
     }
