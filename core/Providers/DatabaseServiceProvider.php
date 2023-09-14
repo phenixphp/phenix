@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Core\Providers;
 
-use Core\Console\Commands\Database\MakeMigration;
-use Core\Console\Commands\Database\Migrate;
-use Core\Console\Commands\Database\Rollback;
 use Core\Database\Connections\ConnectionFactory;
+use Core\Database\Console\MakeMigration;
+use Core\Database\Console\MakeSeeder;
+use Core\Database\Console\Migrate;
+use Core\Database\Console\Rollback;
 use Core\Database\Constants\Connections;
 use Core\Database\Constants\Drivers;
 use Core\Facades\Config;
@@ -50,6 +51,7 @@ class DatabaseServiceProvider extends ServiceProvider
 
         $this->commands([
             MakeMigration::class,
+            MakeSeeder::class,
             Migrate::class,
             Rollback::class,
         ]);

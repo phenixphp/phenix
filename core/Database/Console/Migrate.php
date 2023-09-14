@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Console\Commands\Database;
+namespace Core\Database\Console;
 
 use DateTime;
 use Exception;
