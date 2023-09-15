@@ -62,7 +62,7 @@ class App implements AppContract, Makeable
 
     public function setRouter(): void
     {
-        $this->router = new Router($this->server, $this->errorHandler);
+        $this->router = new Router($this->server, $this->logger, $this->errorHandler);
 
         /** @var array $routes */
         $routes = self::$container->get('route')->toArray();
@@ -71,6 +71,10 @@ class App implements AppContract, Makeable
             [$method, $path, $closure, $middlewares] = $route;
 
             $this->router->addRoute($method->value, $path, $closure, ...$middlewares);
+
+            foreach ($middlewares as $middleware) {
+                $this->router->addMiddleware($middleware);
+            }
         }
     }
 
