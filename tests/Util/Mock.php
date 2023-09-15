@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Util;
 
-use Pest\Mock\Mock as Mockery;
-
 class Mock
 {
     /**
