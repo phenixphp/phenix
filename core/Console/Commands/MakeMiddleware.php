@@ -35,7 +35,7 @@ class MakeMiddleware extends Maker
 
     protected function outputDirectory(): string
     {
-        return 'app/Http/Middleware';
+        return 'app'. DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Middleware';
     }
 
     protected function stub(): string
@@ -43,7 +43,7 @@ class MakeMiddleware extends Maker
         return 'middleware.stub';
     }
 
-    protected function suffix(): string
+    protected function commonName(): string
     {
         return 'Middleware';
     }

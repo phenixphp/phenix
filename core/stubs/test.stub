@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace {namespace};
-
 it('asserts truthy', function () {
     expect(true)->toBeTruthy();
 });

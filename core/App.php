@@ -14,8 +14,6 @@ use Core\Contracts\Makeable;
 use Core\Facades\Config;
 use Core\Logging\LoggerFactory;
 use Core\Providers\ConfigServiceProvider;
-use Core\Providers\DatabaseServiceProvider;
-use Core\Providers\FilesystemServiceProvider;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Container;
@@ -25,6 +23,7 @@ class App implements AppContract, Makeable
 {
     private static string $path;
     private static Container $container;
+    private static string|null $logginChannel = null;
 
     private Router $router;
     private Logger $logger;
@@ -43,22 +42,27 @@ class App implements AppContract, Makeable
     public function setup(): void
     {
         self::$container->addServiceProvider(new ConfigServiceProvider());
-        self::$container->addServiceProvider(new FilesystemServiceProvider());
-        self::$container->addServiceProvider(new DatabaseServiceProvider());
+
+        /** @var array $providers */
+        $providers = Config::get('app.providers');
+
+        foreach ($providers as $provider) {
+            self::$container->addServiceProvider(new $provider());
+        }
 
         /** @var string $channel */
-        $channel = Config::get('logging.default');
+        $channel = self::$logginChannel ?? Config::get('logging.default');
 
         $this->logger = LoggerFactory::make($channel);
 
-        $this->setupServer();
+        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
 
         $this->setupDefinitions();
     }
 
     public function setRouter(): void
     {
-        $this->router = new Router($this->server, $this->errorHandler);
+        $this->router = new Router($this->server, $this->logger, $this->errorHandler);
 
         /** @var array $routes */
         $routes = self::$container->get('route')->toArray();
@@ -67,11 +71,23 @@ class App implements AppContract, Makeable
             [$method, $path, $closure, $middlewares] = $route;
 
             $this->router->addRoute($method->value, $path, $closure, ...$middlewares);
+
+            foreach ($middlewares as $middleware) {
+                $this->router->addMiddleware($middleware);
+            }
         }
     }
 
     public function run(): void
     {
+        /** @var int $port */
+        $port = Config::get('app.port');
+
+        [$ipv4, $ipv6] = Config::get('app.url');
+
+        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
+        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
+
         $this->server->start($this->router, $this->errorHandler);
 
         if ($this->signalTrapping) {
@@ -98,6 +114,11 @@ class App implements AppContract, Makeable
         return self::$path;
     }
 
+    public static function setLoggingChannel(string $channel): void
+    {
+        self::$logginChannel = $channel;
+    }
+
     public function swap(string $key, object $concrete): void
     {
         self::$container->extend($key)->setConcrete($concrete);
@@ -106,19 +127,6 @@ class App implements AppContract, Makeable
     public function disableSignalTrapping(): void
     {
         $this->signalTrapping = false;
-    }
-
-    private function setupServer(): void
-    {
-        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
-
-        /** @var int $port */
-        $port = Config::get('app.port');
-
-        [$ipv4, $ipv6] = Config::get('app.url');
-
-        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
-        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
     }
 
     private function setupDefinitions(): void

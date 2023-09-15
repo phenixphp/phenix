@@ -18,6 +18,8 @@ class TestCase extends AsyncTestCase
     {
         parent::setUp();
 
+        App::setLoggingChannel('file');
+
         if (! isset($this->app)) {
             $this->app = require __DIR__ . '/../core/bootstrap.php';
             $this->app->enableTestingMode();

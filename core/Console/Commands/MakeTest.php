@@ -55,7 +55,7 @@ class MakeTest extends Maker
         return 'test.stub';
     }
 
-    protected function suffix(): string
+    protected function commonName(): string
     {
         return 'Test';
     }

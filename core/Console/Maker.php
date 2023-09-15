@@ -21,7 +21,7 @@ abstract class Maker extends Command
 
     abstract protected function stub(): string;
 
-    abstract protected function suffix(): string;
+    abstract protected function commonName(): string;
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -32,12 +32,13 @@ abstract class Maker extends Command
 
         $namespace = explode(DIRECTORY_SEPARATOR, $name);
         $className = array_pop($namespace);
+        $fileName = $this->getCustomFileName() ?? $className;
 
-        $filePath = $this->preparePath($namespace) . "/{$className}.php";
+        $filePath = $this->preparePath($namespace) . DIRECTORY_SEPARATOR . "{$fileName}.php";
         $namespace = $this->prepareNamespace($namespace);
 
         if (File::exists($filePath) && ! $force) {
-            $output->writeln(["{$this->suffix()} already exists!", self::EMPTY_LINE]);
+            $output->writeln(["<comment>{$this->commonName()} already exists!</comment>", self::EMPTY_LINE]);
 
             return Command::SUCCESS;
         }
@@ -47,7 +48,7 @@ abstract class Maker extends Command
 
         File::put($filePath, $stub);
 
-        $output->writeln(["{$this->suffix()} successfully generated!", self::EMPTY_LINE]);
+        $output->writeln(["<info>{$this->commonName()} successfully generated!</info>", self::EMPTY_LINE]);
 
         return Command::SUCCESS;
     }
@@ -55,7 +56,7 @@ abstract class Maker extends Command
     /**
      * @param array<int, string> $namespace
      */
-    private function preparePath(array $namespace): string
+    protected function preparePath(array $namespace): string
     {
         $path = base_path($this->outputDirectory());
 
@@ -70,7 +71,7 @@ abstract class Maker extends Command
         return $path;
     }
 
-    private function checkDirectory(string $path): void
+    protected function checkDirectory(string $path): void
     {
         if (! File::exists($path)) {
             File::createDirectory($path);
@@ -80,10 +81,15 @@ abstract class Maker extends Command
     /**
      * @param array<int, string> $namespace
      */
-    private function prepareNamespace(array $namespace): string
+    protected function prepareNamespace(array $namespace): string
     {
         array_unshift($namespace, NamespaceResolver::parse($this->outputDirectory()));
 
         return implode('\\', $namespace);
+    }
+
+    protected function getCustomFileName(): string|null
+    {
+        return null;
     }
 }

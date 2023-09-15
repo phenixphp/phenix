@@ -36,7 +36,7 @@ class MakeController extends Maker
 
     protected function outputDirectory(): string
     {
-        return 'app/Http/Controllers';
+        return 'app' . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR .'Controllers';
     }
 
     protected function stub(): string
@@ -44,7 +44,7 @@ class MakeController extends Maker
         return $this->input->getOption('api') ? 'controller.api.stub' : 'controller.stub';
     }
 
-    protected function suffix(): string
+    protected function commonName(): string
     {
         return 'Controller';
     }

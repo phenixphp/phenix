@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\QueryGenerator;
-
 use Core\Database\QueryGenerator;
 
 it('generates delete statement', function () {

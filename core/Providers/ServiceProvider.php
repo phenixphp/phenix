@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Providers;
 
+use Core\Console\Phenix;
 use League\Container\Definition\DefinitionInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
@@ -35,5 +36,10 @@ abstract class ServiceProvider extends AbstractServiceProvider implements Bootab
         $this->provided[] = $key;
 
         return $this->getContainer()->add($key, $concrete);
+    }
+
+    protected function commands(array|string $commands): void
+    {
+        Phenix::pushCommands((array) $commands);
     }
 }
