@@ -42,12 +42,12 @@
     "require-dev": {
         "amphp/phpunit-util": "^v3.0.0-beta.3",
         "friendsofphp/php-cs-fixer": "^3.11",
+        "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^6.3",
         "nunomaduro/phpinsights": "^2.6",
         "pestphp/pest": "^1.22",
         "pestphp/pest-plugin-faker": "^1.0",
         "pestphp/pest-plugin-global-assertions": "^1.0",
-        "pestphp/pest-plugin-mock": "^1.0",
         "pestphp/pest-plugin-parallel": "^1.2",
         "phpmyadmin/sql-parser": "^5.7",
         "phpstan/extension-installer": "^1.2",
