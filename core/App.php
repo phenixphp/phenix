@@ -55,7 +55,7 @@ class App implements AppContract, Makeable
 
         $this->logger = LoggerFactory::make($channel);
 
-        $this->setupServer();
+        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
 
         $this->setupDefinitions();
     }
@@ -80,6 +80,14 @@ class App implements AppContract, Makeable
 
     public function run(): void
     {
+        /** @var int $port */
+        $port = Config::get('app.port');
+
+        [$ipv4, $ipv6] = Config::get('app.url');
+
+        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
+        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
+
         $this->server->start($this->router, $this->errorHandler);
 
         if ($this->signalTrapping) {
@@ -119,19 +127,6 @@ class App implements AppContract, Makeable
     public function disableSignalTrapping(): void
     {
         $this->signalTrapping = false;
-    }
-
-    private function setupServer(): void
-    {
-        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
-
-        /** @var int $port */
-        $port = Config::get('app.port');
-
-        [$ipv4, $ipv6] = Config::get('app.url');
-
-        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
-        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
     }
 
     private function setupDefinitions(): void
