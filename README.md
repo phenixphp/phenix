@@ -6,7 +6,6 @@
 
 Phenix is a web framework built on pure PHP, without external extensions, based on the [Amphp](https://amphp.org/)  ecosystem, which provides non-blocking operations, asynchronism and parallel code execution natively. It runs in the PHP SAPI CLI and on its own server, it is simply powerful.
 
-
 ## Learning Phenix
 
 You can learn about Phenix in the official [documentation](https://phenix.omarbarbosa.com) and discover the power of asynchronous and concurrent applications in native PHP.
