@@ -35,6 +35,7 @@
         "league/container": "^4.2",
         "nesbot/carbon": "^2.67",
         "ramsey/collection": "^2.0",
+        "robmorgan/phinx": "^2.0",
         "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4"
     },
@@ -71,6 +72,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
         "test": "XDEBUG_MODE=off vendor/bin/pest",
         "test:debug": "vendor/bin/pest",
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Runtime;
-
 use App\Http\Controllers\WelcomeController;
 use App\Http\Middleware\AcceptJsonResponses;
 use Core\Constants\HttpMethods;

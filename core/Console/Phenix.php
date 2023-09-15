@@ -4,30 +4,33 @@ declare(strict_types=1);
 
 namespace Core\Console;
 
-use Core\Util\Directory;
-use Core\Util\NamespaceResolver;
 use Symfony\Component\Console\Application;
 
 class Phenix extends Application
 {
+    private static array $commands;
+
     public function __construct()
     {
         parent::__construct('Phenix', '0.0.1');
     }
 
-    public function registerCommands(): void
+    public static function pushCommand(string $command): void
     {
-        $commands = Directory::all(self::getCommandsPath());
+        self::$commands[] = $command;
+    }
 
+    public static function pushCommands(array $commands): void
+    {
         foreach ($commands as $command) {
-            $command = NamespaceResolver::parse($command);
-
-            $this->add(new $command());
+            self::pushCommand($command);
         }
     }
 
-    private static function getCommandsPath(): string
+    public function registerCommands(): void
     {
-        return base_path('core'. DIRECTORY_SEPARATOR . 'Console' . DIRECTORY_SEPARATOR . 'Commands');
+        foreach (self::$commands as $command) {
+            $this->add(new $command());
+        }
     }
 }

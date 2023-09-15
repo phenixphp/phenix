@@ -29,4 +29,9 @@ return [
             'password' => env('DB_PASSWORD'),
         ],
     ],
+
+    'paths' => [
+        'migrations' => base_path('database' . DIRECTORY_SEPARATOR . 'migrations'),
+        'seeds' => base_path('database' . DIRECTORY_SEPARATOR . 'seeds'),
+    ],
 ];

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Database\QueryGenerator;
-
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Core\Database\Constants\Operators;

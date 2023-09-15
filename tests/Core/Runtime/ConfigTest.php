@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Runtime;
-
 use Core\Runtime\Config;
 
 it('can get environment configurations successfully', function () {

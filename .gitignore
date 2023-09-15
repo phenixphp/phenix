@@ -1,4 +1,5 @@
 .env
+.env.testing
 .env.backup
 .vscode
 .idea
