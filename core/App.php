@@ -12,8 +12,8 @@ use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
 use Core\Facades\Config;
+use Core\Facades\Route;
 use Core\Logging\LoggerFactory;
-use Core\Providers\ConfigServiceProvider;
 use Core\Util\Directory;
 use Core\Util\NamespaceResolver;
 use League\Container\Container;
@@ -41,7 +41,10 @@ class App implements AppContract, Makeable
 
     public function setup(): void
     {
-        self::$container->addServiceProvider(new ConfigServiceProvider());
+        self::$container->add(
+            Config::getKeyName(),
+            \Core\Runtime\Config::build(...)
+        )->setShared(true);
 
         /** @var array $providers */
         $providers = Config::get('app.providers');
@@ -65,7 +68,7 @@ class App implements AppContract, Makeable
         $this->router = new Router($this->server, $this->logger, $this->errorHandler);
 
         /** @var array $routes */
-        $routes = self::$container->get('route')->toArray();
+        $routes = self::$container->get(Route::getKeyName())->toArray();
 
         foreach ($routes as $route) {
             [$method, $path, $closure, $middlewares] = $route;
@@ -140,10 +143,10 @@ class App implements AppContract, Makeable
 
     private function registerFacades(): void
     {
-        self::$container->add(
-            \Core\Facades\Route::getKeyName(),
-            \Core\Routing\Route::class
-        )->setShared(true);
+        // self::$container->add(
+        //     \Core\Facades\Route::getKeyName(),
+        //     \Core\Routing\Route::class
+        // )->setShared(true);
 
         self::$container->add(
             \Core\Facades\DB::getKeyName(),

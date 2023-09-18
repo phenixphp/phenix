@@ -21,6 +21,6 @@ class Route extends Facade
 {
     public static function getKeyName(): string
     {
-        return 'route';
+        return \Core\Routing\Route::class;
     }
 }

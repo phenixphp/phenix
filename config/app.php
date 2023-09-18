@@ -9,6 +9,7 @@ return [
     'port' => env('APP_PORT', fn () => 1337),
     'providers' => [
         Core\Providers\CoreServiceProvider::class,
+        Core\Providers\RouteServiceProvider::class,
         Core\Providers\DatabaseServiceProvider::class,
         Core\Providers\FilesystemServiceProvider::class,
     ],
