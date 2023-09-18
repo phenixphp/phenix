@@ -73,7 +73,7 @@ class App implements AppContract, Makeable
         foreach ($routes as $route) {
             [$method, $path, $closure, $middlewares] = $route;
 
-            $this->router->addRoute($method->value, $path, $closure, ...$middlewares);
+            $this->router->addRoute($method->value, $path, $closure);
 
             foreach ($middlewares as $middleware) {
                 $this->router->addMiddleware($middleware);
@@ -134,24 +134,10 @@ class App implements AppContract, Makeable
 
     private function setupDefinitions(): void
     {
-        $this->registerFacades();
         $this->registerControllers();
 
         self::$container->add(Phenix::class)
             ->addMethodCall('registerCommands');
-    }
-
-    private function registerFacades(): void
-    {
-        // self::$container->add(
-        //     \Core\Facades\Route::getKeyName(),
-        //     \Core\Routing\Route::class
-        // )->setShared(true);
-
-        self::$container->add(
-            \Core\Facades\DB::getKeyName(),
-            \Core\Database\QueryBuilder::class
-        );
     }
 
     private function registerControllers(): void
