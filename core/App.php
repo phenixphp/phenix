@@ -14,8 +14,6 @@ use Core\Contracts\Makeable;
 use Core\Facades\Config;
 use Core\Facades\Route;
 use Core\Logging\LoggerFactory;
-use Core\Util\Directory;
-use Core\Util\NamespaceResolver;
 use League\Container\Container;
 use Monolog\Logger;
 
@@ -60,7 +58,7 @@ class App implements AppContract, Makeable
 
         $this->server = SocketHttpServer::createForDirectAccess($this->logger);
 
-        $this->setupDefinitions();
+        self::$container->add(Phenix::class)->addMethodCall('registerCommands');
     }
 
     public function setRouter(): void
@@ -130,29 +128,5 @@ class App implements AppContract, Makeable
     public function disableSignalTrapping(): void
     {
         $this->signalTrapping = false;
-    }
-
-    private function setupDefinitions(): void
-    {
-        $this->registerControllers();
-
-        self::$container->add(Phenix::class)
-            ->addMethodCall('registerCommands');
-    }
-
-    private function registerControllers(): void
-    {
-        $controllers = Directory::all(self::getControllersPath());
-
-        foreach ($controllers as $controller) {
-            $controller = NamespaceResolver::parse($controller);
-
-            self::$container->add($controller);
-        }
-    }
-
-    private function getControllersPath(): string
-    {
-        return base_path('app'. DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers');
     }
 }
