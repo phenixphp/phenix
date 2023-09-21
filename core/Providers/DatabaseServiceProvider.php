@@ -12,6 +12,7 @@ use Core\Database\Console\Rollback;
 use Core\Database\Console\SeedRun;
 use Core\Database\Constants\Connections;
 use Core\Database\Constants\Drivers;
+use Core\Database\QueryBuilder;
 use Core\Facades\Config;
 use League\Container\Argument\ResolvableArgument;
 
@@ -33,6 +34,8 @@ class DatabaseServiceProvider extends ServiceProvider
 
             $this->bind(Connections::name($connection), $callback);
         }
+
+        $this->bind(QueryBuilder::class);
     }
 
     public function boot(): void

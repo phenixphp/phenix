@@ -12,10 +12,8 @@ use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
 use Core\Facades\Config;
+use Core\Facades\Route;
 use Core\Logging\LoggerFactory;
-use Core\Providers\ConfigServiceProvider;
-use Core\Util\Directory;
-use Core\Util\NamespaceResolver;
 use League\Container\Container;
 use Monolog\Logger;
 
@@ -41,7 +39,10 @@ class App implements AppContract, Makeable
 
     public function setup(): void
     {
-        self::$container->addServiceProvider(new ConfigServiceProvider());
+        self::$container->add(
+            Config::getKeyName(),
+            \Core\Runtime\Config::build(...)
+        )->setShared(true);
 
         /** @var array $providers */
         $providers = Config::get('app.providers');
@@ -57,7 +58,7 @@ class App implements AppContract, Makeable
 
         $this->server = SocketHttpServer::createForDirectAccess($this->logger);
 
-        $this->setupDefinitions();
+        self::$container->add(Phenix::class)->addMethodCall('registerCommands');
     }
 
     public function setRouter(): void
@@ -65,12 +66,12 @@ class App implements AppContract, Makeable
         $this->router = new Router($this->server, $this->logger, $this->errorHandler);
 
         /** @var array $routes */
-        $routes = self::$container->get('route')->toArray();
+        $routes = self::$container->get(Route::getKeyName())->toArray();
 
         foreach ($routes as $route) {
             [$method, $path, $closure, $middlewares] = $route;
 
-            $this->router->addRoute($method->value, $path, $closure, ...$middlewares);
+            $this->router->addRoute($method->value, $path, $closure);
 
             foreach ($middlewares as $middleware) {
                 $this->router->addMiddleware($middleware);
@@ -127,43 +128,5 @@ class App implements AppContract, Makeable
     public function disableSignalTrapping(): void
     {
         $this->signalTrapping = false;
-    }
-
-    private function setupDefinitions(): void
-    {
-        $this->registerFacades();
-        $this->registerControllers();
-
-        self::$container->add(Phenix::class)
-            ->addMethodCall('registerCommands');
-    }
-
-    private function registerFacades(): void
-    {
-        self::$container->add(
-            \Core\Facades\Route::getKeyName(),
-            \Core\Routing\Route::class
-        )->setShared(true);
-
-        self::$container->add(
-            \Core\Facades\DB::getKeyName(),
-            \Core\Database\QueryBuilder::class
-        );
-    }
-
-    private function registerControllers(): void
-    {
-        $controllers = Directory::all(self::getControllersPath());
-
-        foreach ($controllers as $controller) {
-            $controller = NamespaceResolver::parse($controller);
-
-            self::$container->add($controller);
-        }
-    }
-
-    private function getControllersPath(): string
-    {
-        return base_path('app'. DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers');
     }
 }
