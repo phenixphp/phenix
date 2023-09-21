@@ -79,9 +79,11 @@ class App implements AppContract, Makeable
             );
         }
 
-            foreach ($middlewares as $middleware) {
-                $this->router->addMiddleware($middleware);
-            }
+        /** @var array $middlewares */
+        $middlewares = Config::get('app.middlewares');
+
+        foreach ($middlewares as $middleware) {
+            $this->router->addMiddleware(new $middleware());
         }
     }
 

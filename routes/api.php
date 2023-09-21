@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\WelcomeController;
-use App\Http\Middleware\AcceptJsonResponses;
 use Core\Facades\Route;
 
-Route::get('/', [WelcomeController::class, 'index'])
-    ->middleware(AcceptJsonResponses::class);
+Route::get('/', [WelcomeController::class, 'index']);
