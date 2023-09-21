@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core;
 
 use Amp\Http\Server\DefaultErrorHandler;
+use Amp\Http\Server\Middleware;
 use Amp\Http\Server\Router;
 use Amp\Http\Server\SocketHttpServer;
 use Amp\Socket;
@@ -71,11 +72,18 @@ class App implements AppContract, Makeable
         foreach ($routes as $route) {
             [$method, $path, $closure, $middlewares] = $route;
 
-            $this->router->addRoute($method->value, $path, $closure);
+            $this->router->addRoute(
+                $method->value,
+                $path,
+                Middleware\stackMiddleware($closure, ...$middlewares)
+            );
+        }
 
-            foreach ($middlewares as $middleware) {
-                $this->router->addMiddleware($middleware);
-            }
+        /** @var array $middlewares */
+        $middlewares = Config::get('app.middlewares');
+
+        foreach ($middlewares as $middleware) {
+            $this->router->addMiddleware(new $middleware());
         }
     }
 
