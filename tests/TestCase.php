@@ -30,10 +30,8 @@ class TestCase extends AsyncTestCase
     {
         parent::tearDown();
 
-        if (isset($this->app)) {
-            $this->app->stop();
-            $this->app = null;
-        }
+        $this->app?->stop();
+        $this->app = null;
     }
 
     protected function phenix(string $signature, array $arguments): CommandTester
