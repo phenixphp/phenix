@@ -21,8 +21,9 @@ class TestCase extends AsyncTestCase
         App::setLoggingChannel('file');
 
         if (! isset($this->app)) {
+            AppProxy::enableTestingMode();
+
             $this->app = require __DIR__ . '/../core/bootstrap.php';
-            $this->app->enableTestingMode();
         }
     }
 
