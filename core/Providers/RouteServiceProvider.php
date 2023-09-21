@@ -15,6 +15,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->bind(Route::class)->setShared(true);
 
         $this->registerControllers();
+        $this->loadRoutes();
     }
 
     private function registerControllers(): void
@@ -31,5 +32,12 @@ class RouteServiceProvider extends ServiceProvider
     private function getControllersPath(): string
     {
         return base_path('app'. DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers');
+    }
+
+    private function loadRoutes(): void
+    {
+        foreach (Directory::all(base_path('routes')) as $file) {
+            require $file;
+        }
     }
 }

@@ -21,11 +21,4 @@ class AppBuilder implements Buildable
 
         return new AppProxy($app);
     }
-
-    private static function loadRoutes(): void
-    {
-        foreach (Directory::all(base_path('routes')) as $file) {
-            require $file;
-        }
-    }
 }
