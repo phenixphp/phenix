@@ -21,8 +21,9 @@ class TestCase extends AsyncTestCase
         App::setLoggingChannel('file');
 
         if (! isset($this->app)) {
+            AppProxy::enableTestingMode();
+
             $this->app = require __DIR__ . '/../core/bootstrap.php';
-            $this->app->enableTestingMode();
         }
     }
 
@@ -30,10 +31,8 @@ class TestCase extends AsyncTestCase
     {
         parent::tearDown();
 
-        if (isset($this->app)) {
-            $this->app->stop();
-            $this->app = null;
-        }
+        $this->app?->stop();
+        $this->app = null;
     }
 
     protected function phenix(string $signature, array $arguments): CommandTester
