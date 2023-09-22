@@ -57,38 +57,15 @@ class App implements AppContract, Makeable
 
         $this->logger = LoggerFactory::make($channel);
 
-        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
-
         self::$container->add(Phenix::class)->addMethodCall('registerCommands');
-    }
-
-    public function setRouter(): void
-    {
-        $this->router = new Router($this->server, $this->logger, $this->errorHandler);
-
-        /** @var array $routes */
-        $routes = self::$container->get(Route::getKeyName())->toArray();
-
-        foreach ($routes as $route) {
-            [$method, $path, $closure, $middlewares] = $route;
-
-            $this->router->addRoute(
-                $method->value,
-                $path,
-                Middleware\stackMiddleware($closure, ...$middlewares)
-            );
-        }
-
-        /** @var array $middlewares */
-        $middlewares = Config::get('app.middlewares');
-
-        foreach ($middlewares as $middleware) {
-            $this->router->addMiddleware(new $middleware());
-        }
     }
 
     public function run(): void
     {
+        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
+
+        $this->setRouter();
+
         /** @var int $port */
         $port = Config::get('app.port');
 
@@ -136,5 +113,30 @@ class App implements AppContract, Makeable
     public function disableSignalTrapping(): void
     {
         $this->signalTrapping = false;
+    }
+
+    private function setRouter(): void
+    {
+        $this->router = new Router($this->server, $this->logger, $this->errorHandler);
+
+        /** @var array $routes */
+        $routes = self::$container->get(Route::getKeyName())->toArray();
+
+        foreach ($routes as $route) {
+            [$method, $path, $closure, $middlewares] = $route;
+
+            $this->router->addRoute(
+                $method->value,
+                $path,
+                Middleware\stackMiddleware($closure, ...$middlewares)
+            );
+        }
+
+        /** @var array $middlewares */
+        $middlewares = Config::get('app.middlewares');
+
+        foreach ($middlewares as $middleware) {
+            $this->router->addMiddleware(new $middleware());
+        }
     }
 }

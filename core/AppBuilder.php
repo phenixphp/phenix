@@ -17,7 +17,6 @@ class AppBuilder implements Buildable
         Environment::load();
 
         $app->setup();
-        $app->setRouter();
 
         return new AppProxy($app);
     }
