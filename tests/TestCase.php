@@ -31,7 +31,6 @@ class TestCase extends AsyncTestCase
     {
         parent::tearDown();
 
-        $this->app?->stop();
         $this->app = null;
     }
 
