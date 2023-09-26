@@ -172,6 +172,19 @@ trait BuildsQuery
         return $this;
     }
 
+    public function paginate(int $page = 1, int $perPage = 15): self
+    {
+        $this->limit($perPage);
+
+        $page = $page < 1 ? 1 : $page;
+
+        $offset = $page === 1 ? 0 : ($page * abs($perPage));
+
+        $this->offset = [Operators::OFFSET->value, $offset];
+
+        return $this;
+    }
+
     public function toSql(): array
     {
         $sql = match ($this->action) {
@@ -216,6 +229,11 @@ trait BuildsQuery
 
         if (isset($this->limit)) {
             $query[] = Arr::implodeDeeply($this->limit);
+        }
+
+        if (isset($this->offset)) {
+            $query[] = Arr::implodeDeeply($this->offset);
+
         }
 
         return Arr::implodeDeeply($query);
