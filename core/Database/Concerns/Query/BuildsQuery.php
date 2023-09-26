@@ -172,7 +172,7 @@ trait BuildsQuery
         return $this;
     }
 
-    public function paginate(int $page = 1, int $perPage = 15): self
+    public function page(int $page = 1, int $perPage = 15): self
     {
         $this->limit($perPage);
 

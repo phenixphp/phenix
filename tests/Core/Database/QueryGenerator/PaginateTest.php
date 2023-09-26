@@ -9,7 +9,7 @@ it('generates offset pagination query', function () {
 
     $sql = $query->table('users')
         ->selectAllColumns()
-        ->paginate()
+        ->page()
         ->toSql();
 
     [$dml, $params] = $sql;
@@ -23,7 +23,7 @@ it('generates offset pagination query with indicate page', function () {
 
     $sql = $query->table('users')
         ->selectAllColumns()
-        ->paginate(3)
+        ->page(3)
         ->toSql();
 
     [$dml, $params] = $sql;
@@ -38,7 +38,7 @@ it('overwrites limit when pagination is called', function () {
     $sql = $query->table('users')
         ->selectAllColumns()
         ->limit(5)
-        ->paginate(2)
+        ->page(2)
         ->toSql();
 
     [$dml, $params] = $sql;
