@@ -178,7 +178,7 @@ trait BuildsQuery
 
         $page = $page < 1 ? 1 : $page;
 
-        $offset = $page === 1 ? 0 : ($page * abs($perPage));
+        $offset = $page === 1 ? 0 : (($page - 1) * abs($perPage));
 
         $this->offset = [Operators::OFFSET->value, $offset];
 
