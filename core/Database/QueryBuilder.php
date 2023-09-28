@@ -101,8 +101,7 @@ class QueryBuilder extends QueryBase
         $count = $this->connection
             ->prepare($dml)
             ->execute($params)
-            ->getIterator()
-            ->current();
+            ->fetchRow();
 
         return array_values($count)[0];
     }
