@@ -15,16 +15,16 @@ class Paginator implements Arrayable
     private Query $query;
     private int $itemsEachSide = 2;
     private int $linksNumber = 5;
-    private int $lastPage;
+    private readonly int $lastPage;
 
     private bool $withQueryParameters = true;
 
     public function __construct(
         private Uri $uri,
         private Collection $data,
-        private int $total,
-        private int $perPage,
-        private int $currentPage
+        private readonly int $total,
+        private readonly int $currentPage,
+        private readonly int $perPage
     ) {
         $this->query = Query::fromUri($this->uri);
         $this->lastPage = (int) ceil($this->total / $this->perPage);
@@ -85,6 +85,7 @@ class Paginator implements Arrayable
 
         return $this->total;
     }
+
     public function links(): array
     {
         $links = [];
@@ -102,7 +103,7 @@ class Paginator implements Arrayable
 
         $start = $this->currentPage - $prepend;
 
-        for ($i=$start; $i < $this->currentPage; $i++) {
+        for ($i = $start; $i < $this->currentPage; $i++) {
             $links[] = $this->buildLink($i);
         }
 
@@ -113,7 +114,7 @@ class Paginator implements Arrayable
 
         $limit = $this->currentPage + $append;
 
-        for ($i=$this->currentPage; $i < $limit; $i++) {
+        for ($i = $this->currentPage; $i < $limit; $i++) {
             $links[] = $this->buildLink($i);
         }
 
@@ -162,7 +163,13 @@ class Paginator implements Arrayable
 
     private function buildPageUrl(int $page): string
     {
-        $parameters = array_merge($this->getQueryParameters(), ['page' => $page, 'per_page' => $this->perPage]);
+        $parameters['page'] = $page;
+
+        if ($this->query->has('per_page')) {
+            $parameters['per_page'] = $this->perPage;
+        }
+
+        $parameters = array_merge($this->getQueryParameters(), $parameters);
 
         return URL::build($this->uri->getPath(), $parameters);
     }

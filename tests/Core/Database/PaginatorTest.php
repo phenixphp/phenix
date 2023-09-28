@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
+use Core\Data\Collection;
 use Core\Database\Paginator;
 use Core\Util\URL;
 use League\Uri\Uri;
-use Core\Data\Collection;
 
 it('calculates pagination data', function () {
     $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15]));
 
-    $paginator = new Paginator($uri, new Collection('array'), 50, 15, 1);
+    $paginator = new Paginator($uri, new Collection('array'), 50, 1, 15);
 
     expect($paginator->data()->toArray())->toBe([]);
     expect($paginator->total())->toBe(50);
@@ -26,7 +26,7 @@ it('calculates pagination data', function () {
     $links = array_map(function (int $page) {
         return [
             'url' => URL::build('users', ['page' => $page, 'per_page' => 15]),
-            'label' => $page
+            'label' => $page,
         ];
     }, [1, 2, 3, 4]);
 
@@ -56,12 +56,12 @@ it('calculates pagination data in custom page', function (
 ) {
     $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15]));
 
-    $paginator = new Paginator($uri, new Collection('array'), 50, 15, $currentPage);
+    $paginator = new Paginator($uri, new Collection('array'), 50, $currentPage, 15);
 
     $links = array_map(function (int $page) {
         return [
             'url' => URL::build('users', ['page' => $page, 'per_page' => 15]),
-            'label' => $page
+            'label' => $page,
         ];
     }, [1, 2, 3, 4]);
 
@@ -97,7 +97,7 @@ it('calculates pagination data with separators', function (
 ) {
     $uri = Uri::new(URL::build('users', ['page' => $currentPage, 'per_page' => 15]));
 
-    $paginator = new Paginator($uri, new Collection('array'), 150, 15, $currentPage);
+    $paginator = new Paginator($uri, new Collection('array'), 150, $currentPage, 15);
 
     $links = array_map(function (string|int $page) {
         $url = \is_string($page)
@@ -106,7 +106,7 @@ it('calculates pagination data with separators', function (
 
         return [
             'url' => $url,
-            'label' => $page
+            'label' => $page,
         ];
     }, $dataset);
 
@@ -141,12 +141,12 @@ it('calculates pagination data with separators', function (
 it('calculates pagination data with query params', function () {
     $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15, 'active' => true]));
 
-    $paginator = new Paginator($uri, new Collection('array'), 50, 15, 1);
+    $paginator = new Paginator($uri, new Collection('array'), 50, 1, 15);
 
     $links = array_map(function (int $page) {
         return [
             'url' => URL::build('users', ['page' => $page, 'per_page' => 15, 'active' => true]),
-            'label' => $page
+            'label' => $page,
         ];
     }, [1, 2, 3, 4]);
 
@@ -170,13 +170,13 @@ it('calculates pagination data with query params', function () {
 it('calculates pagination data without query params', function () {
     $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15, 'active' => true]));
 
-    $paginator = new Paginator($uri, new Collection('array'), 50, 15, 1);
+    $paginator = new Paginator($uri, new Collection('array'), 50, 1, 15);
     $paginator->withoutQueryParameters();
 
     $links = array_map(function (int $page) {
         return [
             'url' => URL::build('users', ['page' => $page, 'per_page' => 15]),
-            'label' => $page
+            'label' => $page,
         ];
     }, [1, 2, 3, 4]);
 
