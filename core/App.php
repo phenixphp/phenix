@@ -69,10 +69,9 @@ class App implements AppContract, Makeable
         /** @var int $port */
         $port = Config::get('app.port');
 
-        [$ipv4, $ipv6] = Config::get('app.url');
+        $url = Config::get('app.url');
 
-        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
-        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
+        $this->server->expose(new Socket\InternetAddress($url, $port));
 
         $this->server->start($this->router, $this->errorHandler);
 
