@@ -129,11 +129,6 @@ class Paginator implements Arrayable
         return $links;
     }
 
-    private function buildLink(int $page, string|int|null $label = null): array
-    {
-        return ['url' => $this->buildPageUrl($page), 'label' => $label ?? $page];
-    }
-
     public function toArray(): array
     {
         return [
@@ -160,9 +155,14 @@ class Paginator implements Arrayable
             : [];
     }
 
+    private function buildLink(int $page, string|int|null $label = null): array
+    {
+        return ['url' => $this->buildPageUrl($page), 'label' => $label ?? $page];
+    }
+
     private function buildPageUrl(int $page): string
     {
-        $parameters = array_merge($this->getQueryParameters(), ['page' => $page]);
+        $parameters = array_merge($this->getQueryParameters(), ['page' => $page, 'per_page' => $this->perPage]);
 
         return URL::build($this->uri->getPath(), $parameters);
     }
