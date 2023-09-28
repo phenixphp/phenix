@@ -26,9 +26,4 @@ class URL
 
         return $uri;
     }
-
-    public static function fromUri(Uri $uri): string
-    {
-        return self::build($uri->getPath(), Query::fromUri($uri)->parameters());
-    }
 }
