@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add `paginate` to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
+- Add `count` to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
+
+### Changed
+- Load routes before server running. ([#41](https://github.com/barbosa89/phenix/pull/41))
+- Load custom environment files. ([#40](https://github.com/barbosa89/phenix/pull/40))
+- Improve service provider structure. ([#38](https://github.com/barbosa89/phenix/pull/38))
+
 # Release Notes for 0.1.x
 
 ## [v0.1.0 (2023-09-15)](https://github.com/barbosa89/phenix/compare/0.1.0...0.0.1-alpha.1)
