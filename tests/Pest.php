@@ -14,7 +14,7 @@
 use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
 use Core\Constants\HttpMethods;
-use Core\Facades\Config;
+use Core\Util\URL;
 use Tests\Util\TestResponse;
 
 uses(Tests\TestCase::class)->in('Core');
@@ -54,19 +54,7 @@ function call(
     array|string|null $body = null,
     array $headers = []
 ): TestResponse {
-    $path = trim($path, "/");
-
-    $port = Config::get('app.port');
-
-    [$ipv4,] = Config::get('app.url');
-
-    $uri = "http://{$ipv4}:{$port}/{$path}";
-
-    if (! empty($parameters)) {
-        $uri .= '?' . http_build_query($parameters);
-    }
-
-    $request = new Request($uri, $method->value);
+    $request = new Request(URL::build($path, $parameters), $method->value);
 
     if (! empty($headers)) {
         $request->setHeaders($headers);
