@@ -185,6 +185,15 @@ trait BuildsQuery
         return $this;
     }
 
+    public function count(string $column = '*'): self
+    {
+        $this->action = Actions::SELECT;
+
+        $this->columns = [Functions::count($column)];
+
+        return $this;
+    }
+
     public function toSql(): array
     {
         $sql = match ($this->action) {

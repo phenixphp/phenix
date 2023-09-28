@@ -321,3 +321,18 @@ it('generates query with select-case using functions', function () {
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
 });
+
+it('counts all records', function () {
+    $query = new QueryGenerator();
+
+    $sql = $query->from('products')
+        ->count()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT COUNT(*) FROM products";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBeEmpty();
+});
