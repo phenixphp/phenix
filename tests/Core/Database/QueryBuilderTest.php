@@ -248,3 +248,39 @@ it('checks if record does not exist', function () {
 
     expect($result)->toBeTrue();
 });
+
+it('deletes records', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->exactly(1))
+        ->method('prepare')
+        ->willReturnOnConsecutiveCalls(
+            new Statement(new Result([])),
+        );
+
+    $query = new QueryBuilder();
+    $query->connection($connection);
+
+    $result = $query->table('users')
+        ->whereEqual('email', 'john.doe@email.com')
+        ->delete();
+
+    expect($result)->toBeTrue();
+});
+
+it('fails on record deletion', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->any())
+        ->method('prepare')
+        ->willThrowException(new QueryError('Constraint integrity'));
+
+    $query = new QueryBuilder();
+    $query->connection($connection);
+
+    $result = $query->table('users')
+        ->whereEqual('email', 'john.doe@email.com')
+        ->delete();
+
+    expect($result)->toBeFalse();
+});

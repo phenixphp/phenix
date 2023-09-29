@@ -158,4 +158,19 @@ class QueryBuilder extends QueryBase
             return false;
         }
     }
+
+    public function delete(): bool
+    {
+        $this->deleteRows();
+
+        [$dml, $params] = $this->toSql();
+
+        try {
+            $this->connection->prepare($dml)->execute($params);
+
+            return true;
+        } catch (QueryError|TransactionError) {
+            return false;
+        }
+    }
 }
