@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Core\Database\Concerns\Query;
 
 use Closure;
-use Core\Database\Alias;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
@@ -14,6 +13,7 @@ use Core\Database\Functions;
 use Core\Database\Having;
 use Core\Database\SelectCase;
 use Core\Database\Subquery;
+use Core\Database\Value;
 use Core\Util\Arr;
 
 trait BuildsQuery
@@ -199,6 +199,17 @@ trait BuildsQuery
     {
         $this->action = Actions::SELECT_EXISTS;
 
+        $this->columns = [Operators::EXISTS->value];
+
+        return $this;
+    }
+
+    public function doesntExist(): self
+    {
+        $this->action = Actions::SELECT_EXISTS;
+
+        $this->columns = [Operators::NOT_EXISTS->value];
+
         return $this;
     }
 
@@ -259,7 +270,8 @@ trait BuildsQuery
 
     protected function buildSelectExistsQuery(): string
     {
-        $query = ['SELECT EXISTS'];
+        $query = ['SELECT'];
+        $query[] = $this->columns[0];
 
         $subquery[] = "SELECT 1 FROM {$this->table}";
 
@@ -268,7 +280,7 @@ trait BuildsQuery
             $subquery[] = $this->prepareClauses($this->clauses);
         }
 
-        $query[] = Alias::of('(' . Arr::implodeDeeply($subquery) . ')')->as('exists');
+        $query[] = '(' . Arr::implodeDeeply($subquery) . ') AS ' . Value::from('exists');
 
         return Arr::implodeDeeply($query);
     }

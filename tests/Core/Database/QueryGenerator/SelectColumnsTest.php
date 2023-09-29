@@ -347,7 +347,25 @@ it('generates query to check if record exists', function () {
 
     [$dml, $params] = $sql;
 
-    $expected = 'SELECT EXISTS (SELECT 1 FROM products WHERE id = ?) AS exists';
+    $expected = "SELECT EXISTS"
+        . " (SELECT 1 FROM products WHERE id = ?) AS 'exists'";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1]);
+});
+
+it('generates query to check if record does not exist', function () {
+    $query = new QueryGenerator();
+
+    $sql = $query->from('products')
+        ->whereEqual('id', 1)
+        ->doesntExist()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT NOT EXISTS"
+        . " (SELECT 1 FROM products WHERE id = ?) AS 'exists'";
 
     expect($dml)->toBe($expected);
     expect($params)->toBe([1]);
