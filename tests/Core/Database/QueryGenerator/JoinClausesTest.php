@@ -18,7 +18,7 @@ it('generates query for all join types', function (string $method, string $joinT
         ->{$method}('categories', function (Join $join) {
             $join->onEqual('products.category_id', 'categories.id');
         })
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -50,7 +50,7 @@ it('generates query using join with distinct clasue', function () {
         ->innerJoin('categories', function (Join $join) {
             $join->onDistinct('products.category_id', 'categories.id');
         })
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -81,7 +81,7 @@ it('generates query with join and multi clauses', function (
             $join->onEqual('products.category_id', 'categories.id')
                 ->$chainingMethod(...$arguments);
         })
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -129,7 +129,7 @@ it('generates query with shortcut methods for all join types', function (string 
         ])
         ->from('products')
         ->{$method}('categories', 'products.category_id', 'categories.id')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 

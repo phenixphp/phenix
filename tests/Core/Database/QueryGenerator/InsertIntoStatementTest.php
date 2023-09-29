@@ -17,8 +17,7 @@ it('generates insert into statement', function () {
         ->insert([
             'name' => $name,
             'email' => $email,
-        ])
-        ->toSql();
+        ]);
 
     [$dml, $params] = $sql;
 
@@ -44,8 +43,7 @@ it('generates insert into statement with data collection', function () {
                 'name' => $name,
                 'email' => $email,
             ],
-        ])
-        ->toSql();
+        ]);
 
     [$dml, $params] = $sql;
 
@@ -65,8 +63,7 @@ it('generates insert ignore into statement', function () {
         ->insertOrIgnore([
             'name' => $name,
             'email' => $email,
-        ])
-        ->toSql();
+        ]);
 
     [$dml, $params] = $sql;
 
@@ -86,8 +83,7 @@ it('generates upsert statement to handle duplicate keys', function () {
         ->upsert([
             'name' => $name,
             'email' => $email,
-        ], ['name'])
-        ->toSql();
+        ], ['name']);
 
     [$dml, $params] = $sql;
 
@@ -108,8 +104,7 @@ it('generates upsert statement to handle duplicate keys with many unique columns
     ];
 
     $sql = $query->table('users')
-        ->upsert($data, ['name', 'username'])
-        ->toSql();
+        ->upsert($data, ['name', 'username']);
 
     [$dml, $params] = $sql;
 
@@ -131,8 +126,7 @@ it('generates insert statement from subquery', function () {
             $subquery->table('customers')
                 ->select(['name', 'email'])
                 ->whereNotNull('verified_at');
-        }, ['name', 'email'])
-        ->toSql();
+        }, ['name', 'email']);
 
     [$dml, $params] = $sql;
 
@@ -150,8 +144,7 @@ it('generates insert ignore statement from subquery', function () {
             $subquery->table('customers')
                 ->select(['name', 'email'])
                 ->whereNotNull('verified_at');
-        }, ['name', 'email'], true)
-        ->toSql();
+        }, ['name', 'email'], true);
 
     [$dml, $params] = $sql;
 

@@ -213,6 +213,9 @@ trait BuildsQuery
         return $this;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function toSql(): array
     {
         $sql = match ($this->action) {

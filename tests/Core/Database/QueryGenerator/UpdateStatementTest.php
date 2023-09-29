@@ -13,8 +13,7 @@ it('generates update statement', function () {
 
     $sql = $query->table('users')
         ->whereEqual('id', 1)
-        ->update(['name' => $name])
-        ->toSql();
+        ->update(['name' => $name]);
 
     [$dml, $params] = $sql;
 
@@ -32,8 +31,7 @@ it('generates update statement with many conditions and columns', function () {
     $sql = $query->table('users')
         ->whereNotNull('verified_at')
         ->whereEqual('role_id', 2)
-        ->update(['name' => $name, 'active' => true])
-        ->toSql();
+        ->update(['name' => $name, 'active' => true]);
 
     [$dml, $params] = $sql;
 
