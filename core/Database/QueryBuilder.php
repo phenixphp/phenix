@@ -18,9 +18,11 @@ use League\Uri\Uri;
 class QueryBuilder extends QueryBase
 {
     use BuildsQuery {
-        insert as insertRows;
-        update as updateRow;
-        count as countRows;
+        insert as protected insertRows;
+        update as protected updateRow;
+        count as protected countRows;
+        exists as protected existsRows;
+        doesntExist as protected doesntExistRows;
     }
     use HasJoinClause;
 
@@ -121,6 +123,22 @@ class QueryBuilder extends QueryBase
         } catch (QueryError|TransactionError) {
             return false;
         }
+    }
+
+    public function exists(): bool
+    {
+        $this->existsRows();
+
+        [$dml, $params] = $this->toSql();
+
+        $results = $this->connection->prepare($dml)->execute($params)->fetchRow();
+
+        return (bool) array_values($results)[0];
+    }
+
+    public function doesntExist(): bool
+    {
+        return ! $this->exists();
     }
 
     public function update(array $values): bool
