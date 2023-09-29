@@ -210,3 +210,41 @@ it('paginates the query results', function () {
         ],
     ]);
 });
+
+it('checks if record exists', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->exactly(1))
+        ->method('prepare')
+        ->willReturnOnConsecutiveCalls(
+            new Statement(new Result([['exists' => 1]])),
+        );
+
+    $query = new QueryBuilder();
+    $query->setConnection($connection);
+
+    $result = $query->table('users')
+        ->whereEqual('email', 'john.doe@email.com')
+        ->exists();
+
+    expect($result)->toBeTrue();
+});
+
+it('checks if record does not exist', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->exactly(1))
+        ->method('prepare')
+        ->willReturnOnConsecutiveCalls(
+            new Statement(new Result([['exists' => 0]])),
+        );
+
+    $query = new QueryBuilder();
+    $query->setConnection($connection);
+
+    $result = $query->table('users')
+        ->whereEqual('email', 'john.doe@email.com')
+        ->doesntExist();
+
+    expect($result)->toBeTrue();
+});

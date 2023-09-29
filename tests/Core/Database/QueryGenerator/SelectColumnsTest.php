@@ -15,7 +15,7 @@ it('generates query to select all columns of table', function () {
 
     $sql = $query->table('users')
         ->selectAllColumns()
-        ->toSql();
+        ->get();
 
     expect($sql)->toBeArray();
 
@@ -30,7 +30,7 @@ it('generates query to select all columns from table', function () {
 
     $sql = $query->selectAllColumns()
         ->from('users')
-        ->toSql();
+        ->get();
 
     expect($sql)->toBeArray();
 
@@ -45,7 +45,7 @@ it('generates a query using sql functions', function (string $function, string $
 
     $sql = $query->table('products')
         ->select([Functions::{$function}($column)])
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -69,7 +69,7 @@ it('generates a query using sql functions with alias', function (
 
     $sql = $query->table('products')
         ->select([Functions::{$function}($column)->as($alias)])
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -93,7 +93,7 @@ it('selects field from subquery', function () {
                 ->from('users')
                 ->whereEqual('verified_at', $date);
         })
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -117,7 +117,7 @@ it('generates query using subqueries in column selection', function () {
                 ->limit(1),
         ])
         ->from('users')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -141,7 +141,7 @@ it('throws exception on generate query using subqueries in column selection with
                     ->as('country_name'),
             ])
             ->from('users')
-            ->toSql();
+            ->get();
     })->toThrow(QueryError::class);
 });
 
@@ -153,7 +153,7 @@ it('generates query with column alias', function () {
             Alias::of('name')->as('full_name'),
         ])
         ->from('users')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -186,7 +186,7 @@ it('generates query with select-cases using comparisons', function (
             $case,
         ])
         ->from('products')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -225,7 +225,7 @@ it('generates query with select-cases using logical comparisons', function (
             $case,
         ])
         ->from('users')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -258,7 +258,7 @@ it('generates query with select-cases with multiple conditions and string values
             $case,
         ])
         ->from('users')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -285,7 +285,7 @@ it('generates query with select-cases without default value', function () {
             $case,
         ])
         ->from('users')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -311,7 +311,7 @@ it('generates query with select-case using functions', function () {
             $case,
         ])
         ->from('products')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -325,9 +325,7 @@ it('generates query with select-case using functions', function () {
 it('counts all records', function () {
     $query = new QueryGenerator();
 
-    $sql = $query->from('products')
-        ->count()
-        ->toSql();
+    $sql = $query->from('products')->count();
 
     [$dml, $params] = $sql;
 
@@ -335,4 +333,52 @@ it('counts all records', function () {
 
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
+});
+
+it('generates query to check if record exists', function () {
+    $query = new QueryGenerator();
+
+    $sql = $query->from('products')
+        ->whereEqual('id', 1)
+        ->exists();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT EXISTS"
+        . " (SELECT 1 FROM products WHERE id = ?) AS 'exists'";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1]);
+});
+
+it('generates query to check if record does not exist', function () {
+    $query = new QueryGenerator();
+
+    $sql = $query->from('products')
+        ->whereEqual('id', 1)
+        ->doesntExist();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT NOT EXISTS"
+        . " (SELECT 1 FROM products WHERE id = ?) AS 'exists'";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1]);
+});
+
+it('generates query to select first row', function () {
+    $query = new QueryGenerator();
+
+    $sql = $query->from('products')
+        ->selectAllColumns()
+        ->whereEqual('id', 1)
+        ->first();
+
+    [$dml, $params] = $sql;
+
+    $expected = "SELECT * FROM products WHERE id = ? LIMIT 1";
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1]);
 });

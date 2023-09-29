@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `paginate` method to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
 - Add `count` method to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
 - Add `insert` method to the query builder. ([43](https://github.com/barbosa89/phenix/pull/43))
+- Add `exists` and `doesntExists` methods to the query builder. ([#44](https://github.com/barbosa89/phenix/pull/44))
 
 ### Changed
 - Load routes before server running. ([#41](https://github.com/barbosa89/phenix/pull/41))
 - Load custom environment files. ([#40](https://github.com/barbosa89/phenix/pull/40))
 - Improve service provider structure. ([#38](https://github.com/barbosa89/phenix/pull/38))
+- Improve class API to `\Core\Database\QueryGenerator`, now it has final methods. ([#44](https://github.com/barbosa89/phenix/pull/44))
 
 # Release Notes for 0.1.x
 

@@ -23,7 +23,7 @@ it('generates a query using having clause', function () {
         ->having(function (Having $having): void {
             $having->whereGreatherThan('identifiers', 5);
         })
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -53,7 +53,7 @@ it('generates a query using having with many clauses', function () {
             $having->whereGreatherThan('identifiers', 5)
                 ->whereGreatherThan('products.category_id', 10);
         })
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 

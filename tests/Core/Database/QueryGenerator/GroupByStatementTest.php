@@ -19,7 +19,7 @@ it('generates a grouped query', function (Functions|string $column, Functions|ar
             $join->onEqual('products.category_id', 'categories.id');
         })
         ->groupBy($groupBy)
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
@@ -54,7 +54,7 @@ it('generates a grouped and ordered query', function (
         })
         ->groupBy($groupBy)
         ->orderBy('products.id')
-        ->toSql();
+        ->get();
 
     [$dml, $params] = $sql;
 
