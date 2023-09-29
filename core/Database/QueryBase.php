@@ -19,6 +19,7 @@ abstract class QueryBase extends Clause implements QueryBuilder, Builder
     protected array $groupBy;
     protected array $orderBy;
     protected array $limit;
+    protected array $offset;
     protected string $rawStatement;
     protected bool $ignore = false;
     protected array $uniqueColumns;

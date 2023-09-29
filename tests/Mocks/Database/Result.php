@@ -11,8 +11,8 @@ use Traversable;
 
 class Result implements SqlResult, IteratorAggregate
 {
-    protected ArrayIterator $fakeResult;
     protected int $count;
+    protected ArrayIterator $fakeResult;
 
     public function __construct(array $fakeResult = [])
     {

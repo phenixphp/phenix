@@ -16,6 +16,7 @@ use Core\Facades\Config;
 use Core\Facades\Route;
 use Core\Logging\LoggerFactory;
 use League\Container\Container;
+use League\Uri\Uri;
 use Monolog\Logger;
 
 class App implements AppContract, Makeable
@@ -66,13 +67,10 @@ class App implements AppContract, Makeable
 
         $this->setRouter();
 
-        /** @var int $port */
-        $port = Config::get('app.port');
+        $uri = Uri::new(Config::get('app.url'));
+        $port = (int) Config::get('app.port');
 
-        [$ipv4, $ipv6] = Config::get('app.url');
-
-        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
-        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
+        $this->server->expose(new Socket\InternetAddress($uri->getHost(), $port));
 
         $this->server->start($this->router, $this->errorHandler);
 

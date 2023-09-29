@@ -26,6 +26,7 @@ enum Operators: string
     case GROUP_BY = 'GROUP BY';
     case ORDER_BY = 'ORDER BY';
     case LIMIT = 'LIMIT';
+    case OFFSET = 'OFFSET';
     case ALL = 'ALL';
     case ANY = 'ANY';
     case SOME = 'SOME';

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b9b21ec8b6be61732e43bd93417ec15",
+    "content-hash": "0bce3c542451cd26e52681ada59b7125",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -3336,16 +3336,16 @@
         },
         {
             "name": "robmorgan/phinx",
-            "version": "2.0.2",
+            "version": "0.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/phinx.git",
-                "reference": "89481434e06b2f559e907f4e7374525004316180"
+                "reference": "26753bdb66827383781eb0033b34cb467da1d12c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/phinx/zipball/89481434e06b2f559e907f4e7374525004316180",
-                "reference": "89481434e06b2f559e907f4e7374525004316180",
+                "url": "https://api.github.com/repos/cakephp/phinx/zipball/26753bdb66827383781eb0033b34cb467da1d12c",
+                "reference": "26753bdb66827383781eb0033b34cb467da1d12c",
                 "shasum": ""
             },
             "require": {
@@ -3357,11 +3357,10 @@
             },
             "require-dev": {
                 "cakephp/cakephp": "^5.0",
-                "cakephp/cakephp-codesniffer": "^4.0",
+                "cakephp/cakephp-codesniffer": "^5.0",
                 "ext-json": "*",
                 "ext-pdo": "*",
                 "phpunit/phpunit": "^9.5.19",
-                "sebastian/comparator": ">=1.2.3",
                 "symfony/yaml": "^3.4|^4.0|^5.0|^6.0"
             },
             "suggest": {
@@ -3417,9 +3416,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cakephp/phinx/issues",
-                "source": "https://github.com/cakephp/phinx/tree/2.0.2"
+                "source": "https://github.com/cakephp/phinx/tree/0.15.2"
             },
-            "time": "2023-09-10T14:14:08+00:00"
+            "time": "2023-09-22T18:18:07+00:00"
         },
         {
             "name": "symfony/config",
