@@ -73,6 +73,8 @@ class QueryBuilder extends QueryBase
      */
     public function first(): array
     {
+        $this->limit(1);
+
         return $this->get()->first();
     }
 
