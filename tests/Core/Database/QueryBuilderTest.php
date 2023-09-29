@@ -8,7 +8,7 @@ use Core\Database\Paginator;
 use Core\Database\QueryBuilder;
 use Core\Facades\DB;
 use Core\Util\URL;
-use League\Uri\Uri;
+use League\Uri\Http;
 use Tests\Mocks\Database\MysqlConnectionPool;
 use Tests\Mocks\Database\Result;
 use Tests\Mocks\Database\Statement;
@@ -182,7 +182,7 @@ it('paginates the query results', function () {
     $query = new QueryBuilder();
     $query->connection($connection);
 
-    $uri = Uri::new(URL::build('users'));
+    $uri = Http::new(URL::build('users'));
 
     $paginator = $query->from('users')
         ->select(['id', 'name'])

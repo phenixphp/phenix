@@ -13,7 +13,7 @@ use Core\Database\Concerns\Query\BuildsQuery;
 use Core\Database\Concerns\Query\HasJoinClause;
 use Core\Database\Constants\Connections;
 use League\Uri\Components\Query;
-use League\Uri\Uri;
+use League\Uri\Http;
 
 class QueryBuilder extends QueryBase
 {
@@ -79,7 +79,7 @@ class QueryBuilder extends QueryBase
         return $this->get()->first();
     }
 
-    public function paginate(Uri $uri,  int $defaultPage = 1, int $defaultPerPage = 15): Paginator
+    public function paginate(Http $uri,  int $defaultPage = 1, int $defaultPerPage = 15): Paginator
     {
         $query = Query::fromUri($uri);
 

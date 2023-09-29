@@ -5,10 +5,10 @@ declare(strict_types=1);
 use Core\Data\Collection;
 use Core\Database\Paginator;
 use Core\Util\URL;
-use League\Uri\Uri;
+use League\Uri\Http;
 
 it('calculates pagination data', function () {
-    $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15]));
+    $uri = Http::new(URL::build('users', ['page' => 1, 'per_page' => 15]));
 
     $paginator = new Paginator($uri, new Collection('array'), 50, 1, 15);
 
@@ -54,7 +54,7 @@ it('calculates pagination data in custom page', function (
     int $from,
     int $to
 ) {
-    $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15]));
+    $uri = Http::new(URL::build('users', ['page' => 1, 'per_page' => 15]));
 
     $paginator = new Paginator($uri, new Collection('array'), 50, $currentPage, 15);
 
@@ -95,7 +95,7 @@ it('calculates pagination data with separators', function (
     int $from,
     int $to
 ) {
-    $uri = Uri::new(URL::build('users', ['page' => $currentPage, 'per_page' => 15]));
+    $uri = Http::new(URL::build('users', ['page' => $currentPage, 'per_page' => 15]));
 
     $paginator = new Paginator($uri, new Collection('array'), 150, $currentPage, 15);
 
@@ -139,7 +139,7 @@ it('calculates pagination data with separators', function (
 ]);
 
 it('calculates pagination data with query params', function () {
-    $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15, 'active' => true]));
+    $uri = Http::new(URL::build('users', ['page' => 1, 'per_page' => 15, 'active' => true]));
 
     $paginator = new Paginator($uri, new Collection('array'), 50, 1, 15);
 
@@ -168,7 +168,7 @@ it('calculates pagination data with query params', function () {
 });
 
 it('calculates pagination data without query params', function () {
-    $uri = Uri::new(URL::build('users', ['page' => 1, 'per_page' => 15, 'active' => true]));
+    $uri = Http::new(URL::build('users', ['page' => 1, 'per_page' => 15, 'active' => true]));
 
     $paginator = new Paginator($uri, new Collection('array'), 50, 1, 15);
     $paginator->withoutQueryParameters();

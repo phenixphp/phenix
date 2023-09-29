@@ -8,7 +8,7 @@ use Core\Contracts\Arrayable;
 use Core\Data\Collection;
 use Core\Util\URL;
 use League\Uri\Components\Query;
-use League\Uri\Uri;
+use League\Uri\Http;
 
 class Paginator implements Arrayable
 {
@@ -20,7 +20,7 @@ class Paginator implements Arrayable
     private bool $withQueryParameters = true;
 
     public function __construct(
-        private Uri $uri,
+        private Http $uri,
         private Collection $data,
         private readonly int $total,
         private readonly int $currentPage,
