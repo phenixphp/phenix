@@ -39,15 +39,12 @@ class QueryBuilder extends QueryBase
         $this->connection = App::make(Connections::default());
     }
 
-    public function connection(string $connection): self
+    public function connection(ConnectionPool|string $connection): self
     {
-        $this->connection = App::make(Connections::name($connection));
+        if (\is_string($connection)) {
+            $connection = App::make(Connections::name($connection));
+        }
 
-        return $this;
-    }
-
-    public function setConnection(ConnectionPool $connection): self
-    {
         $this->connection = $connection;
 
         return $this;
@@ -92,7 +89,7 @@ class QueryBuilder extends QueryBase
         $perPage = filter_var($query->get('per_page') ?? $defaultPerPage, FILTER_SANITIZE_NUMBER_INT);
         $perPage = $perPage === false ? $defaultPerPage : $perPage;
 
-        $total = (new self())->setConnection($this->connection)
+        $total = (new self())->connection($this->connection)
             ->from($this->table)
             ->count();
 
@@ -150,6 +147,21 @@ class QueryBuilder extends QueryBase
     public function update(array $values): bool
     {
         $this->updateRow($values);
+
+        [$dml, $params] = $this->toSql();
+
+        try {
+            $this->connection->prepare($dml)->execute($params);
+
+            return true;
+        } catch (QueryError|TransactionError) {
+            return false;
+        }
+    }
+
+    public function delete(): bool
+    {
+        $this->deleteRows();
 
         [$dml, $params] = $this->toSql();
 

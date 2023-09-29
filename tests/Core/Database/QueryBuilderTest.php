@@ -82,7 +82,7 @@ it('insert records', function () {
         ->willReturnCallback(fn () => new Statement(new Result()));
 
     $query = new QueryBuilder();
-    $query->setConnection($connection);
+    $query->connection($connection);
 
     $result = $query->table('users')->insert(['name' => 'Tony']);
 
@@ -97,7 +97,7 @@ it('fails on insert records', function () {
         ->willThrowException(new QueryError('Duplicate name'));
 
     $query = new QueryBuilder();
-    $query->setConnection($connection);
+    $query->connection($connection);
 
     $result = $query->table('users')->insert(['name' => 'Tony']);
 
@@ -113,7 +113,7 @@ it('throws any error on insert records', function () {
             ->willThrowException(new ErrorException('Any error'));
 
         $query = new QueryBuilder();
-        $query->setConnection($connection);
+        $query->connection($connection);
 
         $query->table('users')->insert(['name' => 'Tony']);
     })->toThrow(ErrorException::class);
@@ -141,7 +141,7 @@ it('fails on record update', function () {
         ->willThrowException(new QueryError('Duplicate name'));
 
     $query = new QueryBuilder();
-    $query->setConnection($connection);
+    $query->connection($connection);
 
     $result = $query->from('users')
         ->whereEqual('id', 1)
@@ -160,7 +160,7 @@ it('counts all database records', function () {
         );
 
     $query = new QueryBuilder();
-    $query->setConnection($connection);
+    $query->connection($connection);
 
     $count = $query->from('users')->count();
 
@@ -180,7 +180,7 @@ it('paginates the query results', function () {
         );
 
     $query = new QueryBuilder();
-    $query->setConnection($connection);
+    $query->connection($connection);
 
     $uri = Uri::new(URL::build('users'));
 
@@ -221,7 +221,7 @@ it('checks if record exists', function () {
         );
 
     $query = new QueryBuilder();
-    $query->setConnection($connection);
+    $query->connection($connection);
 
     $result = $query->table('users')
         ->whereEqual('email', 'john.doe@email.com')
@@ -240,11 +240,47 @@ it('checks if record does not exist', function () {
         );
 
     $query = new QueryBuilder();
-    $query->setConnection($connection);
+    $query->connection($connection);
 
     $result = $query->table('users')
         ->whereEqual('email', 'john.doe@email.com')
         ->doesntExist();
 
     expect($result)->toBeTrue();
+});
+
+it('deletes records', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->exactly(1))
+        ->method('prepare')
+        ->willReturnOnConsecutiveCalls(
+            new Statement(new Result([])),
+        );
+
+    $query = new QueryBuilder();
+    $query->connection($connection);
+
+    $result = $query->table('users')
+        ->whereEqual('email', 'john.doe@email.com')
+        ->delete();
+
+    expect($result)->toBeTrue();
+});
+
+it('fails on record deletion', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->any())
+        ->method('prepare')
+        ->willThrowException(new QueryError('Constraint integrity'));
+
+    $query = new QueryBuilder();
+    $query->connection($connection);
+
+    $result = $query->table('users')
+        ->whereEqual('email', 'john.doe@email.com')
+        ->delete();
+
+    expect($result)->toBeFalse();
 });
