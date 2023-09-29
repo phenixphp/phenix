@@ -11,7 +11,7 @@ use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
 abstract class ServiceProvider extends AbstractServiceProvider implements BootableServiceProviderInterface
 {
-    public function __construct(private array $provided = [])
+    public function __construct(protected array $provided = [])
     {
         // ..
     }

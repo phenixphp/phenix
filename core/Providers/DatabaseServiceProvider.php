@@ -18,6 +18,18 @@ use League\Container\Argument\ResolvableArgument;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
+    public function provides(string $id): bool
+    {
+        $this->provided = [
+            QueryBuilder::class,
+            Connections::name('default'),
+            Connections::name('mysql'),
+            Connections::name('postgresql'),
+        ];
+
+        return parent::provides($id);
+    }
+
     public function register(): void
     {
         $connections = array_filter(array_keys(Config::get('database.connections')), function (string $connection) {
