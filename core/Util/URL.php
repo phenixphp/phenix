@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Core\Util;
 
 use Core\Facades\Config;
-use League\Uri\Components\Query;
-use League\Uri\Uri;
 
 class URL
 {

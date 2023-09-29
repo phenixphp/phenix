@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Core\Database;
 
 use Amp\Sql\Common\ConnectionPool;
+use Amp\Sql\QueryError;
+use Amp\Sql\TransactionError;
 use Core\App;
 use Core\Data\Collection;
 use Core\Database\Concerns\Query\BuildsQuery;
@@ -12,11 +14,11 @@ use Core\Database\Concerns\Query\HasJoinClause;
 use Core\Database\Constants\Connections;
 use League\Uri\Components\Query;
 use League\Uri\Uri;
-use Throwable;
 
 class QueryBuilder extends QueryBase
 {
     use BuildsQuery {
+        insert as insertRows;
         update as updateRow;
         count as countRows;
     }
@@ -106,7 +108,22 @@ class QueryBuilder extends QueryBase
         return array_values($count)[0];
     }
 
-    public function update(array $values)
+    public function insert(array $data): bool
+    {
+        $this->insertRows($data);
+
+        [$dml, $params] = $this->toSql();
+
+        try {
+            $this->connection->prepare($dml)->execute($params)->fetchRow();
+
+            return true;
+        } catch (QueryError|TransactionError) {
+            return false;
+        }
+    }
+
+    public function update(array $values): bool
     {
         $this->updateRow($values);
 
@@ -116,7 +133,7 @@ class QueryBuilder extends QueryBase
             $this->connection->prepare($dml)->execute($params);
 
             return true;
-        } catch (Throwable) {
+        } catch (QueryError|TransactionError) {
             return false;
         }
     }

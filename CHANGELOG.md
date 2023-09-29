@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Add `paginate` to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
-- Add `count` to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
+- Add `paginate` method to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
+- Add `count` method to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
+- Add `insert` method to the query builder. ([43](https://github.com/barbosa89/phenix/pull/43))
 
 ### Changed
 - Load routes before server running. ([#41](https://github.com/barbosa89/phenix/pull/41))

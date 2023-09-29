@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Amp\Sql\QueryError;
 use Core\Database\Constants\Connections;
 use Core\Database\Paginator;
 use Core\Database\QueryBuilder;
@@ -73,6 +74,51 @@ it('sets custom connection', function () {
     expect($result->toArray())->toBe($data);
 });
 
+it('insert records', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->once())
+        ->method('prepare')
+        ->willReturnCallback(fn () => new Statement(new Result()));
+
+    $query = new QueryBuilder();
+    $query->setConnection($connection);
+
+    $result = $query->table('users')->insert(['name' => 'Tony']);
+
+    expect($result)->toBeTrue();
+});
+
+it('fails on insert records', function () {
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+    $connection->expects($this->any())
+        ->method('prepare')
+        ->willThrowException(new QueryError('Duplicate name'));
+
+    $query = new QueryBuilder();
+    $query->setConnection($connection);
+
+    $result = $query->table('users')->insert(['name' => 'Tony']);
+
+    expect($result)->toBeFalsy();
+});
+
+it('throws any error on insert records', function () {
+    expect(function () {
+        $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
+
+        $connection->expects($this->any())
+            ->method('prepare')
+            ->willThrowException(new ErrorException('Any error'));
+
+        $query = new QueryBuilder();
+        $query->setConnection($connection);
+
+        $query->table('users')->insert(['name' => 'Tony']);
+    })->toThrow(ErrorException::class);
+});
+
 it('updates records', function () {
     $data = [
         ['id' => 1, 'name' => 'John Doe'],
@@ -88,13 +134,16 @@ it('updates records', function () {
 });
 
 it('fails on record update', function () {
-    $data = [
-        ['id' => 1, 'name' => 'John Doe'],
-    ];
+    $connection = $this->getMockBuilder(MysqlConnectionPool::class)->getMock();
 
-    $this->app->swap(Connections::default(), MysqlConnectionPool::fake($data)->throwDatabaseException());
+    $connection->expects($this->any())
+        ->method('prepare')
+        ->willThrowException(new QueryError('Duplicate name'));
 
-    $result = DB::from('users')
+    $query = new QueryBuilder();
+    $query->setConnection($connection);
+
+    $result = $query->from('users')
         ->whereEqual('id', 1)
         ->update(['name' => 'Tony']);
 
