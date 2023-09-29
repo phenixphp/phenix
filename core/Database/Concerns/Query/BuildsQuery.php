@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core\Database\Concerns\Query;
 
 use Closure;
+use Core\Database\Alias;
 use Core\Database\Constants\Actions;
 use Core\Database\Constants\Operators;
 use Core\Database\Constants\Order;
@@ -194,10 +195,18 @@ trait BuildsQuery
         return $this;
     }
 
+    public function exists(): self
+    {
+        $this->action = Actions::SELECT_EXISTS;
+
+        return $this;
+    }
+
     public function toSql(): array
     {
         $sql = match ($this->action) {
             Actions::SELECT => $this->buildSelectQuery(),
+            Actions::SELECT_EXISTS => $this->buildSelectExistsQuery(),
             Actions::INSERT => $this->buildInsertSentence(),
             Actions::UPDATE => $this->buildUpdateSentence(),
             Actions::DELETE => $this->buildDeleteSentence(),
@@ -244,6 +253,22 @@ trait BuildsQuery
             $query[] = Arr::implodeDeeply($this->offset);
 
         }
+
+        return Arr::implodeDeeply($query);
+    }
+
+    protected function buildSelectExistsQuery(): string
+    {
+        $query = ['SELECT EXISTS'];
+
+        $subquery[] = "SELECT 1 FROM {$this->table}";
+
+        if (! empty($this->clauses)) {
+            $subquery[] = 'WHERE';
+            $subquery[] = $this->prepareClauses($this->clauses);
+        }
+
+        $query[] = Alias::of('(' . Arr::implodeDeeply($subquery) . ')')->as('exists');
 
         return Arr::implodeDeeply($query);
     }

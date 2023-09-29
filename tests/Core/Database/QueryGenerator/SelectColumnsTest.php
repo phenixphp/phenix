@@ -336,3 +336,19 @@ it('counts all records', function () {
     expect($dml)->toBe($expected);
     expect($params)->toBeEmpty();
 });
+
+it('generates query to check if record exists', function () {
+    $query = new QueryGenerator();
+
+    $sql = $query->from('products')
+        ->whereEqual('id', 1)
+        ->exists()
+        ->toSql();
+
+    [$dml, $params] = $sql;
+
+    $expected = 'SELECT EXISTS (SELECT 1 FROM products WHERE id = ?) AS exists';
+
+    expect($dml)->toBe($expected);
+    expect($params)->toBe([1]);
+});
