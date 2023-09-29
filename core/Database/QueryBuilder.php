@@ -19,7 +19,11 @@ class QueryBuilder extends QueryBase
 {
     use BuildsQuery {
         insert as protected insertRows;
+        insertOrIgnore as protected insertOrIgnoreRows;
+        upsert as protected upsertRows;
+        insertFrom as protected insertFromRows;
         update as protected updateRow;
+        delete as protected deleteRows;
         count as protected countRows;
         exists as protected existsRows;
         doesntExist as protected doesntExistRows;
