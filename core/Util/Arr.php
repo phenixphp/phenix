@@ -13,10 +13,14 @@ class Arr
      */
     public static function implodeDeeply(array $data, string $separator = ' '): string
     {
+        $data = \array_filter($data, function ($value): bool {
+            return ! empty($value) || $value === 0;
+        });
+
         $data = array_map(function ($value) {
             return \is_array($value) ? self::implodeDeeply($value) : $value;
-        }, array_filter($data));
+        }, $data);
 
-        return implode($separator, $data);
+        return \implode($separator, $data);
     }
 }

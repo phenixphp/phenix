@@ -12,11 +12,24 @@ use Core\Database\Console\Rollback;
 use Core\Database\Console\SeedRun;
 use Core\Database\Constants\Connections;
 use Core\Database\Constants\Drivers;
+use Core\Database\QueryBuilder;
 use Core\Facades\Config;
 use League\Container\Argument\ResolvableArgument;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
+    public function provides(string $id): bool
+    {
+        $this->provided = [
+            QueryBuilder::class,
+            Connections::name('default'),
+            Connections::name('mysql'),
+            Connections::name('postgresql'),
+        ];
+
+        return parent::provides($id);
+    }
+
     public function register(): void
     {
         $connections = array_filter(array_keys(Config::get('database.connections')), function (string $connection) {
@@ -33,6 +46,8 @@ class DatabaseServiceProvider extends ServiceProvider
 
             $this->bind(Connections::name($connection), $callback);
         }
+
+        $this->bind(QueryBuilder::class);
     }
 
     public function boot(): void

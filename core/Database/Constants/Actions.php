@@ -7,6 +7,7 @@ namespace Core\Database\Constants;
 enum Actions
 {
     case SELECT;
+    case SELECT_EXISTS;
     case INSERT;
     case UPDATE;
     case DELETE;

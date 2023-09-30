@@ -35,7 +35,7 @@
         "league/container": "^4.2",
         "nesbot/carbon": "^2.67",
         "ramsey/collection": "^2.0",
-        "robmorgan/phinx": "^2.0",
+        "robmorgan/phinx": "^0.15.2",
         "symfony/console": "^6.1",
         "vlucas/phpdotenv": "^5.4"
     },

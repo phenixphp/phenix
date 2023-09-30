@@ -9,8 +9,7 @@ it('generates delete statement', function () {
 
     $sql = $query->table('users')
         ->whereEqual('id', 1)
-        ->delete()
-        ->toSql();
+        ->delete();
 
     [$dml, $params] = $sql;
 
@@ -24,8 +23,7 @@ it('generates delete statement without clauses', function () {
     $query = new QueryGenerator();
 
     $sql = $query->table('users')
-        ->delete()
-        ->toSql();
+        ->delete();
 
     [$dml, $params] = $sql;
 

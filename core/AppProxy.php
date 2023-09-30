@@ -8,6 +8,8 @@ use Core\Contracts\App as AppContract;
 
 class AppProxy implements AppContract
 {
+    private static bool $testingMode = false;
+
     public function __construct(
         private App $app
     ) {
@@ -16,6 +18,10 @@ class AppProxy implements AppContract
 
     public function run(): void
     {
+        if (self::$testingMode) {
+            $this->app->disableSignalTrapping();
+        }
+
         $this->app->run();
     }
 
@@ -29,8 +35,13 @@ class AppProxy implements AppContract
         $this->app->swap($key, $concrete);
     }
 
-    public function enableTestingMode(): void
+    public static function enableTestingMode(): void
     {
-        $this->app->disableSignalTrapping();
+        self::$testingMode = true;
+    }
+
+    public static function testingModeEnabled(): bool
+    {
+        return self::$testingMode;
     }
 }

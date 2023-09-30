@@ -13,6 +13,7 @@ use Core\Database\Functions;
 use Core\Database\Having;
 use Core\Database\SelectCase;
 use Core\Database\Subquery;
+use Core\Database\Value;
 use Core\Util\Arr;
 
 trait BuildsQuery
@@ -172,10 +173,54 @@ trait BuildsQuery
         return $this;
     }
 
+    public function page(int $page = 1, int $perPage = 15): self
+    {
+        $this->limit($perPage);
+
+        $page = $page < 1 ? 1 : $page;
+
+        $offset = $page === 1 ? 0 : (($page - 1) * abs($perPage));
+
+        $this->offset = [Operators::OFFSET->value, $offset];
+
+        return $this;
+    }
+
+    public function count(string $column = '*'): self
+    {
+        $this->action = Actions::SELECT;
+
+        $this->columns = [Functions::count($column)];
+
+        return $this;
+    }
+
+    public function exists(): self
+    {
+        $this->action = Actions::SELECT_EXISTS;
+
+        $this->columns = [Operators::EXISTS->value];
+
+        return $this;
+    }
+
+    public function doesntExist(): self
+    {
+        $this->action = Actions::SELECT_EXISTS;
+
+        $this->columns = [Operators::NOT_EXISTS->value];
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
     public function toSql(): array
     {
         $sql = match ($this->action) {
             Actions::SELECT => $this->buildSelectQuery(),
+            Actions::SELECT_EXISTS => $this->buildSelectExistsQuery(),
             Actions::INSERT => $this->buildInsertSentence(),
             Actions::UPDATE => $this->buildUpdateSentence(),
             Actions::DELETE => $this->buildDeleteSentence(),
@@ -217,6 +262,28 @@ trait BuildsQuery
         if (isset($this->limit)) {
             $query[] = Arr::implodeDeeply($this->limit);
         }
+
+        if (isset($this->offset)) {
+            $query[] = Arr::implodeDeeply($this->offset);
+
+        }
+
+        return Arr::implodeDeeply($query);
+    }
+
+    protected function buildSelectExistsQuery(): string
+    {
+        $query = ['SELECT'];
+        $query[] = $this->columns[0];
+
+        $subquery[] = "SELECT 1 FROM {$this->table}";
+
+        if (! empty($this->clauses)) {
+            $subquery[] = 'WHERE';
+            $subquery[] = $this->prepareClauses($this->clauses);
+        }
+
+        $query[] = '(' . Arr::implodeDeeply($subquery) . ') AS ' . Value::from('exists');
 
         return Arr::implodeDeeply($query);
     }

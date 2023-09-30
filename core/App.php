@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core;
 
 use Amp\Http\Server\DefaultErrorHandler;
+use Amp\Http\Server\Middleware;
 use Amp\Http\Server\Router;
 use Amp\Http\Server\SocketHttpServer;
 use Amp\Socket;
@@ -12,11 +13,10 @@ use Core\Console\Phenix;
 use Core\Contracts\App as AppContract;
 use Core\Contracts\Makeable;
 use Core\Facades\Config;
+use Core\Facades\Route;
 use Core\Logging\LoggerFactory;
-use Core\Providers\ConfigServiceProvider;
-use Core\Util\Directory;
-use Core\Util\NamespaceResolver;
 use League\Container\Container;
+use League\Uri\Uri;
 use Monolog\Logger;
 
 class App implements AppContract, Makeable
@@ -41,7 +41,10 @@ class App implements AppContract, Makeable
 
     public function setup(): void
     {
-        self::$container->addServiceProvider(new ConfigServiceProvider());
+        self::$container->add(
+            Config::getKeyName(),
+            \Core\Runtime\Config::build(...)
+        )->setShared(true);
 
         /** @var array $providers */
         $providers = Config::get('app.providers');
@@ -55,38 +58,19 @@ class App implements AppContract, Makeable
 
         $this->logger = LoggerFactory::make($channel);
 
-        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
-
-        $this->setupDefinitions();
-    }
-
-    public function setRouter(): void
-    {
-        $this->router = new Router($this->server, $this->logger, $this->errorHandler);
-
-        /** @var array $routes */
-        $routes = self::$container->get('route')->toArray();
-
-        foreach ($routes as $route) {
-            [$method, $path, $closure, $middlewares] = $route;
-
-            $this->router->addRoute($method->value, $path, $closure, ...$middlewares);
-
-            foreach ($middlewares as $middleware) {
-                $this->router->addMiddleware($middleware);
-            }
-        }
+        self::$container->add(Phenix::class)->addMethodCall('registerCommands');
     }
 
     public function run(): void
     {
-        /** @var int $port */
-        $port = Config::get('app.port');
+        $this->server = SocketHttpServer::createForDirectAccess($this->logger);
 
-        [$ipv4, $ipv6] = Config::get('app.url');
+        $this->setRouter();
 
-        $this->server->expose(new Socket\InternetAddress($ipv4, $port));
-        $this->server->expose(new Socket\InternetAddress($ipv6, $port));
+        $uri = Uri::new(Config::get('app.url'));
+        $port = (int) Config::get('app.port');
+
+        $this->server->expose(new Socket\InternetAddress($uri->getHost(), $port));
 
         $this->server->start($this->router, $this->errorHandler);
 
@@ -129,41 +113,28 @@ class App implements AppContract, Makeable
         $this->signalTrapping = false;
     }
 
-    private function setupDefinitions(): void
+    private function setRouter(): void
     {
-        $this->registerFacades();
-        $this->registerControllers();
+        $this->router = new Router($this->server, $this->logger, $this->errorHandler);
 
-        self::$container->add(Phenix::class)
-            ->addMethodCall('registerCommands');
-    }
+        /** @var array $routes */
+        $routes = self::$container->get(Route::getKeyName())->toArray();
 
-    private function registerFacades(): void
-    {
-        self::$container->add(
-            \Core\Facades\Route::getKeyName(),
-            \Core\Routing\Route::class
-        )->setShared(true);
+        foreach ($routes as $route) {
+            [$method, $path, $closure, $middlewares] = $route;
 
-        self::$container->add(
-            \Core\Facades\DB::getKeyName(),
-            \Core\Database\QueryBuilder::class
-        );
-    }
-
-    private function registerControllers(): void
-    {
-        $controllers = Directory::all(self::getControllersPath());
-
-        foreach ($controllers as $controller) {
-            $controller = NamespaceResolver::parse($controller);
-
-            self::$container->add($controller);
+            $this->router->addRoute(
+                $method->value,
+                $path,
+                Middleware\stackMiddleware($closure, ...$middlewares)
+            );
         }
-    }
 
-    private function getControllersPath(): string
-    {
-        return base_path('app'. DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers');
+        /** @var array $middlewares */
+        $middlewares = Config::get('app.middlewares');
+
+        foreach ($middlewares as $middleware) {
+            $this->router->addMiddleware(new $middleware());
+        }
     }
 }
