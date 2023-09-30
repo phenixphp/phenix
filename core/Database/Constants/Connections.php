@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Database\Constants;
 
-enum Connections: string
+class Connections
 {
-    case PREFIX = 'database.connections.';
+    public const PREFIX = 'database.connections.';
 
     public static function default(): string
     {
@@ -15,6 +15,6 @@ enum Connections: string
 
     public static function name(string $connection): string
     {
-        return self::PREFIX->value . $connection;
+        return self::PREFIX . $connection;
     }
 }

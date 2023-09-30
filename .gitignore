@@ -7,3 +7,4 @@
 vendor
 .php-cs-fixer.cache
 build
+tests/coverage

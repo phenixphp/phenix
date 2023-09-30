@@ -6,6 +6,7 @@ namespace Core\Http;
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\Response as ServerResponse;
+use Core\Contracts\Arrayable;
 
 class Response
 {
@@ -17,8 +18,12 @@ class Response
     /**
      * @param array<string|int, array|string|int|bool> $content
      */
-    public function json(array $content, int $status = HttpStatus::OK): ServerResponse
+    public function json(Arrayable|array $content, int $status = HttpStatus::OK): ServerResponse
     {
+        if ($content instanceof Arrayable) {
+            $content = $content->toArray();
+        }
+
         $body = json_encode(['data' => $content]);
 
         return new ServerResponse($status, ['content-type' => 'application/javascript'], $body . PHP_EOL);
