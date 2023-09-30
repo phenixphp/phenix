@@ -6,6 +6,7 @@ namespace Core\Database\Console;
 
 use Carbon\Carbon;
 use Core\Console\Maker;
+use Core\Facades\File;
 use Core\Util\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,6 +43,10 @@ class MakeMigration extends Maker
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (! File::exists(base_path('database'))) {
+            File::createDirectory(base_path('database'));
+        }
+
         $datetime = Carbon::now()->format('YmdHis');
 
         $this->fileName = $datetime . '_' . Str::snake($input->getArgument('name'));

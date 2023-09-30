@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 0.1.x
 
+## [v0.2.1 (2023-09-30)](https://github.com/barbosa89/phenix/compare/0.2.1...0.2.0)
+
+### Fixed
+- Ensure dabatase directory exists before create migration. ([49](https://github.com/barbosa89/phenix/pull/49))
+
 ## [v0.2.0 (2023-09-29)](https://github.com/barbosa89/phenix/compare/0.2.0...0.1.0)
 
 ### Added
