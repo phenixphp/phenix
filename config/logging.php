@@ -18,4 +18,6 @@ return [
         'file',
         'stream',
     ],
+
+    'path' => base_path('storage/framework/logs/phenix.log'),
 ];
