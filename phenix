@@ -7,8 +7,6 @@ use Phenix\Console\Phenix;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-App::setLoggingChannel('file');
-
 require_once __DIR__ . '/bootstrap/bootstrap.php';
 
 /** @var \Phenix\Console\Phenix $phenix */
