@@ -11,14 +11,10 @@
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
-        <testsuite name="Core">
-            <directory suffix="Test.php">./tests/Core</directory>
-        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">./app</directory>
-            <directory suffix=".php">./core</directory>
         </include>
         <report>
             <html outputDirectory="build/coverage"/>

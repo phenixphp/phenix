@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-/** @var \Core\Contracts\App $app */
-$app = require_once __DIR__ . '/../core/bootstrap.php';
+/** @var \Phenix\Contracts\App $app */
+$app = require_once __DIR__ . '/../bootstrap/bootstrap.php';
 
 $app->run();

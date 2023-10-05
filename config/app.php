@@ -11,9 +11,9 @@ return [
         \App\Http\Middleware\AcceptJsonResponses::class,
     ],
     'providers' => [
-        Core\Providers\CoreServiceProvider::class,
-        Core\Providers\RouteServiceProvider::class,
-        Core\Providers\DatabaseServiceProvider::class,
-        Core\Providers\FilesystemServiceProvider::class,
+        Phenix\Providers\CommandsServiceProvider::class,
+        Phenix\Providers\RouteServiceProvider::class,
+        Phenix\Providers\DatabaseServiceProvider::class,
+        Phenix\Providers\FilesystemServiceProvider::class,
     ],
 ];

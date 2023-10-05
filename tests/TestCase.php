@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests;
 
 use Amp\PHPUnit\AsyncTestCase;
-use Core\App;
-use Core\AppProxy;
-use Core\Console\Phenix;
+use Phenix\App;
+use Phenix\AppProxy;
+use Phenix\Console\Phenix;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class TestCase extends AsyncTestCase
@@ -23,7 +23,7 @@ class TestCase extends AsyncTestCase
         if (! isset($this->app)) {
             AppProxy::enableTestingMode();
 
-            $this->app = require __DIR__ . '/../core/bootstrap.php';
+            $this->app = require __DIR__ . '/../bootstrap/bootstrap.php';
         }
     }
 

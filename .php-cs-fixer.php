@@ -33,7 +33,7 @@ $rules = [
 $finder = Finder::create()
     ->in([
         __DIR__ . '/app',
-        __DIR__ . '/core',
+        __DIR__ . '/bootstrap',
         __DIR__ . '/config',
         __DIR__ . '/database',
         __DIR__ . '/routes',

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Util;
 
-use Core\Constants\HttpMethods;
-use Core\Routing\Route;
+use Phenix\Constants\HttpMethods;
+use Phenix\Routing\Route;
 
 class AssertRoute
 {
