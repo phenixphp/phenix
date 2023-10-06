@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "14d25806981224a90caf14dbff0fcd2d",
+    "content-hash": "c0aa0a0635489020bd44b198847ecca4",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -2790,16 +2790,16 @@
         },
         {
             "name": "phenixphp/framework",
-            "version": "0.3.4",
+            "version": "0.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "9b8b66125c5ba89de6bec6e3d8ddf6649850a41d"
+                "reference": "08b413db04886c6f6cc1159b34747121abbce412"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/9b8b66125c5ba89de6bec6e3d8ddf6649850a41d",
-                "reference": "9b8b66125c5ba89de6bec6e3d8ddf6649850a41d",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/08b413db04886c6f6cc1159b34747121abbce412",
+                "reference": "08b413db04886c6f6cc1159b34747121abbce412",
                 "shasum": ""
             },
             "require": {
@@ -2861,9 +2861,9 @@
             "description": "Phenix framework based on Amphp",
             "support": {
                 "issues": "https://github.com/phenixphp/framework/issues",
-                "source": "https://github.com/phenixphp/framework/tree/0.3.4"
+                "source": "https://github.com/phenixphp/framework/tree/0.3.5"
             },
-            "time": "2023-10-06T19:46:44+00:00"
+            "time": "2023-10-06T20:14:25+00:00"
         },
         {
             "name": "phpoption/phpoption",
