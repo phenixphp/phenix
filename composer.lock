@@ -2790,16 +2790,16 @@
         },
         {
             "name": "phenixphp/framework",
-            "version": "0.3.0",
+            "version": "0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "ac82ed244704e11c749eca7fa261a3d49401564f"
+                "reference": "5f244a5de85aab7dc67e2f86c4ea019311f2f26c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/ac82ed244704e11c749eca7fa261a3d49401564f",
-                "reference": "ac82ed244704e11c749eca7fa261a3d49401564f",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/5f244a5de85aab7dc67e2f86c4ea019311f2f26c",
+                "reference": "5f244a5de85aab7dc67e2f86c4ea019311f2f26c",
                 "shasum": ""
             },
             "require": {
@@ -2861,9 +2861,9 @@
             "description": "Phenix framework based on Amphp",
             "support": {
                 "issues": "https://github.com/phenixphp/framework/issues",
-                "source": "https://github.com/phenixphp/framework/tree/0.3.0"
+                "source": "https://github.com/phenixphp/framework/tree/0.3.2"
             },
-            "time": "2023-10-05T16:04:48+00:00"
+            "time": "2023-10-06T01:24:34+00:00"
         },
         {
             "name": "phpoption/phpoption",
