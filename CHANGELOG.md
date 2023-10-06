@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 0.3.x
 
+## [v0.3.5 (2023-10-06)](https://github.com/phenixphp/phenix/compare/0.3.4...0.3.5)
+
+### Changed
+- Bump `phenixphp` framework to version `0.3.5`. ([#61](https://github.com/phenixphp/phenix/pull/61))
+
+
 ## [v0.3.4 (2023-10-06)](https://github.com/phenixphp/phenix/compare/0.3.3...0.3.4)
 
 ### Changed
