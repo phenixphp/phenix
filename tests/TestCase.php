@@ -4,44 +4,31 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Amp\PHPUnit\AsyncTestCase;
-use Core\App;
-use Core\AppProxy;
-use Core\Console\Phenix;
-use Symfony\Component\Console\Tester\CommandTester;
+use Phenix\Testing\TestCase as BaseTestCase;
 
-class TestCase extends AsyncTestCase
+class TestCase extends BaseTestCase
 {
-    protected ?AppProxy $app;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        App::setLoggingChannel('file');
-
-        if (! isset($this->app)) {
-            AppProxy::enableTestingMode();
-
-            $this->app = require __DIR__ . '/../core/bootstrap.php';
-        }
+        $this->app?->run();
     }
 
     protected function tearDown(): void
     {
-        parent::tearDown();
+        $this->app?->stop();
 
-        $this->app = null;
+        parent::tearDown();
     }
 
-    protected function phenix(string $signature, array $arguments): CommandTester
+    protected function getAppDir(): string
     {
-        $phenix = App::make(Phenix::class);
+        return dirname(__DIR__);
+    }
 
-        $command = $phenix->find($signature);
-        $commandTester = new CommandTester($command);
-        $commandTester->execute($arguments);
-
-        return $commandTester;
+    protected function getEnvFile(): string|null
+    {
+        return file_exists($this->getAppDir() . '/.env.testing') ? 'testing' : null;
     }
 }

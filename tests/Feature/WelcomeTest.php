@@ -2,14 +2,6 @@
 
 declare(strict_types=1);
 
-beforeEach(function () {
-    $this->app->run();
-});
-
-afterEach(function () {
-    $this->app?->stop();
-});
-
 it('responses successfully', function () {
     get('/')
         ->assertOk()

@@ -58,7 +58,6 @@ return [
         '.vscode',
         '.github',
         'phpinsights.php',
-        'core/functions.php',
     ],
 
     'add' => [

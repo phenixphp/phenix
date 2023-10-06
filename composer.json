@@ -1,16 +1,12 @@
 {
-    "name": "barbosa89/phenix",
-    "description": "Phenix framework",
+    "name": "phenixphp/phenix",
+    "description": "Application skeleton of Phenix framework",
     "type": "project",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Core\\": "core/"
-        },
-        "files": [
-            "core/functions.php"
-        ]
+            "App\\": "app/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -23,21 +19,7 @@
     }],
     "require": {
         "php": "^8.1",
-        "adbario/php-dot-notation": "^3.1",
-        "amphp/file": "^v3.0.0",
-        "amphp/http-client": "^v5.0.0-beta.17",
-        "amphp/http-server": "^v3.2.0",
-        "amphp/http-server-router": "^v2.0.0",
-        "amphp/log": "^v2.0.0",
-        "amphp/mysql": "^v3.0.0",
-        "amphp/postgres": "v2.0.0-beta-4",
-        "amphp/socket": "^2.1.0",
-        "league/container": "^4.2",
-        "nesbot/carbon": "^2.67",
-        "ramsey/collection": "^2.0",
-        "robmorgan/phinx": "^0.15.2",
-        "symfony/console": "^6.1",
-        "vlucas/phpdotenv": "^5.4"
+        "phenixphp/framework": "^0.3.0"
     },
     "require-dev": {
         "amphp/phpunit-util": "^v3.0.0-beta.3",
@@ -49,7 +31,6 @@
         "pestphp/pest-plugin-faker": "^1.0",
         "pestphp/pest-plugin-global-assertions": "^1.0",
         "pestphp/pest-plugin-parallel": "^1.2",
-        "phpmyadmin/sql-parser": "^5.7",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-deprecation-rules": "^1.1",

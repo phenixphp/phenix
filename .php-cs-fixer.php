@@ -6,7 +6,8 @@ use PhpCsFixer\Finder;
 $rules = [
     '@PSR12' => true,
     'array_syntax' => ['syntax' => 'short'],
-    'ordered_imports' => ['sort_algorithm' => 'alpha'],
+    'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['const', 'class', 'function']],
+    'global_namespace_import' => ['import_classes' => true, 'import_constants' => false, 'import_functions' => true],
     'no_unused_imports' => true,
     'not_operator_with_successor_space' => true,
     'trailing_comma_in_multiline' => true,
@@ -33,9 +34,8 @@ $rules = [
 $finder = Finder::create()
     ->in([
         __DIR__ . '/app',
-        __DIR__ . '/core',
+        __DIR__ . '/bootstrap',
         __DIR__ . '/config',
-        __DIR__ . '/database',
         __DIR__ . '/routes',
         __DIR__ . '/tests',
     ])
