@@ -9,19 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 0.3.x
 
-## [v0.3.2 (2023-10-05)](https://github.com/phenixphp/phenix/compare/0.3.2...0.2.1)
+
+## [v0.3.3 (2023-10-06)](https://github.com/phenixphp/phenix/compare/0.3.2...0.3.3)
+
+### Changed
+- Bump `phenixphp` framework to version `0.3.3`. ([#55](https://github.com/phenixphp/phenix/pull/55))
+
+## [v0.3.2 (2023-10-05)](https://github.com/phenixphp/phenix/compare/0.2.1...0.3.2)
 
 ### Changed
 - Framework as separate repository. ([#52](https://github.com/phenixphp/phenix/pull/52))
 
 # Release Notes for 0.1.x
 
-## [v0.2.1 (2023-09-30)](https://github.com/phenixphp/phenix/compare/0.2.1...0.2.0)
+## [v0.2.1 (2023-09-30)](https://github.com/phenixphp/phenix/compare/0.2.0...0.2.1)
 
 ### Fixed
 - Ensure dabatase directory exists before create migration. ([49](https://github.com/phenixphp/phenix/pull/49))
 
-## [v0.2.0 (2023-09-29)](https://github.com/phenixphp/phenix/compare/0.2.0...0.1.0)
+## [v0.2.0 (2023-09-29)](https://github.com/phenixphp/phenix/compare/0.1.0...0.2.0)
 
 ### Added
 - Add `paginate` method to the query builder. ([42](https://github.com/phenixphp/phenix/pull/42))
