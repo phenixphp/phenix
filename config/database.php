@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Core\Database\Constants\Drivers;
+use Phenix\Database\Constants\Drivers;
 
 return [
     'default' => env('DB_CONNECTION', fn () => 'mysql'),

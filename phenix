@@ -2,16 +2,14 @@
 
 <?php
 
-use Core\App;
-use Core\Console\Phenix;
+use Phenix\App;
+use Phenix\Console\Phenix;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-App::setLoggingChannel('file');
+require_once __DIR__ . '/bootstrap/bootstrap.php';
 
-require_once __DIR__ . '/core/bootstrap.php';
-
-/** @var \Core\Console\Phenix $phenix */
+/** @var \Phenix\Console\Phenix $phenix */
 $phenix = App::make(Phenix::class);
 
 $phenix->run();

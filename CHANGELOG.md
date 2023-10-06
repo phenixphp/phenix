@@ -7,42 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-# Release Notes for 0.1.x
+# Release Notes for 0.3.x
 
-## [v0.2.1 (2023-09-30)](https://github.com/barbosa89/phenix/compare/0.2.1...0.2.0)
-
-### Fixed
-- Ensure dabatase directory exists before create migration. ([49](https://github.com/barbosa89/phenix/pull/49))
-
-## [v0.2.0 (2023-09-29)](https://github.com/barbosa89/phenix/compare/0.2.0...0.1.0)
-
-### Added
-- Add `paginate` method to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
-- Add `count` method to the query builder. ([42](https://github.com/barbosa89/phenix/pull/42))
-- Add `insert` method to the query builder. ([43](https://github.com/barbosa89/phenix/pull/43))
-- Add `exists` and `doesntExists` methods to the query builder. ([#44](https://github.com/barbosa89/phenix/pull/44))
-- Add `delete` method to the query builder. ([#45](https://github.com/barbosa89/phenix/pull/45))
+## [v0.3.2 (2023-10-05)](https://github.com/phenixphp/phenix/compare/0.3.2...0.2.1)
 
 ### Changed
-- Load routes before server running. ([#41](https://github.com/barbosa89/phenix/pull/41))
-- Load custom environment files. ([#40](https://github.com/barbosa89/phenix/pull/40))
-- Improve service provider structure. ([#38](https://github.com/barbosa89/phenix/pull/38))
-- Improve class API to `\Core\Database\QueryGenerator`, now it has final methods. ([#44](https://github.com/barbosa89/phenix/pull/44))
+- Framework as separate repository. ([#52](https://github.com/phenixphp/phenix/pull/52))
+
+# Release Notes for 0.1.x
+
+## [v0.2.1 (2023-09-30)](https://github.com/phenixphp/phenix/compare/0.2.1...0.2.0)
 
 ### Fixed
-- Apply provides in database service provider. ([#46](https://github.com/barbosa89/phenix/pull/46))
+- Ensure dabatase directory exists before create migration. ([49](https://github.com/phenixphp/phenix/pull/49))
 
-## [v0.1.0 (2023-09-15)](https://github.com/barbosa89/phenix/compare/0.1.0...0.0.1-alpha.1)
+## [v0.2.0 (2023-09-29)](https://github.com/phenixphp/phenix/compare/0.2.0...0.1.0)
 
 ### Added
-- Migrations and seeder support. ([#35](https://github.com/barbosa89/phenix/pull/35))
-- Basic query builder ([#33](https://github.com/barbosa89/phenix/pull/33))
-- Routes with support for groups ([#28](https://github.com/barbosa89/phenix/pull/28))
-- Ability to use multiple logger channels. ([#24](https://github.com/barbosa89/phenix/pull/24))
-- Command to make middlewares. ([#19](https://github.com/barbosa89/phenix/pull/19))
-- SonarCloud integration. ([#13](https://github.com/barbosa89/phenix/pull/13))
-- PHPInsights integration. ([#12](https://github.com/barbosa89/phenix/pull/12))
-- PHPStan integration. ([#11](https://github.com/barbosa89/phenix/pull/11))
-- GitHub actions integration. ([#10](https://github.com/barbosa89/phenix/pull/10))
-- Command to make test `make:test`. ([#9](https://github.com/barbosa89/phenix/pull/9))
-- Tests for the `make:controller` command. ([#6](https://github.com/barbosa89/phenix/pull/6))
+- Add `paginate` method to the query builder. ([42](https://github.com/phenixphp/phenix/pull/42))
+- Add `count` method to the query builder. ([42](https://github.com/phenixphp/phenix/pull/42))
+- Add `insert` method to the query builder. ([43](https://github.com/phenixphp/phenix/pull/43))
+- Add `exists` and `doesntExists` methods to the query builder. ([#44](https://github.com/phenixphp/phenix/pull/44))
+- Add `delete` method to the query builder. ([#45](https://github.com/phenixphp/phenix/pull/45))
+
+### Changed
+- Load routes before server running. ([#41](https://github.com/phenixphp/phenix/pull/41))
+- Load custom environment files. ([#40](https://github.com/phenixphp/phenix/pull/40))
+- Improve service provider structure. ([#38](https://github.com/phenixphp/phenix/pull/38))
+- Improve class API to `\Phenix\Database\QueryGenerator`, now it has final methods. ([#44](https://github.com/phenixphp/phenix/pull/44))
+
+### Fixed
+- Apply provides in database service provider. ([#46](https://github.com/phenixphp/phenix/pull/46))
+
+## [v0.1.0 (2023-09-15)](https://github.com/phenixphp/phenix/compare/0.1.0...0.0.1-alpha.1)
+
+### Added
+- Migrations and seeder support. ([#35](https://github.com/phenixphp/phenix/pull/35))
+- Basic query builder ([#33](https://github.com/phenixphp/phenix/pull/33))
+- Routes with support for groups ([#28](https://github.com/phenixphp/phenix/pull/28))
+- Ability to use multiple logger channels. ([#24](https://github.com/phenixphp/phenix/pull/24))
+- Command to make middlewares. ([#19](https://github.com/phenixphp/phenix/pull/19))
+- SonarCloud integration. ([#13](https://github.com/phenixphp/phenix/pull/13))
+- PHPInsights integration. ([#12](https://github.com/phenixphp/phenix/pull/12))
+- PHPStan integration. ([#11](https://github.com/phenixphp/phenix/pull/11))
+- GitHub actions integration. ([#10](https://github.com/phenixphp/phenix/pull/10))
+- Command to make test `make:test`. ([#9](https://github.com/phenixphp/phenix/pull/9))
+- Tests for the `make:controller` command. ([#6](https://github.com/phenixphp/phenix/pull/6))
