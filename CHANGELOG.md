@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Framework as separate repository. ([#52](https://github.com/phenixphp/phenix/pull/52))
+
 # Release Notes for 0.1.x
 
 ## [v0.2.1 (2023-09-30)](https://github.com/phenixphp/phenix/compare/0.2.1...0.2.0)
