@@ -20,7 +20,7 @@
     "require": {
         "php": "^8.1",
         "ext-pcntl": "*",
-        "phenixphp/framework": "^0.3.7"
+        "phenixphp/framework": "^0.3.8"
     },
     "require-dev": {
         "amphp/phpunit-util": "^v3.0.0-beta.3",

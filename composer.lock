@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8441e157fa662c6991923d8482dc22b4",
+    "content-hash": "d072f31be47f4befcf15d48a3583ae3f",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -2858,16 +2858,16 @@
         },
         {
             "name": "phenixphp/framework",
-            "version": "0.3.7",
+            "version": "0.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "9658da7fed38172f0c63896ac42f1d742be9cddf"
+                "reference": "3298a36e155cc5e672bf705821ba1cf209ddca83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/9658da7fed38172f0c63896ac42f1d742be9cddf",
-                "reference": "9658da7fed38172f0c63896ac42f1d742be9cddf",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/3298a36e155cc5e672bf705821ba1cf209ddca83",
+                "reference": "3298a36e155cc5e672bf705821ba1cf209ddca83",
                 "shasum": ""
             },
             "require": {
@@ -2931,9 +2931,9 @@
             "description": "Phenix framework based on Amphp",
             "support": {
                 "issues": "https://github.com/phenixphp/framework/issues",
-                "source": "https://github.com/phenixphp/framework/tree/0.3.7"
+                "source": "https://github.com/phenixphp/framework/tree/0.3.8"
             },
-            "time": "2023-10-11T00:00:59+00:00"
+            "time": "2023-10-11T00:59:13+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -9687,7 +9687,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "ext-pcntl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
