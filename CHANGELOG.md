@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Rename bootstrap file.
+- Bump `phenix` framework to version `0.3.7`.
+
 # Release Notes for 0.3.x
 
 ## [v0.3.6 (2023-10-07)](https://github.com/phenixphp/phenix/compare/0.3.5...0.3.6)
