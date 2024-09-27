@@ -18,7 +18,7 @@
         "email": "contacto@omarbarbosa.com"
     }],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-pcntl": "*",
         "phenixphp/framework": "^0.4.0"
     },
