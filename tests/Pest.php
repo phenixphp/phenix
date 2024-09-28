@@ -11,11 +11,13 @@
 |
 */
 
-use Amp\Http\Client\HttpClientBuilder;
-use Amp\Http\Client\Request;
-use Phenix\Constants\HttpMethods;
 use Phenix\Util\URL;
-use Tests\Util\TestResponse;
+use Amp\Http\Client\Request;
+use Phenix\Constants\HttpMethod;
+use Phenix\Testing\TestResponse;
+use Amp\Http\Client\HttpClientBuilder;
+
+
 
 uses(Tests\TestCase::class)->in('Unit');
 uses(Tests\TestCase::class)->in('Feature');
@@ -47,7 +49,7 @@ expect()->extend('toBeOne', function () {
 */
 
 function call(
-    HttpMethods $method,
+    HttpMethod $method,
     string $path,
     array $parameters = [],
     array|string|null $body = null,
@@ -72,25 +74,25 @@ function call(
 
 function get(string $path, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(method: HttpMethods::GET, path: $path, parameters: $parameters, headers: $headers);
+    return call(method: HttpMethod::GET, path: $path, parameters: $parameters, headers: $headers);
 }
 
 function post(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(HttpMethods::POST, $path, $parameters, $body, $headers);
+    return call(HttpMethod::POST, $path, $parameters, $body, $headers);
 }
 
 function put(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(HttpMethods::PUT, $path, $parameters, $body, $headers);
+    return call(HttpMethod::PUT, $path, $parameters, $body, $headers);
 }
 
 function patch(string $path, array|string|null $body, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(HttpMethods::PATCH, $path, $parameters, $body, $headers);
+    return call(HttpMethod::PATCH, $path, $parameters, $body, $headers);
 }
 
 function delete(string $path, array $parameters = [], array $headers = []): TestResponse
 {
-    return call(method: HttpMethods::DELETE, path: $path, parameters: $parameters, headers: $headers);
+    return call(method: HttpMethod::DELETE, path: $path, parameters: $parameters, headers: $headers);
 }
