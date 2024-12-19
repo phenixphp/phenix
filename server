@@ -69,6 +69,7 @@ class Watcher
 
     public function runServer(): void {
         $server = Process::fromShellCommandline("php public/index.php");
+        $server->setTimeout(null);
         $server->start();
 
         $server->wait(function ($type, $buffer): void {
