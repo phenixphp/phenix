@@ -1,0 +1,127 @@
+#!/usr/bin/env php
+
+<?php
+
+use Dotenv\Dotenv;
+use Spatie\Watcher\Watch;
+use Symfony\Component\Process\Process;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+if (php_sapi_name() !== 'cli') {
+    exit;
+}
+
+$config = Dotenv::createArrayBacked(__DIR__, '.env')->load();
+
+class Watcher
+{
+    protected string $host;
+    protected int $port;
+
+    public function __construct(
+        protected array $paths,
+        array $config = []
+    ) {
+        $this->host = $config['APP_URL'] ?? 'http://127.0.0.1';
+        $this->port = $config['APP_PORT'] ?? 1337;
+    }
+
+    public function watch(): void {
+        Watch::paths($this->paths)
+            ->onAnyChange(function (): void {
+                $this->killExistingProcess();
+
+                $this->runServer();
+            })
+            ->start();
+    }
+
+    public function systemIsReady(): bool
+    {
+        $packageName = 'chokidar';
+        $checkCommand = 'npm list ' . escapeshellarg($packageName) . ' --depth=0';
+
+        $process = Process::fromShellCommandline($checkCommand);
+        $process->run();
+
+        if ($process->isSuccessful() && strpos($process->getOutput(), $packageName) !== false) {
+            return true;
+        } else {
+            echo "Chokidar is not installed. Installing...\n";
+
+            $installCommand = 'npm install ' . escapeshellarg($packageName);
+            $installProcess = Process::fromShellCommandline($installCommand);
+            $installProcess->run();
+
+            if ($installProcess->isSuccessful()) {
+                echo "Chokidar installed successfully.\n";
+
+                return true;
+            } else {
+                echo "Failed to install chokidar. Please check your npm configuration.\n";
+                echo $installProcess->getErrorOutput();
+
+                return false;
+            }
+        }
+    }
+
+    public function runServer(): void {
+        $server = Process::fromShellCommandline("php public/index.php");
+        $server->start();
+
+        $server->wait(function ($type, $buffer): void {
+            if (Process::ERR === $type) {
+                echo "ERR: {$buffer}";
+
+                exit(1);
+            } else {
+                echo $buffer;
+            }
+        });
+
+        echo "Server started on {$this->host}:{$this->port}" . PHP_EOL;
+    }
+
+    protected function killExistingProcess()
+    {
+        $checkProcess = Process::fromShellCommandline("lsof -i :{$this->port}");
+        $checkProcess->run();
+
+        if ($checkProcess->isSuccessful() && strpos($checkProcess->getOutput(), 'LISTEN') !== false) {
+            preg_match('/php\s+(\d+)/', $checkProcess->getOutput(), $matches);
+
+            if (isset($matches[1])) {
+                echo "Restarting server..." . PHP_EOL;
+
+                $pid = $matches[1];
+
+                $killProcess = Process::fromShellCommandline('kill ' . escapeshellarg($pid));
+                $killProcess->run();
+
+                echo "Stopped existing server process with PID $pid" . PHP_EOL;
+            }
+        }
+    }
+}
+
+try {
+    $watcher = new Watcher([
+        __DIR__ . '/app',
+        __DIR__ . '/config',
+        __DIR__ . '/routes',
+    ], $config);
+
+    if ($watcher->systemIsReady()) {
+        echo "System is ready. Press Ctrl+C to stop.\n\n";
+
+        $watcher->runServer();
+
+        $watcher->watch();
+    } else {
+        echo "System is not ready. Exiting...\n\n";
+    }
+} catch (Throwable $th) {
+    echo $th->getMessage();
+}
