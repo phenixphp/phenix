@@ -5,6 +5,7 @@
 use Dotenv\Dotenv;
 use Spatie\Watcher\Watch;
 use Symfony\Component\Process\Process;
+use Spatie\Watcher\Exceptions\CouldNotStartWatcher;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -14,30 +15,59 @@ if (php_sapi_name() !== 'cli') {
 
 $config = Dotenv::createArrayBacked(__DIR__, '.env')->load();
 
-class Watcher
+class Watcher extends Watch
 {
     protected string $host;
     protected int $port;
     protected int|null $pid;
+    protected Process $serverProcess;
 
     public function __construct(
-        protected array $paths,
+        array $paths,
         array $config = []
     ) {
+        parent::__construct();
+
+        $this->setPaths($paths);
         $this->host = $config['APP_URL'] ?? 'http://127.0.0.1';
         $this->port = $config['APP_PORT'] ?? 1337;
+    }
+
+    public function start(): void
+    {
+        $watcher = $this->getWatchProcess();
+
+        while (true) {
+            if (! $watcher->isRunning()) {
+                throw CouldNotStartWatcher::make($watcher);
+            }
+
+            if ($output = $watcher->getIncrementalOutput()) {
+                $this->actOnOutput($output);
+            }
+
+            if ($this->serverProcess->isRunning()) {
+                echo $this->serverProcess->getIncrementalOutput();
+                echo $this->serverProcess->getIncrementalErrorOutput();
+            }
+
+            if (! ($this->shouldContinue)()) {
+                break;
+            }
+
+            usleep($this->interval);
+        }
     }
 
     public function watch(): void {
         echo "Watching for changes..." . PHP_EOL . PHP_EOL;
 
-        Watch::paths($this->paths)
-            ->onAnyChange(function (): void {
-                $this->killExistingProcess();
+        $this->onAnyChange(function (): void {
+            $this->killExistingProcess();
 
-                $this->runServer();
-            })
-            ->start();
+            $this->runServer();
+        })
+        ->start();
     }
 
     public function systemIsReady(): bool
@@ -71,11 +101,11 @@ class Watcher
     }
 
     public function runServer(): void {
-        $serverProcess = Process::fromShellCommandline("php public/index.php");
-        $serverProcess->setTimeout(null);
-        $serverProcess->start();
+        $this->serverProcess = Process::fromShellCommandline("php public/index.php");
+        $this->serverProcess->setTimeout(null);
+        $this->serverProcess->start();
 
-        $this->pid = $serverProcess->getPid();
+        $this->pid = $this->serverProcess->getPid();
 
         echo "Server started on {$this->host}:{$this->port}" . PHP_EOL . PHP_EOL;
     }
