@@ -1,0 +1,142 @@
+#!/usr/bin/env php
+
+<?php
+
+use Dotenv\Dotenv;
+use Spatie\Watcher\Watch;
+use Symfony\Component\Process\Process;
+use Spatie\Watcher\Exceptions\CouldNotStartWatcher;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+if (php_sapi_name() !== 'cli') {
+    exit;
+}
+
+$config = Dotenv::createArrayBacked(__DIR__, '.env')->load();
+
+class Watcher extends Watch
+{
+    protected string $host;
+    protected int $port;
+    protected int|null $pid;
+    protected Process $serverProcess;
+
+    public function __construct(
+        array $paths,
+        array $config = []
+    ) {
+        parent::__construct();
+
+        $this->setPaths($paths);
+        $this->host = $config['APP_URL'] ?? 'http://127.0.0.1';
+        $this->port = $config['APP_PORT'] ?? 1337;
+    }
+
+    public function start(): void
+    {
+        $watcher = $this->getWatchProcess();
+
+        while (true) {
+            if (! $watcher->isRunning()) {
+                throw CouldNotStartWatcher::make($watcher);
+            }
+
+            if ($output = $watcher->getIncrementalOutput()) {
+                $this->actOnOutput($output);
+            }
+
+            if ($this->serverProcess->isRunning()) {
+                echo $this->serverProcess->getIncrementalOutput();
+                echo $this->serverProcess->getIncrementalErrorOutput();
+            }
+
+            if (! ($this->shouldContinue)()) {
+                break;
+            }
+
+            usleep($this->interval);
+        }
+    }
+
+    public function watch(): void {
+        echo "Watching for changes..." . PHP_EOL . PHP_EOL;
+
+        $this->onAnyChange(function (): void {
+            $this->killExistingProcess();
+
+            $this->runServer();
+        })
+        ->start();
+    }
+
+    public function systemIsReady(): bool
+    {
+        $packageName = 'chokidar';
+        $checkCommand = 'npm list ' . escapeshellarg($packageName) . ' --depth=0';
+
+        $process = Process::fromShellCommandline($checkCommand);
+        $process->run();
+
+        if ($process->isSuccessful() && strpos($process->getOutput(), $packageName) !== false) {
+            return true;
+        } else {
+            echo "Chokidar is not installed. Installing..." . PHP_EOL;
+
+            $installCommand = 'npm install ' . escapeshellarg($packageName);
+            $installProcess = Process::fromShellCommandline($installCommand);
+            $installProcess->run();
+
+            if ($installProcess->isSuccessful()) {
+                echo "Chokidar installed successfully." . PHP_EOL;
+
+                return true;
+            } else {
+                echo "Failed to install chokidar. Please check your npm configuration." . PHP_EOL;
+                echo $installProcess->getErrorOutput();
+
+                return false;
+            }
+        }
+    }
+
+    public function runServer(): void {
+        $this->serverProcess = Process::fromShellCommandline("php public/index.php");
+        $this->serverProcess->setTimeout(null);
+        $this->serverProcess->start();
+
+        $this->pid = $this->serverProcess->getPid();
+
+        echo "Server started on {$this->host}:{$this->port}" . PHP_EOL . PHP_EOL;
+    }
+
+    protected function killExistingProcess()
+    {
+        if ($this->pid) {
+            echo "Restarting server..." . PHP_EOL . PHP_EOL;
+
+            $killProcess = Process::fromShellCommandline('kill ' . escapeshellarg($this->pid));
+            $killProcess->run();
+
+            echo "Server was stopped (PID {$this->pid})" . PHP_EOL . PHP_EOL;
+        }
+    }
+}
+
+try {
+    $watcher = new Watcher([
+        __DIR__ . '/app',
+        __DIR__ . '/config',
+        __DIR__ . '/routes',
+    ], $config);
+
+    if ($watcher->systemIsReady()) {
+        $watcher->runServer();
+
+        $watcher->watch();
+    } else {
+        echo "System is not ready. Exiting..." . PHP_EOL . PHP_EOL;
+    }
+} catch (Throwable $th) {
+    echo $th->getMessage();
+}
