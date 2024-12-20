@@ -8,7 +8,10 @@ return [
     'url' => env('APP_URL', fn () => '0.0.0.0'),
     'port' => env('APP_PORT', fn () => 1337),
     'middlewares' => [
-        \App\Http\Middleware\AcceptJsonResponses::class,
+        'global' => [
+            \App\Http\Middleware\HandleCors::class,
+        ],
+        'router' => [],
     ],
     'providers' => [
         Phenix\Providers\CommandsServiceProvider::class,

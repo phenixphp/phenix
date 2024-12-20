@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Release Notes for 0.4.x
+
+## [v0.4.0 (2024-12-20)](https://github.com/phenixphp/phenix/compare/0.3.8...0.4.0)
+
+## Added
+- Start server with file watcher. ([#72](https://github.com/phenixphp/phenix/pull/72))
+- CORS and validation layer. ([#71](https://github.com/phenixphp/phenix/pull/71))
+
 # Release Notes for 0.3.x
 
 ## [v0.3.8 (2023-10-10)](https://github.com/phenixphp/phenix/compare/0.3.7...0.3.8)
