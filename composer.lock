@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9c543fbbdece9b591eba76f0a522afb",
+    "content-hash": "9f8e5ea16196209ef748b6b95a621136",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -3050,10 +3050,6 @@
             ],
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "3.x-dev",
-                    "dev-2.x": "2.x-dev"
-                },
                 "laravel": {
                     "providers": [
                         "Carbon\\Laravel\\ServiceProvider"
@@ -3063,6 +3059,10 @@
                     "includes": [
                         "extension.neon"
                     ]
+                },
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev",
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
@@ -3165,16 +3165,16 @@
         },
         {
             "name": "phenixphp/framework",
-            "version": "dev-develop",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "6f8403732762f231d9e1194f4e69028929a5516f"
+                "reference": "68a28704870a41da4d02a6243ea474bbb1172706"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/6f8403732762f231d9e1194f4e69028929a5516f",
-                "reference": "6f8403732762f231d9e1194f4e69028929a5516f",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/68a28704870a41da4d02a6243ea474bbb1172706",
+                "reference": "68a28704870a41da4d02a6243ea474bbb1172706",
                 "shasum": ""
             },
             "require": {
@@ -3242,9 +3242,9 @@
             "description": "Phenix framework based on Amphp",
             "support": {
                 "issues": "https://github.com/phenixphp/framework/issues",
-                "source": "https://github.com/phenixphp/framework/tree/develop"
+                "source": "https://github.com/phenixphp/framework/tree/0.5.0"
             },
-            "time": "2024-12-18T20:17:15+00:00"
+            "time": "2024-12-20T01:59:15+00:00"
         },
         {
             "name": "phenixphp/http-cors",
@@ -11036,9 +11036,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "phenixphp/framework": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
