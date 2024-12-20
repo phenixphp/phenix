@@ -62,6 +62,10 @@
         "test:parallel": "vendor/bin/pest --parallel",
         "format": "vendor/bin/php-cs-fixer fix",
         "analyze": "vendor/bin/phpinsights",
-        "analyze:static": "vendor/bin/phpstan"
+        "analyze:static": "vendor/bin/phpstan",
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php server"
+        ]
     }
 }
