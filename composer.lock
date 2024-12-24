@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f8e5ea16196209ef748b6b95a621136",
+    "content-hash": "12678b8ca569b08e5a39bea562a402ad",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -283,16 +283,16 @@
         },
         {
             "name": "amphp/dns",
-            "version": "v2.2.0",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/dns.git",
-                "reference": "758266b0ea7470e2e42cd098493bc6d6c7100cf7"
+                "reference": "166c43737cef1b77782c648a9d9ed11ee0c9859f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/dns/zipball/758266b0ea7470e2e42cd098493bc6d6c7100cf7",
-                "reference": "758266b0ea7470e2e42cd098493bc6d6c7100cf7",
+                "url": "https://api.github.com/repos/amphp/dns/zipball/166c43737cef1b77782c648a9d9ed11ee0c9859f",
+                "reference": "166c43737cef1b77782c648a9d9ed11ee0c9859f",
                 "shasum": ""
             },
             "require": {
@@ -300,9 +300,10 @@
                 "amphp/byte-stream": "^2",
                 "amphp/cache": "^2",
                 "amphp/parser": "^1",
-                "amphp/windows-registry": "^1.0.1",
+                "amphp/process": "^2",
                 "daverandom/libdns": "^2.0.2",
                 "ext-filter": "*",
+                "ext-json": "*",
                 "php": ">=8.1",
                 "revolt/event-loop": "^1 || ^0.2"
             },
@@ -359,7 +360,7 @@
             ],
             "support": {
                 "issues": "https://github.com/amphp/dns/issues",
-                "source": "https://github.com/amphp/dns/tree/v2.2.0"
+                "source": "https://github.com/amphp/dns/tree/v2.3.0"
             },
             "funding": [
                 {
@@ -367,7 +368,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-06-02T19:54:12+00:00"
+            "time": "2024-12-21T01:15:34+00:00"
         },
         {
             "name": "amphp/file",
@@ -689,16 +690,16 @@
         },
         {
             "name": "amphp/http-server",
-            "version": "v3.4.0",
+            "version": "v3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/http-server.git",
-                "reference": "4b87c0f359835406184ac04f31563f8e29d9f883"
+                "reference": "027bd022ee76927bf1b9f0c188744af461ea9f0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/http-server/zipball/4b87c0f359835406184ac04f31563f8e29d9f883",
-                "reference": "4b87c0f359835406184ac04f31563f8e29d9f883",
+                "url": "https://api.github.com/repos/amphp/http-server/zipball/027bd022ee76927bf1b9f0c188744af461ea9f0d",
+                "reference": "027bd022ee76927bf1b9f0c188744af461ea9f0d",
                 "shasum": ""
             },
             "require": {
@@ -710,8 +711,8 @@
                 "amphp/pipeline": "^1",
                 "amphp/socket": "^2.1",
                 "amphp/sync": "^2.2",
-                "league/uri": "^6.8 | ^7.1",
-                "league/uri-interfaces": "^2.3 | ^7.1",
+                "league/uri": "^7.1",
+                "league/uri-interfaces": "^7.1",
                 "php": ">=8.1",
                 "psr/http-message": "^1 | ^2",
                 "psr/log": "^1 | ^2 | ^3",
@@ -722,7 +723,7 @@
                 "amphp/log": "^2",
                 "amphp/php-cs-fixer-config": "^2",
                 "amphp/phpunit-util": "^3",
-                "league/uri-components": "^2.4.2 | ^7.1",
+                "league/uri-components": "^7.1",
                 "monolog/monolog": "^3",
                 "phpunit/phpunit": "^9",
                 "psalm/phar": "~5.23"
@@ -774,7 +775,7 @@
             ],
             "support": {
                 "issues": "https://github.com/amphp/http-server/issues",
-                "source": "https://github.com/amphp/http-server/tree/v3.4.0"
+                "source": "https://github.com/amphp/http-server/tree/v3.4.1"
             },
             "funding": [
                 {
@@ -782,7 +783,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-15T17:14:18+00:00"
+            "time": "2024-12-16T01:30:20+00:00"
         },
         {
             "name": "amphp/http-server-form-parser",
@@ -1092,16 +1093,16 @@
         },
         {
             "name": "amphp/parallel",
-            "version": "v2.3.0",
+            "version": "v2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/parallel.git",
-                "reference": "9777db1460d1535bc2a843840684fb1205225b87"
+                "reference": "5113111de02796a782f5d90767455e7391cca190"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/parallel/zipball/9777db1460d1535bc2a843840684fb1205225b87",
-                "reference": "9777db1460d1535bc2a843840684fb1205225b87",
+                "url": "https://api.github.com/repos/amphp/parallel/zipball/5113111de02796a782f5d90767455e7391cca190",
+                "reference": "5113111de02796a782f5d90767455e7391cca190",
                 "shasum": ""
             },
             "require": {
@@ -1164,7 +1165,7 @@
             ],
             "support": {
                 "issues": "https://github.com/amphp/parallel/issues",
-                "source": "https://github.com/amphp/parallel/tree/v2.3.0"
+                "source": "https://github.com/amphp/parallel/tree/v2.3.1"
             },
             "funding": [
                 {
@@ -1172,7 +1173,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-09-14T19:16:14+00:00"
+            "time": "2024-12-21T01:56:09+00:00"
         },
         {
             "name": "amphp/parser",
@@ -1769,58 +1770,6 @@
                 }
             ],
             "time": "2024-08-03T19:31:26+00:00"
-        },
-        {
-            "name": "amphp/windows-registry",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/amphp/windows-registry.git",
-                "reference": "0d569e8f256cca974e3842b6e78b4e434bf98306"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/amphp/windows-registry/zipball/0d569e8f256cca974e3842b6e78b4e434bf98306",
-                "reference": "0d569e8f256cca974e3842b6e78b4e434bf98306",
-                "shasum": ""
-            },
-            "require": {
-                "amphp/byte-stream": "^2",
-                "amphp/process": "^2",
-                "php": ">=8.1"
-            },
-            "require-dev": {
-                "amphp/php-cs-fixer-config": "^2",
-                "psalm/phar": "^5.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Amp\\WindowsRegistry\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Niklas Keller",
-                    "email": "me@kelunik.com"
-                }
-            ],
-            "description": "Windows Registry Reader.",
-            "support": {
-                "issues": "https://github.com/amphp/windows-registry/issues",
-                "source": "https://github.com/amphp/windows-registry/tree/v1.0.1"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/amphp",
-                    "type": "github"
-                }
-            ],
-            "time": "2024-01-30T23:01:51+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -3009,16 +2958,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.8.2",
+            "version": "3.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "e1268cdbc486d97ce23fef2c666dc3c6b6de9947"
+                "reference": "f01cfa96468f4c38325f507ab81a4f1d2cd93cfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/e1268cdbc486d97ce23fef2c666dc3c6b6de9947",
-                "reference": "e1268cdbc486d97ce23fef2c666dc3c6b6de9947",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/f01cfa96468f4c38325f507ab81a4f1d2cd93cfe",
+                "reference": "f01cfa96468f4c38325f507ab81a4f1d2cd93cfe",
                 "shasum": ""
             },
             "require": {
@@ -3111,7 +3060,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-07T17:46:48+00:00"
+            "time": "2024-12-21T18:03:19+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -3165,16 +3114,16 @@
         },
         {
             "name": "phenixphp/framework",
-            "version": "0.5.0",
+            "version": "0.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "68a28704870a41da4d02a6243ea474bbb1172706"
+                "reference": "68548860670d9e2b78277b1cfd0d570b9cdf2454"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/68a28704870a41da4d02a6243ea474bbb1172706",
-                "reference": "68a28704870a41da4d02a6243ea474bbb1172706",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/68548860670d9e2b78277b1cfd0d570b9cdf2454",
+                "reference": "68548860670d9e2b78277b1cfd0d570b9cdf2454",
                 "shasum": ""
             },
             "require": {
@@ -3242,9 +3191,9 @@
             "description": "Phenix framework based on Amphp",
             "support": {
                 "issues": "https://github.com/phenixphp/framework/issues",
-                "source": "https://github.com/phenixphp/framework/tree/0.5.0"
+                "source": "https://github.com/phenixphp/framework/tree/0.5.1"
             },
-            "time": "2024-12-20T01:59:15+00:00"
+            "time": "2024-12-24T17:45:32+00:00"
         },
         {
             "name": "phenixphp/http-cors",
@@ -5819,13 +5768,13 @@
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-main": "3.x-dev"
-                },
                 "phpstan": {
                     "includes": [
                         "extension.neon"
                     ]
+                },
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
                 }
             },
             "autoload": {
