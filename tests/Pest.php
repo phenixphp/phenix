@@ -11,13 +11,11 @@
 |
 */
 
-use Phenix\Util\URL;
+use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
 use Phenix\Constants\HttpMethod;
 use Phenix\Testing\TestResponse;
-use Amp\Http\Client\HttpClientBuilder;
-
-
+use Phenix\Util\URL;
 
 uses(Tests\TestCase::class)->in('Unit');
 uses(Tests\TestCase::class)->in('Feature');
