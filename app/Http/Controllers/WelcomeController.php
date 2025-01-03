@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Phenix\Http\Response;
 use Phenix\Http\Controller;
+use Phenix\Http\Response;
 
 class WelcomeController extends Controller
 {
