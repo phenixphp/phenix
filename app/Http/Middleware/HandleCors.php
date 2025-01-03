@@ -8,5 +8,4 @@ use Phenix\Http\Middlewares\HandleCors as HandleCorsBase;
 
 class HandleCors extends HandleCorsBase
 {
-
 }

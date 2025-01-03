@@ -32,6 +32,10 @@ jobs:
         run: |
           composer install --no-interaction --prefer-dist --no-progress --no-suggest
 
+      - name: Check code formatting with PHP CS Fixer
+        run: |
+          vendor/bin/php-cs-fixer fix --dry-run --diff --ansi
+
       - name: Check quality code with PHPInsights
         run: |
           vendor/bin/phpinsights -n --ansi --format=github-action

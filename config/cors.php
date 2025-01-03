@@ -6,5 +6,5 @@ return [
     'max_age' => 8600,
     'allowed_headers' => ['X-Request-Headers', 'Content-Type', 'Authorization', 'X-Requested-With'],
     'exposable_headers' => [],
-    'allow_credentials' => false
+    'allow_credentials' => false,
 ];
