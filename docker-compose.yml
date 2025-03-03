@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: ./docker
+      args:
+        - USER_UID=${USER_UID}
+        - USER_GID=${USER_GID}
+    volumes:
+      - .:/usr/src/phenix:rw
+    working_dir: /usr/src/phenix
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      - APP_PORT=${APP_PORT}
+      - APP_ENV=${APP_ENV}
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+networks:
+  phenix:
+    driver: bridge
