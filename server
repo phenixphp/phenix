@@ -178,51 +178,8 @@ class Watcher extends Watch
         try {
             $this->serverProcess->start();
 
-            usleep(100000); // 100ms
-
-            if (!$this->serverProcess->isRunning()) {
-                $exitCode = $this->serverProcess->getExitCode();
-
-                if ($incrementErrorCounter) {
-                    $this->consecutiveErrors++;
-                }
-
-                echo Output::error("Server failed to start. Exit code: {$exitCode}") . PHP_EOL;
-                echo Output::debug("Error: " . $this->serverProcess->getErrorOutput()) . PHP_EOL;
-                echo Output::warning("Consecutive errors: {$this->consecutiveErrors}") . PHP_EOL . PHP_EOL;
-
-                if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
-                    sleep(2);
-
-                    $this->runServer($incrementErrorCounter);
-                }
-
-                return;
-            }
-
-            if ($incrementErrorCounter) {
-                $this->consecutiveErrors = 0;
-            }
-            $this->pid = $this->serverProcess->getPid();
-
-            echo Output::success("Server started on {$this->host}:{$this->port}") . PHP_EOL;
-            echo Output::info("PID: {$this->pid}") . PHP_EOL . PHP_EOL;
-
-        } catch (Exception $e) {
-            if ($incrementErrorCounter) {
-                $this->consecutiveErrors++;
-            }
-
-            echo Output::error("Failed to start server: " . $e->getMessage()) . PHP_EOL;
-            echo Output::debug("Command: {$command}") . PHP_EOL;
-            echo Output::warning("Consecutive errors: {$this->consecutiveErrors}") . PHP_EOL . PHP_EOL;
-
-            if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
-                sleep(2);
-
-                $this->runServer($incrementErrorCounter);
-            }
-        }
+        echo "Server started on {$this->host}:{$this->port}" . PHP_EOL . PHP_EOL;
+        echo "Process ID is {$this->pid}" . PHP_EOL . PHP_EOL;
     }
 
     private function ensureWatcherIsRunning(Process $watcher): void
