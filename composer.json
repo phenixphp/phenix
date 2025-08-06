@@ -20,7 +20,7 @@
     "require": {
         "php": "^8.2",
         "ext-pcntl": "*",
-        "phenixphp/framework": "dev-feature/queue-system"
+        "phenixphp/framework": "dev-feature/users-module"
     },
     "require-dev": {
         "amphp/phpunit-util": "^v3.0.0",
