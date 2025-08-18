@@ -6,7 +6,11 @@ return [
     'drivers' => [
         'parallel' => [
             'timeout' => env('PARALLEL_QUEUE_TIMEOUT', fn (): int => 2),
+            'chunk_processing' => env('PARALLEL_QUEUE_CHUNK_PROCESSING', fn (): bool => true),
             'chunk_size' => env('PARALLEL_QUEUE_CHUNK_SIZE', fn (): int => 10),
+            'max_retries' => env('PARALLEL_QUEUE_MAX_RETRIES', fn (): int => 3),
+            'retry_delay' => env('PARALLEL_QUEUE_RETRY_DELAY', fn (): int => 2),
+            'interval' => env('PARALLEL_QUEUE_INTERVAL', fn (): float => 2.0),
         ],
 
         'database' => [
