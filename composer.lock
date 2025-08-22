@@ -3814,12 +3814,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "83aff4c0e74ea49441eeaa53a773b24cd9444d1f"
+                "reference": "9e9f80ac01618234ad5e8b67af8f240b3a6cccd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/83aff4c0e74ea49441eeaa53a773b24cd9444d1f",
-                "reference": "83aff4c0e74ea49441eeaa53a773b24cd9444d1f",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/9e9f80ac01618234ad5e8b67af8f240b3a6cccd3",
+                "reference": "9e9f80ac01618234ad5e8b67af8f240b3a6cccd3",
                 "shasum": ""
             },
             "require": {
@@ -3896,7 +3896,7 @@
                 "issues": "https://github.com/phenixphp/framework/issues",
                 "source": "https://github.com/phenixphp/framework/tree/feature/queue-system"
             },
-            "time": "2025-08-22T14:32:08+00:00"
+            "time": "2025-08-22T15:27:40+00:00"
         },
         {
             "name": "phenixphp/http-cors",
