@@ -36,8 +36,7 @@ composer test:parallel          # Parallel execution
 ### Quality Tools
 ```bash
 composer format                 # PHP CS Fixer
-composer analyze                # PHPInsights
-composer analyze:static         # PHPStan
+composer analyze                # PHPStan
 ```
 
 ## Queue System Architecture

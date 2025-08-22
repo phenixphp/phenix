@@ -27,7 +27,6 @@
         "friendsofphp/php-cs-fixer": "^3.11",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^6.3",
-        "nunomaduro/phpinsights": "^2.6",
         "pestphp/pest": "^1.22",
         "pestphp/pest-plugin-faker": "^1.0",
         "pestphp/pest-plugin-global-assertions": "^1.0",
@@ -61,8 +60,7 @@
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage",
         "test:parallel": "vendor/bin/pest --parallel",
         "format": "vendor/bin/php-cs-fixer fix",
-        "analyze": "vendor/bin/phpinsights",
-        "analyze:static": "vendor/bin/phpstan",
+        "analyze": "vendor/bin/phpstan",
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "@php server"
