@@ -107,7 +107,8 @@ class Watcher extends Watch
 
         $this->pid = $this->serverProcess->getPid();
 
-        echo "Server started on {$this->host}:{$this->port}" . PHP_EOL . PHP_EOL;
+        echo "Server started on {$this->host}:{$this->port}" . PHP_EOL;
+        echo "PID: {$this->pid}" . PHP_EOL . PHP_EOL;
     }
 
     protected function killExistingProcess()

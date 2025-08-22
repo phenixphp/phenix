@@ -13,7 +13,7 @@
 
 use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
-use Phenix\Constants\HttpMethod;
+use Phenix\Http\Constants\HttpMethod;
 use Phenix\Testing\TestResponse;
 use Phenix\Util\URL;
 
