@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9199dcf9cdef3aded4b30d156f7d2382",
+    "content-hash": "38f7078cd1d68343715a254570dfd2fe",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -3810,16 +3810,16 @@
         },
         {
             "name": "phenixphp/framework",
-            "version": "dev-feature/queue-system",
+            "version": "0.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "9e9f80ac01618234ad5e8b67af8f240b3a6cccd3"
+                "reference": "9c43d8518524928fa5eb6922dbbfed21f1b275cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/9e9f80ac01618234ad5e8b67af8f240b3a6cccd3",
-                "reference": "9e9f80ac01618234ad5e8b67af8f240b3a6cccd3",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/9c43d8518524928fa5eb6922dbbfed21f1b275cd",
+                "reference": "9c43d8518524928fa5eb6922dbbfed21f1b275cd",
                 "shasum": ""
             },
             "require": {
@@ -3894,9 +3894,9 @@
             "description": "Phenix framework based on Amphp",
             "support": {
                 "issues": "https://github.com/phenixphp/framework/issues",
-                "source": "https://github.com/phenixphp/framework/tree/feature/queue-system"
+                "source": "https://github.com/phenixphp/framework/tree/0.6.0"
             },
-            "time": "2025-08-22T15:27:40+00:00"
+            "time": "2025-08-22T22:35:11+00:00"
         },
         {
             "name": "phenixphp/http-cors",
@@ -11432,9 +11432,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "phenixphp/framework": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
