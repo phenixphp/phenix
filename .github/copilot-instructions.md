@@ -16,10 +16,12 @@
 ```bash
 composer dev                    # Starts development server with file watcher
 # OR directly: php server       # Custom file watcher that restarts on changes
+XDEBUG_MODE=off php public/index.php  # Direct server start (faster, no debugging)
 ```
 - Server runs on `APP_URL:APP_PORT` (default: http://127.0.0.1:1337)
 - Watches: `app/`, `config/`, `routes/`, `database/`, `composer.json`, `.env`
 - Requires Node.js for chokidar file watcher
+- Use `XDEBUG_MODE=off` for better performance when debugging isn't needed
 
 ### Testing
 ```bash
