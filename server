@@ -13,6 +13,57 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
+class Output
+{
+    public const RESET = "\033[0m";
+    public const BOLD = "\033[1m";
+
+    // Text colors
+    public const RED = "\033[31m";
+    public const GREEN = "\033[32m";
+    public const YELLOW = "\033[33m";
+    public const BLUE = "\033[34m";
+    public const MAGENTA = "\033[35m";
+    public const CYAN = "\033[36m";
+    public const WHITE = "\033[37m";
+    public const GRAY = "\033[90m";
+
+    // Background colors
+    public const BG_RED = "\033[41m";
+    public const BG_GREEN = "\033[42m";
+    public const BG_YELLOW = "\033[43m";
+
+    public static function colorize(string $text, string $color): string
+    {
+        return $color . $text . self::RESET;
+    }
+
+    public static function success(string $text): string
+    {
+        return self::colorize("🚀 " . $text, self::GREEN . self::BOLD);
+    }
+
+    public static function error(string $text): string
+    {
+        return self::colorize("❌ " . $text, self::RED . self::BOLD);
+    }
+
+    public static function warning(string $text): string
+    {
+        return self::colorize("⚠️  " . $text, self::YELLOW . self::BOLD);
+    }
+
+    public static function info(string $text): string
+    {
+        return self::colorize("ℹ️  " . $text, self::CYAN . self::BOLD);
+    }
+
+    public static function debug(string $text): string
+    {
+        return self::colorize($text, self::GRAY);
+    }
+}
+
 $config = Dotenv::createArrayBacked(__DIR__, '.env')->load();
 
 class Watcher extends Watch
@@ -66,7 +117,7 @@ class Watcher extends Watch
 
     public function watch(): void
     {
-        echo "Watching for changes..." . PHP_EOL . PHP_EOL;
+        echo Output::info("Watching for changes...") . PHP_EOL . PHP_EOL;
 
         $this->onAnyChange(function (): void {
             $this->killExistingProcess();
@@ -86,18 +137,18 @@ class Watcher extends Watch
         if ($process->isSuccessful() && strpos($process->getOutput(), $packageName) !== false) {
             return true;
         } else {
-            echo "Chokidar is not installed. Installing..." . PHP_EOL;
+            echo Output::warning("Chokidar is not installed. Installing...") . PHP_EOL;
 
             $installCommand = 'npm install ' . escapeshellarg($packageName);
             $installProcess = Process::fromShellCommandline($installCommand);
             $installProcess->run();
 
             if ($installProcess->isSuccessful()) {
-                echo "Chokidar installed successfully." . PHP_EOL;
+                echo Output::success("Chokidar installed successfully.") . PHP_EOL;
 
                 return true;
             } else {
-                echo "Failed to install chokidar. Please check your npm configuration." . PHP_EOL;
+                echo Output::error("Failed to install chokidar. Please check your npm configuration.") . PHP_EOL;
                 echo $installProcess->getErrorOutput();
 
                 return false;
@@ -109,7 +160,7 @@ class Watcher extends Watch
     {
         if ($this->consecutiveErrors >= $this->maxConsecutiveErrors || $this->stopAttempts) {
             if (!$this->stopAttempts) {
-                echo "Too many consecutive errors ({$this->consecutiveErrors}). Stopping server attempts." . PHP_EOL;
+                echo Output::error("Too many consecutive errors ({$this->consecutiveErrors}). Stopping server attempts.") . PHP_EOL;
 
                 $this->stopAttempts = true;
             }
@@ -133,9 +184,9 @@ class Watcher extends Watch
                     $this->consecutiveErrors++;
                 }
 
-                echo "Server failed to start. Exit code: {$exitCode}" . PHP_EOL;
-                echo "Error: " . $this->serverProcess->getErrorOutput() . PHP_EOL;
-                echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL . PHP_EOL;
+                echo Output::error("Server failed to start. Exit code: {$exitCode}") . PHP_EOL;
+                echo Output::debug("Error: " . $this->serverProcess->getErrorOutput()) . PHP_EOL;
+                echo Output::warning("Consecutive errors: {$this->consecutiveErrors}") . PHP_EOL . PHP_EOL;
 
                 if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
                     sleep(2);
@@ -151,17 +202,17 @@ class Watcher extends Watch
             }
             $this->pid = $this->serverProcess->getPid();
 
-            echo "Server started on {$this->host}:{$this->port}" . PHP_EOL;
-            echo "PID: {$this->pid}" . PHP_EOL . PHP_EOL;
+            echo Output::success("Server started on {$this->host}:{$this->port}") . PHP_EOL;
+            echo Output::info("PID: {$this->pid}") . PHP_EOL . PHP_EOL;
 
         } catch (Exception $e) {
             if ($incrementErrorCounter) {
                 $this->consecutiveErrors++;
             }
 
-            echo "Failed to start server: " . $e->getMessage() . PHP_EOL;
-            echo "Command: {$command}" . PHP_EOL;
-            echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL . PHP_EOL;
+            echo Output::error("Failed to start server: " . $e->getMessage()) . PHP_EOL;
+            echo Output::debug("Command: {$command}") . PHP_EOL;
+            echo Output::warning("Consecutive errors: {$this->consecutiveErrors}") . PHP_EOL . PHP_EOL;
 
             if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
                 sleep(2);
@@ -202,8 +253,58 @@ class Watcher extends Watch
 
     private function outputServerProcess(): void
     {
-        echo $this->serverProcess->getIncrementalOutput();
-        echo $this->serverProcess->getIncrementalErrorOutput();
+        $output = $this->serverProcess->getIncrementalOutput();
+        $errorOutput = $this->serverProcess->getIncrementalErrorOutput();
+
+        if ($output) {
+            echo $this->colorizeServerOutput($output);
+        }
+
+        if ($errorOutput) {
+            echo Output::colorize($errorOutput, Output::RED);
+        }
+    }
+
+    private function colorizeServerOutput(string $output): string
+    {
+        $lines = explode("\n", $output);
+        $colorizedLines = [];
+
+        foreach ($lines as $line) {
+            if (empty(trim($line))) {
+                $colorizedLines[] = $line;
+
+                continue;
+            }
+
+            if (strpos($line, '.NOTICE:') !== false) {
+                $colorizedLines[] = Output::colorize($line, Output::CYAN);
+            } elseif (strpos($line, '.WARNING:') !== false) {
+                $colorizedLines[] = Output::colorize($line, Output::YELLOW);
+            } elseif (strpos($line, '.ERROR:') !== false) {
+                $colorizedLines[] = Output::colorize($line, Output::RED);
+            } elseif (strpos($line, '.DEBUG:') !== false) {
+                $colorizedLines[] = Output::colorize($line, Output::GRAY);
+            } elseif (strpos($line, '.INFO:') !== false) {
+                $colorizedLines[] = Output::colorize($line, Output::GREEN);
+            } elseif (strpos($line, 'Started server') !== false || strpos($line, 'Listening on') !== false) {
+                $colorizedLines[] = Output::colorize($line, Output::GREEN . Output::BOLD);
+            } elseif (strpos($line, 'GET') !== false || strpos($line, 'POST') !== false || strpos($line, 'PUT') !== false) {
+                if (strpos($line, ' 200 ') !== false) {
+                    $colorizedLines[] = Output::colorize($line, Output::GREEN);
+                } elseif (strpos($line, ' 404 ') !== false) {
+                    $colorizedLines[] = Output::colorize($line, Output::YELLOW);
+                } elseif (strpos($line, ' 500 ') !== false) {
+                    $colorizedLines[] = Output::colorize($line, Output::RED);
+                } else {
+                    $colorizedLines[] = Output::colorize($line, Output::BLUE);
+                }
+            } else {
+                $colorizedLines[] = $line;
+            }
+        }
+
+        return implode("\n", $colorizedLines);
     }
 
     private function periodicHealthCheck(): void
@@ -214,23 +315,23 @@ class Watcher extends Watch
 
         if (time() - $this->lastHealthCheck > 10) {
             if (!$this->isServerHealthy()) {
-                echo "Server health check failed. Restarting..." . PHP_EOL;
+                echo Output::warning("Server health check failed. Restarting...") . PHP_EOL;
 
                 $this->consecutiveErrors++;
-                echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL;
+                echo Output::warning("Consecutive errors: {$this->consecutiveErrors}") . PHP_EOL;
 
                 $this->killExistingProcess();
 
                 if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
                     $this->runServer(false);
                 } else {
-                    echo "Maximum consecutive errors reached. Server will not restart automatically." . PHP_EOL;
+                    echo Output::error("Maximum consecutive errors reached. Server will not restart automatically.") . PHP_EOL;
 
                     $this->stopAttempts = true;
                 }
             } else {
                 if ($this->consecutiveErrors > 0) {
-                    echo "Server health check passed. Resetting error counter." . PHP_EOL;
+                    echo Output::success("Server health check passed. Resetting error counter.") . PHP_EOL;
 
                     $this->consecutiveErrors = 0;
                     $this->stopAttempts = false; // Allow attempts again
@@ -250,17 +351,17 @@ class Watcher extends Watch
         $exitCode = $this->serverProcess->getExitCode();
 
         if ($exitCode !== null && $exitCode !== 0) {
-            echo "Server process exited with error code: {$exitCode}" . PHP_EOL;
-            echo "Error output: " . $this->serverProcess->getErrorOutput() . PHP_EOL;
-            echo "Restarting server..." . PHP_EOL . PHP_EOL;
+            echo Output::error("Server process exited with error code: {$exitCode}") . PHP_EOL;
+            echo Output::debug("Error output: " . $this->serverProcess->getErrorOutput()) . PHP_EOL;
+            echo Output::info("Restarting server...") . PHP_EOL . PHP_EOL;
 
             $this->consecutiveErrors++;
-            echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL;
+            echo Output::warning("Consecutive errors: {$this->consecutiveErrors}") . PHP_EOL;
 
             if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
                 $this->runServer(false);
             } else {
-                echo "Maximum consecutive errors reached. Server will not restart automatically." . PHP_EOL;
+                echo Output::error("Maximum consecutive errors reached. Server will not restart automatically.") . PHP_EOL;
 
                 $this->stopAttempts = true;
             }
@@ -273,7 +374,7 @@ class Watcher extends Watch
             return;
         }
 
-        echo "Restarting server..." . PHP_EOL . PHP_EOL;
+        echo Output::info("Restarting server...") . PHP_EOL . PHP_EOL;
 
         try {
             $this->serverProcess->stop(3); // 3 second timeout
@@ -283,10 +384,10 @@ class Watcher extends Watch
                 $killProcess->run();
             }
 
-            echo "Server was stopped (PID {$this->pid})" . PHP_EOL . PHP_EOL;
+            echo Output::success("Server was stopped (PID {$this->pid})") . PHP_EOL . PHP_EOL;
 
         } catch (Exception $e) {
-            echo "Error stopping server: " . $e->getMessage() . PHP_EOL;
+            echo Output::error("Error stopping server: " . $e->getMessage()) . PHP_EOL;
 
             $killProcess = Process::fromShellCommandline('kill -9 ' . escapeshellarg($this->pid));
             $killProcess->run();
@@ -330,7 +431,7 @@ try {
 
         $watcher->watch();
     } else {
-        echo "System is not ready. Exiting..." . PHP_EOL . PHP_EOL;
+        echo Output::error("System is not ready. Exiting...") . PHP_EOL . PHP_EOL;
     }
 } catch (Throwable $th) {
     echo $th->getMessage();
