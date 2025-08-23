@@ -18,9 +18,17 @@ $config = Dotenv::createArrayBacked(__DIR__, '.env')->load();
 class Watcher extends Watch
 {
     protected string $host;
+
     protected int $port;
+
     protected int|null $pid;
+
     protected Process $serverProcess;
+
+    protected int $consecutiveErrors = 0;
+
+    protected int $maxConsecutiveErrors = 5;
+
 
     public function __construct(
         array $paths,
@@ -38,20 +46,13 @@ class Watcher extends Watch
         $watcher = $this->getWatchProcess();
 
         while (true) {
-            if (! $watcher->isRunning()) {
-                throw CouldNotStartWatcher::make($watcher);
-            }
+            $this->ensureWatcherIsRunning($watcher);
 
-            if ($output = $watcher->getIncrementalOutput()) {
-                $this->actOnOutput($output);
-            }
+            $this->handleWatcherOutput($watcher);
 
-            if ($this->serverProcess->isRunning()) {
-                echo $this->serverProcess->getIncrementalOutput();
-                echo $this->serverProcess->getIncrementalErrorOutput();
-            }
+            $this->handleServerProcess();
 
-            if (! ($this->shouldContinue)()) {
+            if (!($this->shouldContinue)()) {
                 break;
             }
 
@@ -59,15 +60,15 @@ class Watcher extends Watch
         }
     }
 
-    public function watch(): void {
+    public function watch(): void
+    {
         echo "Watching for changes..." . PHP_EOL . PHP_EOL;
 
         $this->onAnyChange(function (): void {
             $this->killExistingProcess();
 
             $this->runServer();
-        })
-        ->start();
+        })->start();
     }
 
     public function systemIsReady(): bool
@@ -100,27 +101,171 @@ class Watcher extends Watch
         }
     }
 
-    public function runServer(): void {
-        $this->serverProcess = Process::fromShellCommandline("php public/index.php");
+    public function runServer(): void
+    {
+        if ($this->consecutiveErrors >= $this->maxConsecutiveErrors) {
+            echo "Too many consecutive errors ({$this->consecutiveErrors}). Stopping server attempts." . PHP_EOL;
+
+            return;
+        }
+
+        $command = "XDEBUG_MODE=off php public/index.php";
+        $this->serverProcess = Process::fromShellCommandline($command);
         $this->serverProcess->setTimeout(null);
-        $this->serverProcess->start();
 
-        $this->pid = $this->serverProcess->getPid();
+        try {
+            $this->serverProcess->start();
 
-        echo "Server started on {$this->host}:{$this->port}" . PHP_EOL;
-        echo "PID: {$this->pid}" . PHP_EOL . PHP_EOL;
+            usleep(100000); // 100ms
+
+            if (!$this->serverProcess->isRunning()) {
+                $exitCode = $this->serverProcess->getExitCode();
+                $this->consecutiveErrors++;
+
+                echo "Server failed to start. Exit code: {$exitCode}" . PHP_EOL;
+                echo "Error: " . $this->serverProcess->getErrorOutput() . PHP_EOL;
+                echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL . PHP_EOL;
+
+                if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
+                    sleep(2);
+
+                    $this->runServer();
+                }
+
+                return;
+            }
+
+            $this->consecutiveErrors = 0;
+            $this->pid = $this->serverProcess->getPid();
+
+            echo "Server started on {$this->host}:{$this->port}" . PHP_EOL;
+            echo "PID: {$this->pid}" . PHP_EOL . PHP_EOL;
+
+        } catch (Exception $e) {
+            $this->consecutiveErrors++;
+
+            echo "Failed to start server: " . $e->getMessage() . PHP_EOL;
+            echo "Command: {$command}" . PHP_EOL;
+            echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL . PHP_EOL;
+
+            if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
+                sleep(2);
+
+                $this->runServer();
+            }
+        }
     }
 
-    protected function killExistingProcess()
+    private function ensureWatcherIsRunning(Process $watcher): void
     {
-        if ($this->pid) {
+        if (!$watcher->isRunning()) {
+            throw CouldNotStartWatcher::make($watcher);
+        }
+    }
+
+    private function handleWatcherOutput(Process $watcher): void
+    {
+        if ($output = $watcher->getIncrementalOutput()) {
+            $this->actOnOutput($output);
+        }
+    }
+
+    private function handleServerProcess(): void
+    {
+        if (!isset($this->serverProcess)) {
+            return;
+        }
+
+        if ($this->serverProcess->isRunning()) {
+            $this->outputServerProcess();
+
+            $this->periodicHealthCheck();
+        } else {
+            $this->handleServerExit();
+        }
+    }
+
+    private function outputServerProcess(): void
+    {
+        echo $this->serverProcess->getIncrementalOutput();
+        echo $this->serverProcess->getIncrementalErrorOutput();
+    }
+
+    private function periodicHealthCheck(): void
+    {
+        static $lastHealthCheck = 0;
+        if (time() - $lastHealthCheck > 10) {
+            if (!$this->isServerHealthy()) {
+                echo "Server health check failed. Restarting..." . PHP_EOL;
+                $this->killExistingProcess();
+                $this->runServer();
+            }
+            $lastHealthCheck = time();
+        }
+    }
+
+    private function handleServerExit(): void
+    {
+        $exitCode = $this->serverProcess->getExitCode();
+
+        if ($exitCode !== null && $exitCode !== 0) {
+            echo "Server process exited with error code: {$exitCode}" . PHP_EOL;
+            echo "Error output: " . $this->serverProcess->getErrorOutput() . PHP_EOL;
             echo "Restarting server..." . PHP_EOL . PHP_EOL;
 
-            $killProcess = Process::fromShellCommandline('kill ' . escapeshellarg($this->pid));
-            $killProcess->run();
+            $this->runServer();
+        }
+    }
+
+    private function killExistingProcess(): void
+    {
+        if (!isset($this->serverProcess) || !$this->pid) {
+            return;
+        }
+
+        echo "Restarting server..." . PHP_EOL . PHP_EOL;
+
+        try {
+            // First try graceful termination
+            $this->serverProcess->stop(3); // 3 second timeout
+
+            // If still running, force kill
+            if ($this->serverProcess->isRunning()) {
+                $killProcess = Process::fromShellCommandline('kill -9 ' . escapeshellarg($this->pid));
+                $killProcess->run();
+            }
 
             echo "Server was stopped (PID {$this->pid})" . PHP_EOL . PHP_EOL;
+
+        } catch (\Exception $e) {
+            echo "Error stopping server: " . $e->getMessage() . PHP_EOL;
+
+            // Force kill as last resort
+            $killProcess = Process::fromShellCommandline('kill -9 ' . escapeshellarg($this->pid));
+            $killProcess->run();
         }
+
+        $this->pid = null;
+    }
+
+    private function isServerHealthy(): bool
+    {
+        if (!isset($this->serverProcess) || !$this->serverProcess->isRunning()) {
+            return false;
+        }
+
+        // Check if server is responding by making a simple HTTP request
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 1,
+                'ignore_errors' => true
+            ]
+        ]);
+
+        $url = str_replace(['http://', 'https://'], '', $this->host) . ':' . $this->port;
+        $result = @file_get_contents("http://{$url}", false, $context);
+
+        return $result !== false;
     }
 }
 
