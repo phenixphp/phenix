@@ -31,6 +31,8 @@ class Watcher extends Watch
 
     protected int $lastHealthCheck = 0;
 
+    protected bool $stopAttempts = false;
+
 
     public function __construct(
         array $paths,
@@ -103,10 +105,14 @@ class Watcher extends Watch
         }
     }
 
-    public function runServer(): void
+    public function runServer(bool $incrementErrorCounter = true): void
     {
-        if ($this->consecutiveErrors >= $this->maxConsecutiveErrors) {
-            echo "Too many consecutive errors ({$this->consecutiveErrors}). Stopping server attempts." . PHP_EOL;
+        if ($this->consecutiveErrors >= $this->maxConsecutiveErrors || $this->stopAttempts) {
+            if (!$this->stopAttempts) {
+                echo "Too many consecutive errors ({$this->consecutiveErrors}). Stopping server attempts." . PHP_EOL;
+
+                $this->stopAttempts = true;
+            }
 
             return;
         }
@@ -122,7 +128,10 @@ class Watcher extends Watch
 
             if (!$this->serverProcess->isRunning()) {
                 $exitCode = $this->serverProcess->getExitCode();
-                $this->consecutiveErrors++;
+
+                if ($incrementErrorCounter) {
+                    $this->consecutiveErrors++;
+                }
 
                 echo "Server failed to start. Exit code: {$exitCode}" . PHP_EOL;
                 echo "Error: " . $this->serverProcess->getErrorOutput() . PHP_EOL;
@@ -131,20 +140,24 @@ class Watcher extends Watch
                 if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
                     sleep(2);
 
-                    $this->runServer();
+                    $this->runServer($incrementErrorCounter);
                 }
 
                 return;
             }
 
-            $this->consecutiveErrors = 0;
+            if ($incrementErrorCounter) {
+                $this->consecutiveErrors = 0;
+            }
             $this->pid = $this->serverProcess->getPid();
 
             echo "Server started on {$this->host}:{$this->port}" . PHP_EOL;
             echo "PID: {$this->pid}" . PHP_EOL . PHP_EOL;
 
         } catch (Exception $e) {
-            $this->consecutiveErrors++;
+            if ($incrementErrorCounter) {
+                $this->consecutiveErrors++;
+            }
 
             echo "Failed to start server: " . $e->getMessage() . PHP_EOL;
             echo "Command: {$command}" . PHP_EOL;
@@ -153,7 +166,7 @@ class Watcher extends Watch
             if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
                 sleep(2);
 
-                $this->runServer();
+                $this->runServer($incrementErrorCounter);
             }
         }
     }
@@ -195,12 +208,33 @@ class Watcher extends Watch
 
     private function periodicHealthCheck(): void
     {
+        if ($this->stopAttempts) {
+            return;
+        }
+
         if (time() - $this->lastHealthCheck > 10) {
             if (!$this->isServerHealthy()) {
                 echo "Server health check failed. Restarting..." . PHP_EOL;
 
+                $this->consecutiveErrors++;
+                echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL;
+
                 $this->killExistingProcess();
-                $this->runServer();
+
+                if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
+                    $this->runServer(false);
+                } else {
+                    echo "Maximum consecutive errors reached. Server will not restart automatically." . PHP_EOL;
+
+                    $this->stopAttempts = true;
+                }
+            } else {
+                if ($this->consecutiveErrors > 0) {
+                    echo "Server health check passed. Resetting error counter." . PHP_EOL;
+
+                    $this->consecutiveErrors = 0;
+                    $this->stopAttempts = false; // Allow attempts again
+                }
             }
 
             $this->lastHealthCheck = time();
@@ -209,6 +243,10 @@ class Watcher extends Watch
 
     private function handleServerExit(): void
     {
+        if ($this->stopAttempts) {
+            return;
+        }
+
         $exitCode = $this->serverProcess->getExitCode();
 
         if ($exitCode !== null && $exitCode !== 0) {
@@ -216,7 +254,16 @@ class Watcher extends Watch
             echo "Error output: " . $this->serverProcess->getErrorOutput() . PHP_EOL;
             echo "Restarting server..." . PHP_EOL . PHP_EOL;
 
-            $this->runServer();
+            $this->consecutiveErrors++;
+            echo "Consecutive errors: {$this->consecutiveErrors}" . PHP_EOL;
+
+            if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
+                $this->runServer(false);
+            } else {
+                echo "Maximum consecutive errors reached. Server will not restart automatically." . PHP_EOL;
+
+                $this->stopAttempts = true;
+            }
         }
     }
 
