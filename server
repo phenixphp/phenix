@@ -29,6 +29,8 @@ class Watcher extends Watch
 
     protected int $maxConsecutiveErrors = 5;
 
+    protected int $lastHealthCheck = 0;
+
 
     public function __construct(
         array $paths,
@@ -193,14 +195,15 @@ class Watcher extends Watch
 
     private function periodicHealthCheck(): void
     {
-        static $lastHealthCheck = 0;
-        if (time() - $lastHealthCheck > 10) {
+        if (time() - $this->lastHealthCheck > 10) {
             if (!$this->isServerHealthy()) {
                 echo "Server health check failed. Restarting..." . PHP_EOL;
+
                 $this->killExistingProcess();
                 $this->runServer();
             }
-            $lastHealthCheck = time();
+
+            $this->lastHealthCheck = time();
         }
     }
 
