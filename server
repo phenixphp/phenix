@@ -271,40 +271,58 @@ class Watcher extends Watch
         $colorizedLines = [];
 
         foreach ($lines as $line) {
-            if (empty(trim($line))) {
-                $colorizedLines[] = $line;
-
-                continue;
-            }
-
-            if (strpos($line, '.NOTICE:') !== false) {
-                $colorizedLines[] = Output::colorize($line, Output::CYAN);
-            } elseif (strpos($line, '.WARNING:') !== false) {
-                $colorizedLines[] = Output::colorize($line, Output::YELLOW);
-            } elseif (strpos($line, '.ERROR:') !== false) {
-                $colorizedLines[] = Output::colorize($line, Output::RED);
-            } elseif (strpos($line, '.DEBUG:') !== false) {
-                $colorizedLines[] = Output::colorize($line, Output::GRAY);
-            } elseif (strpos($line, '.INFO:') !== false) {
-                $colorizedLines[] = Output::colorize($line, Output::GREEN);
-            } elseif (strpos($line, 'Started server') !== false || strpos($line, 'Listening on') !== false) {
-                $colorizedLines[] = Output::colorize($line, Output::GREEN . Output::BOLD);
-            } elseif (strpos($line, 'GET') !== false || strpos($line, 'POST') !== false || strpos($line, 'PUT') !== false) {
-                if (strpos($line, ' 200 ') !== false) {
-                    $colorizedLines[] = Output::colorize($line, Output::GREEN);
-                } elseif (strpos($line, ' 404 ') !== false) {
-                    $colorizedLines[] = Output::colorize($line, Output::YELLOW);
-                } elseif (strpos($line, ' 500 ') !== false) {
-                    $colorizedLines[] = Output::colorize($line, Output::RED);
-                } else {
-                    $colorizedLines[] = Output::colorize($line, Output::BLUE);
-                }
-            } else {
-                $colorizedLines[] = $line;
-            }
+            $colorizedLines[] = $this->colorizeLine($line);
         }
 
         return implode("\n", $colorizedLines);
+    }
+
+    private function colorizeLine(string $line): string
+    {
+        $trimmed = trim($line);
+        $result = $line;
+
+        if ($trimmed === '') {
+            // leave $result as $line
+        } elseif (strpos($line, '.NOTICE:') !== false) {
+            $result = Output::colorize($line, Output::CYAN);
+        } elseif (strpos($line, '.WARNING:') !== false) {
+            $result = Output::colorize($line, Output::YELLOW);
+        } elseif (strpos($line, '.ERROR:') !== false) {
+            $result = Output::colorize($line, Output::RED);
+        } elseif (strpos($line, '.DEBUG:') !== false) {
+            $result = Output::colorize($line, Output::GRAY);
+        } elseif (strpos($line, '.INFO:') !== false) {
+            $result = Output::colorize($line, Output::GREEN);
+        } elseif (strpos($line, 'Started server') !== false || strpos($line, 'Listening on') !== false) {
+            $result = Output::colorize($line, Output::GREEN . Output::BOLD);
+        } elseif ($this->isHttpMethodLine($line)) {
+            $result = $this->colorizeHttpStatusLine($line);
+        }
+
+        return $result;
+    }
+
+    private function isHttpMethodLine(string $line): bool
+    {
+        return strpos($line, 'GET') !== false
+            || strpos($line, 'POST') !== false
+            || strpos($line, 'PUT') !== false;
+    }
+
+    private function colorizeHttpStatusLine(string $line): string
+    {
+        $colorized = Output::colorize($line, Output::BLUE);
+
+        if (strpos($line, ' 200 ') !== false) {
+            $colorized = Output::colorize($line, Output::GREEN);
+        } elseif (strpos($line, ' 404 ') !== false) {
+            $colorized = Output::colorize($line, Output::YELLOW);
+        } elseif (strpos($line, ' 500 ') !== false) {
+            $colorized = Output::colorize($line, Output::RED);
+        }
+
+        return $colorized;
     }
 
     private function periodicHealthCheck(): void
