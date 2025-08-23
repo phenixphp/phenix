@@ -229,10 +229,8 @@ class Watcher extends Watch
         echo "Restarting server..." . PHP_EOL . PHP_EOL;
 
         try {
-            // First try graceful termination
             $this->serverProcess->stop(3); // 3 second timeout
 
-            // If still running, force kill
             if ($this->serverProcess->isRunning()) {
                 $killProcess = Process::fromShellCommandline('kill -9 ' . escapeshellarg($this->pid));
                 $killProcess->run();
@@ -240,10 +238,9 @@ class Watcher extends Watch
 
             echo "Server was stopped (PID {$this->pid})" . PHP_EOL . PHP_EOL;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             echo "Error stopping server: " . $e->getMessage() . PHP_EOL;
 
-            // Force kill as last resort
             $killProcess = Process::fromShellCommandline('kill -9 ' . escapeshellarg($this->pid));
             $killProcess->run();
         }
@@ -257,7 +254,6 @@ class Watcher extends Watch
             return false;
         }
 
-        // Check if server is responding by making a simple HTTP request
         $context = stream_context_create([
             'http' => [
                 'timeout' => 1,
