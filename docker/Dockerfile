@@ -1,22 +1,28 @@
-FROM php:8.2-cli
-WORKDIR /usr/src/phenix
+FROM php:8.2-cli AS development
 
-ARG USER_UID
-ARG USER_GID
+WORKDIR /var/www/
 
-RUN groupadd -g ${USER_GID} phenix_group && useradd -ms /bin/bash -u ${USER_UID} -g ${USER_GID} phenix_user
+RUN apt-get update \
+    && apt-get install -y curl \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install pcntl pdo pdo_mysql
 
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y nodejs
+COPY . /var/www/
 
-USER phenix_user
+FROM php:8.2-cli AS production
 
-COPY . /usr/src/phenix
+WORKDIR /var/www/
 
-ENV APP_PORT=${APP_PORT}
+RUN docker-php-ext-install pcntl pdo pdo_mysql
 
-EXPOSE ${APP_PORT}
+COPY . /var/www/
+
+USER www-data
+
+EXPOSE 8080
 
 ENTRYPOINT ["docker/entrypoint.sh"]
