@@ -29,11 +29,11 @@ return [
     | connection in your database configuration options.
     */
 
-    'connection' => env('SESSION_CONNECTION', fn () => 'default'),
+    'connection' => env('SESSION_CONNECTION', static fn (): string => 'default'),
 
     'cookie_name' => env(
         'SESSION_COOKIE_NAME',
-        fn () => Str::slug(env('APP_NAME', fn () => 'phenix'), '_') . '_session'
+        static fn (): string => Str::slug(env('APP_NAME', static fn (): string => 'phenix'), '_') . '_session'
     ),
 
     'path' => '/',
