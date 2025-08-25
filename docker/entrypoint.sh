@@ -4,18 +4,8 @@ set -e
 
 chmod +x ./phenix
 
-if [ "$APP_ENV" != "production" ]; then
-    echo "Waiting for MySQL to be ready..."
-    while ! nc -z mysql 3306; do
-        sleep 1
-    done
-    echo "MySQL is ready!"
-fi
-
-if [ "$APP_ENV" = "local" ]; then
-    echo "Running migrations..."
-    ./phenix migrate:run || true
-fi
+echo "Running migrations..."
+./phenix migrate:run || true
 
 if [ "$APP_ENV" = "production" ]; then
     echo "Starting production server..."
