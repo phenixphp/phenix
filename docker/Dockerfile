@@ -1,28 +1,40 @@
-FROM php:8.2-cli AS development
+FROM php:8.2-cli AS base
 
 WORKDIR /var/www/
 
 RUN apt-get update \
-    && apt-get install -y curl \
-    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs \
+    && apt-get install -y curl git unzip \
+    && docker-php-ext-install pcntl pdo pdo_mysql \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pcntl pdo pdo_mysql
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+FROM base AS development
+
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs
 
 COPY . /var/www/
 
-FROM php:8.2-cli AS production
+RUN composer install --no-scripts --no-autoloader
 
-WORKDIR /var/www/
+RUN composer dump-autoload --optimize
 
-RUN docker-php-ext-install pcntl pdo pdo_mysql
+EXPOSE ${APP_PORT:-1337}
+
+ENTRYPOINT ["docker/entrypoint.sh"]
+
+FROM base AS production
 
 COPY . /var/www/
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts \
+    && chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www/storage
 
 USER www-data
 
-EXPOSE 8080
+EXPOSE ${APP_PORT:-1337}
 
 ENTRYPOINT ["docker/entrypoint.sh"]
