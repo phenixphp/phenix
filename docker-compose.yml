@@ -1,18 +1,27 @@
 services:
   app:
     build:
-      context: ./docker
+      context: .
+      dockerfile: docker/Dockerfile
       target: development
     volumes:
       - .:/var/www:rw
+      - /var/www/vendor
     working_dir: /var/www
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     environment:
-      - APP_PORT=${APP_PORT:-8080}
+      - APP_PORT=${APP_PORT:-1337}
       - APP_ENV=${APP_ENV:-development}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
     ports:
-      - '${APP_PORT:-8080}:${APP_PORT:-8080}'
+      - '${APP_PORT:-1337}:${APP_PORT:-1337}'
+    depends_on:
+      - mysql
     networks:
       - phenix
 
@@ -26,8 +35,13 @@ services:
       MYSQL_USER: '${DB_USERNAME}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - phenix
+
+volumes:
+  mysql_data:
 
 networks:
   phenix:
