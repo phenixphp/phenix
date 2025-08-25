@@ -6,6 +6,7 @@ use Dotenv\Dotenv;
 use Spatie\Watcher\Watch;
 use Symfony\Component\Process\Process;
 use Spatie\Watcher\Exceptions\CouldNotStartWatcher;
+use Symfony\Component\Process\PhpExecutableFinder;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -92,7 +93,7 @@ class Watcher extends Watch
         parent::__construct();
 
         $this->setPaths($paths);
-        $this->host = $config['APP_URL'] ?? 'http://127.0.0.1';
+        $this->host = $config['APP_HOST'] ?? '0.0.0.0';
         $this->port = $config['APP_PORT'] ?? 1337;
     }
 
@@ -168,8 +169,10 @@ class Watcher extends Watch
             return;
         }
 
-        $command = "XDEBUG_MODE=off php public/index.php";
-        $this->serverProcess = Process::fromShellCommandline($command);
+        $this->serverProcess = new Process(
+            command:[(new PhpExecutableFinder)->find(), 'public/index.php', "--host={$this->host}", "--port={$this->port}"],
+            env:['XDEBUG_MODE' => 'off']
+        );
         $this->serverProcess->setTimeout(null);
 
         try {
