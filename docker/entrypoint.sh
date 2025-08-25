@@ -2,8 +2,6 @@
 
 set -e
 
-chmod +x ./phenix
-
 echo "Running migrations..."
 ./phenix migrate:run || true
 
