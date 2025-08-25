@@ -8,7 +8,7 @@ RUN groupadd -g ${USER_GID} phenix_group && useradd -ms /bin/bash -u ${USER_UID}
 
 RUN docker-php-ext-install pcntl pdo pdo_mysql
 
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
 
 USER phenix_user
