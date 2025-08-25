@@ -169,7 +169,6 @@ class Watcher extends Watch
             return;
         }
 
-        $command = "XDEBUG_MODE=off php public/index.php";
         $this->serverProcess = new Process(
             command:[(new PhpExecutableFinder)->find(), 'public/index.php', "--host={$this->host}", "--port={$this->port}"],
             env:['XDEBUG_MODE' => 'off']
