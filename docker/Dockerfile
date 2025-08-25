@@ -10,7 +10,7 @@ RUN apt-get update \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-FROM base AS development
+FROM base AS local
 
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs

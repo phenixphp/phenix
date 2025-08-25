@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-      target: development
+      target: local
     volumes:
       - .:/var/www:rw
       - /var/www/vendor

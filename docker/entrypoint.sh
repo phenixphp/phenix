@@ -12,7 +12,7 @@ if [ "$APP_ENV" != "production" ]; then
     echo "MySQL is ready!"
 fi
 
-if [ "$APP_ENV" = "development" ]; then
+if [ "$APP_ENV" = "local" ]; then
     echo "Running migrations..."
     ./phenix migrate:run || true
 fi
