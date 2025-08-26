@@ -5,9 +5,9 @@ services:
       dockerfile: docker/Dockerfile
       target: local
     volumes:
-      - .:/var/www:rw
-      - /var/www/vendor
-    working_dir: /var/www
+      - .:/var/www/html:rw
+      - /var/www/html/vendor
+    working_dir: /var/www/html
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     environment:
@@ -18,10 +18,14 @@ services:
       - DB_DATABASE=${DB_DATABASE:-phenix}
       - DB_USERNAME=${DB_USERNAME:-phenix}
       - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
       - '${APP_PORT:-1337}:${APP_PORT:-1337}'
     depends_on:
       - mysql
+      - redis
     networks:
       - phenix
 
@@ -40,8 +44,19 @@ services:
     networks:
       - phenix
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - phenix
+
 volumes:
   mysql_data:
+  redis_data:
 
 networks:
   phenix:

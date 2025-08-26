@@ -1,9 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
-
-echo "Running migrations..."
-./phenix migrate:run || true
 
 if [ "$APP_ENV" = "production" ]; then
     echo "Starting production server..."

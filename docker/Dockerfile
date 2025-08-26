@@ -1,24 +1,25 @@
-FROM php:8.2-cli AS base
+FROM serversideup/php:8.2-cli-alpine AS base
 
-WORKDIR /var/www/
+USER root
 
-RUN apt-get update \
-    && apt-get install -y curl git unzip \
-    && docker-php-ext-install pcntl pdo pdo_mysql \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+    curl \
+    git \
+    unzip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 FROM base AS local
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs
+RUN apk add --no-cache nodejs npm
 
-COPY . /var/www/
+COPY --chown=www-data:www-data . /var/www/html
+
+RUN chmod -R 755 /var/www/html/storage
+
+USER www-data
 
 RUN composer install --no-scripts --no-autoloader
-
 RUN composer dump-autoload --optimize
 
 EXPOSE ${APP_PORT:-1337}
@@ -27,13 +28,13 @@ ENTRYPOINT ["docker/entrypoint.sh"]
 
 FROM base AS production
 
-COPY . /var/www/
+COPY --chown=www-data:www-data . /var/www/html
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts \
-    && chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage
+RUN chmod -R 755 /var/www/html/storage
 
 USER www-data
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 EXPOSE ${APP_PORT:-1337}
 
