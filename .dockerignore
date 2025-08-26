@@ -30,6 +30,8 @@ storage/framework/views/*
 node_modules/
 vendor/
 
+.env
+
 build/
 coverage/
 
