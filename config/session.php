@@ -15,9 +15,9 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', fn (): string => 'redis'),
+    'driver' => env('SESSION_DRIVER', static fn (): string => 'redis'),
 
-    'lifetime' => env('SESSION_LIFETIME', fn () => 120),
+    'lifetime' => env('SESSION_LIFETIME', static fn (): int => 120),
 
     /*
     |--------------------------------------------------------------------------
