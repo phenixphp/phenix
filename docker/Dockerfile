@@ -1,22 +1,41 @@
-FROM php:8.2-cli
-WORKDIR /usr/src/phenix
+FROM serversideup/php:8.2-cli-alpine AS base
 
-ARG USER_UID
-ARG USER_GID
+USER root
 
-RUN groupadd -g ${USER_GID} phenix_group && useradd -ms /bin/bash -u ${USER_UID} -g ${USER_GID} phenix_user
+RUN apk add --no-cache \
+    curl \
+    git \
+    unzip
 
-RUN docker-php-ext-install pcntl pdo pdo_mysql
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y nodejs
+FROM base AS local
 
-USER phenix_user
+RUN apk add --no-cache nodejs npm
 
-COPY . /usr/src/phenix
+COPY --chown=www-data:www-data . /var/www/html
 
-ENV APP_PORT=${APP_PORT}
+RUN chmod -R 755 /var/www/html/storage
 
-EXPOSE ${APP_PORT}
+USER www-data
+
+RUN composer install --no-scripts --no-autoloader
+RUN composer dump-autoload --optimize
+
+EXPOSE ${APP_PORT:-1337}
+
+ENTRYPOINT ["docker/entrypoint.sh"]
+
+FROM base AS production
+
+COPY --chown=www-data:www-data . /var/www/html
+
+RUN chmod -R 755 /var/www/html/storage
+
+USER www-data
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+EXPOSE ${APP_PORT:-1337}
 
 ENTRYPOINT ["docker/entrypoint.sh"]
