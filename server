@@ -442,6 +442,7 @@ try {
         __DIR__ . '/config',
         __DIR__ . '/routes',
         __DIR__ . '/database',
+        __DIR__ . '/lang',
         __DIR__ . '/composer.json',
         __DIR__ . '/.env',
     ], $config);
