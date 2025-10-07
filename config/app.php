@@ -10,6 +10,8 @@ return [
     'key' => env('APP_KEY'),
     'previous_key' => env('APP_PREVIOUS_KEY'),
     'debug' => env('APP_DEBUG', static fn (): bool => true),
+    'locale' => 'en',
+    'fallback_locale' => 'en',
     'middlewares' => [
         'global' => [
             \Phenix\Http\Middlewares\HandleCors::class,
@@ -27,5 +29,7 @@ return [
         \Phenix\Mail\MailServiceProvider::class,
         \Phenix\Crypto\CryptoServiceProvider::class,
         \Phenix\Queue\QueueServiceProvider::class,
+        \Phenix\Events\EventServiceProvider::class,
+        \Phenix\Translation\TranslationServiceProvider::class,
     ],
 ];
