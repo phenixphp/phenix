@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Collections\UserCollection;
 use App\Queries\UserQuery;
 use Phenix\Database\Models\Attributes\Column;
+use Phenix\Database\Models\Attributes\DateTime;
+use Phenix\Database\Models\Attributes\Hidden;
 use Phenix\Database\Models\Attributes\Id;
 use Phenix\Database\Models\DatabaseModel;
+use Phenix\Util\Date;
 
 class User extends DatabaseModel
 {
@@ -21,8 +23,14 @@ class User extends DatabaseModel
     #[Column]
     public string $email;
 
-    #[Column]
+    #[Hidden]
     public string $password;
+
+    #[DateTime(name: 'created_at', autoInit: true)]
+    public Date $createdAt;
+
+    #[DateTime(name: 'updated_at')]
+    public Date|null $updatedAt = null;
 
     public static function table(): string
     {
@@ -32,10 +40,5 @@ class User extends DatabaseModel
     protected static function newQueryBuilder(): UserQuery
     {
         return new UserQuery();
-    }
-
-    public function newCollection(): UserCollection
-    {
-        return new UserCollection();
     }
 }
