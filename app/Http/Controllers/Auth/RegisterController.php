@@ -33,6 +33,7 @@ class RegisterController extends Controller
         }
 
         $user = User::create($validator->validated());
+        $user->sendVerificationEmail();
 
         return response()->json($user, HttpStatus::CREATED);
     }

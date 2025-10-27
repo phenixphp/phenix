@@ -2,12 +2,17 @@
 
 declare(strict_types=1);
 
-use function Pest\Faker\faker;
+use App\Mail\VerifyEmail;
+use Phenix\Facades\Mail;
 use Phenix\Testing\Concerns\InteractWithDatabase;
+
+use function Pest\Faker\faker;
 
 uses(InteractWithDatabase::class);
 
 it('registers a user', function (): void {
+    Mail::fake();
+
     $data = [
         'name' => faker()->name(),
         'email' => faker()->email(),
@@ -26,4 +31,6 @@ it('registers a user', function (): void {
     $this->assertDatabaseHas('users', [
         'email' => $data['email'],
     ]);
+
+    Mail::expect(VerifyEmail::class)->toBeSent();
 });
