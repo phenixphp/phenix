@@ -16,8 +16,9 @@ use Amp\Http\Client\Request;
 use Phenix\Http\Constants\HttpMethod;
 use Phenix\Testing\TestResponse;
 use Phenix\Util\URL;
+use Amp\PHPUnit\AsyncTestCase;
 
-uses(Tests\TestCase::class)->in('Unit');
+uses(AsyncTestCase::class)->in('Unit');
 uses(Tests\TestCase::class)->in('Feature');
 
 /*
