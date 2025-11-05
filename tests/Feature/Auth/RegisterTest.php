@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 use App\Mail\VerifyEmail;
 use Phenix\Facades\Mail;
-use Phenix\Testing\Concerns\InteractWithDatabase;
 use Phenix\Testing\Concerns\RefreshDatabase;
 
 use function Pest\Faker\faker;
 
-uses(InteractWithDatabase::class);
 uses(RefreshDatabase::class);
 
 it('registers a user', function (): void {
