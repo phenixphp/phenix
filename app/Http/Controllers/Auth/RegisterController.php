@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Phenix\App;
 use Phenix\Http\Constants\HttpStatus;
 use Phenix\Http\Controller;
@@ -22,7 +24,10 @@ class RegisterController extends Controller
         $validator = new Validator($request);
         $validator->setRules([
             'name' => Str::required()->min(3)->max(20)->unique('users', 'name'),
-            'email' => Email::required()->max(100)->unique('users', 'email'),
+            'email' => Email::required()->validations(
+                new DNSCheckValidation(),
+                new NoRFCWarningsValidation()
+            )->max(100)->unique('users', 'email'),
             'password' => Password::required()->secure(static fn (): bool => App::isProduction())->confirmed(),
         ]);
 
