@@ -9,11 +9,11 @@ class CreateUserTable extends Migration
     public function up(): void
     {
         $table = $this->table('users');
-        $table->addColumn('name', 'string', ['limit' => 100]);
-        $table->addColumn('email', 'string', ['limit' => 100]);
-        $table->addColumn('password', 'string', ['limit' => 255]);
-        $table->addColumn('created_at', 'datetime', ['null' => true]);
-        $table->addColumn('updated_at', 'datetime', ['null' => true]);
+        $table->string('name', 100);
+        $table->string('email', 124)->unique();
+        $table->string('password', 255);
+        $table->dateTime('email_verified_at')->nullable();
+        $table->timestamps();
         $table->create();
     }
 
