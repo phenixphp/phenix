@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Constants\OneTimePasswordScope;
 use App\Models\User;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
 use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Phenix\App;
+use Phenix\Facades\Hash;
 use Phenix\Http\Constants\HttpStatus;
 use Phenix\Http\Controller;
 use Phenix\Http\Request;
@@ -37,8 +39,13 @@ class RegisterController extends Controller
             ], HttpStatus::UNPROCESSABLE_ENTITY);
         }
 
-        $user = User::create($validator->validated());
-        $user->sendVerificationEmail();
+        $user = new User();
+        $user->name = $request->body('name');
+        $user->email = $request->body('email');
+        $user->password = Hash::make($request->body('password'));
+        $user->save();
+
+        $user->sendOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
 
         return response()->json($user, HttpStatus::CREATED);
     }
