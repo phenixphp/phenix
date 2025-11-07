@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Mail\VerifyEmail;
+use App\Mail\SendEmailVerificationOtp;
 use Phenix\Facades\Mail;
 use Phenix\Testing\Concerns\RefreshDatabase;
 
@@ -32,5 +32,5 @@ it('registers a user', function (): void {
         'email' => $data['email'],
     ]);
 
-    Mail::expect(VerifyEmail::class)->toBeSent();
+    Mail::expect(SendEmailVerificationOtp::class)->toBeSent();
 });
