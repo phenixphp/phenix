@@ -13,10 +13,10 @@
 
 use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
+use Amp\PHPUnit\AsyncTestCase;
 use Phenix\Http\Constants\HttpMethod;
 use Phenix\Testing\TestResponse;
 use Phenix\Util\URL;
-use Amp\PHPUnit\AsyncTestCase;
 
 uses(AsyncTestCase::class)->in('Unit');
 uses(Tests\TestCase::class)->in('Feature');
