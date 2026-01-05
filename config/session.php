@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', static fn (): string => 'redis'),
+    'driver' => env('SESSION_DRIVER', static fn (): string => 'local'),
 
     'lifetime' => env('SESSION_LIFETIME', static fn (): int => 120),
 
@@ -29,11 +29,11 @@ return [
     | connection in your database configuration options.
     */
 
-    'connection' => env('SESSION_CONNECTION', static fn (): string => 'default'),
+    'connection' => env('SESSION_CONNECTION', static fn () => 'default'),
 
     'cookie_name' => env(
         'SESSION_COOKIE_NAME',
-        static fn (): string => Str::slug(env('APP_NAME', static fn (): string => 'phenix'), '_') . '_session'
+        static fn (): string => Str::slug(env('APP_NAME', static fn () => 'phenix'), '_') . '_session'
     ),
 
     'path' => '/',

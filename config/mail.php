@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'default' => env('MAIL_MAILER', static fn (): string => 'smtp'),
 

@@ -3,13 +3,17 @@
 declare(strict_types=1);
 
 return [
-    'default' => env('DB_CONNECTION', static fn (): string => 'mysql'),
+    'default' => env('DB_CONNECTION', static fn () => 'mysql'),
 
     'connections' => [
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'database' => env('DB_DATABASE', static fn () => base_path('database/database')),
+        ],
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', static fn (): string => '127.0.0.1'),
-            'port' => env('DB_PORT', static fn (): string => '3306'),
+            'host' => env('DB_HOST', static fn () => '127.0.0.1'),
+            'port' => env('DB_PORT', static fn () => '3306'),
             'database' => env('DB_DATABASE'),
             'username' => env('DB_USERNAME'),
             'password' => env('DB_PASSWORD'),
@@ -20,8 +24,8 @@ return [
         ],
         'postgresql' => [
             'driver' => 'postgresql',
-            'host' => env('DB_HOST', static fn (): string => '127.0.0.1'),
-            'port' => env('DB_PORT', static fn (): string => '5432'),
+            'host' => env('DB_HOST', static fn () => '127.0.0.1'),
+            'port' => env('DB_PORT', static fn () => '5432'),
             'database' => env('DB_DATABASE'),
             'username' => env('DB_USERNAME'),
             'password' => env('DB_PASSWORD'),
@@ -36,12 +40,12 @@ return [
     'redis' => [
         'connections' => [
             'default' => [
-                'scheme' => env('REDIS_SCHEME', static fn (): string => 'redis'),
-                'host' => env('REDIS_HOST', static fn (): string => '127.0.0.1'),
+                'scheme' => env('REDIS_SCHEME', static fn () => 'redis'),
+                'host' => env('REDIS_HOST', static fn () => '127.0.0.1'),
                 'username' => env('REDIS_USERNAME'),
                 'password' => env('REDIS_PASSWORD'),
-                'port' => env('REDIS_PORT', static fn (): string => '6379'),
-                'database' => env('REDIS_DB', static fn (): int => 0),
+                'port' => env('REDIS_PORT', static fn () => '6379'),
+                'database' => env('REDIS_DB', static fn () => 0),
             ],
         ],
     ],
