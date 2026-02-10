@@ -13,6 +13,7 @@ use Phenix\Database\Models\Attributes\ForeignKey;
 use Phenix\Database\Models\Attributes\Id;
 use Phenix\Database\Models\DatabaseModel;
 use Phenix\Util\Date;
+use Phenix\Util\Str;
 
 class UserOtp extends DatabaseModel
 {
@@ -60,6 +61,7 @@ class UserOtp extends DatabaseModel
         $value = random_int(100000, 999999);
 
         $otp = new self();
+        $otp->id = Str::uuid()->toString();
         $otp->scope = $scope->value;
         $otp->code = hash('sha256', (string) $value);
         $otp->expiresAt = Date::now()->addMinutes(env(''));

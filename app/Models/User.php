@@ -7,46 +7,12 @@ namespace App\Models;
 use App\Constants\OneTimePasswordScope;
 use App\Mail\SendEmailVerificationOtp;
 use App\Mail\SendLoginOtp;
-use App\Queries\UserQuery;
-use Phenix\Database\Models\Attributes\Column;
-use Phenix\Database\Models\Attributes\DateTime;
-use Phenix\Database\Models\Attributes\Hidden;
-use Phenix\Database\Models\Attributes\Id;
-use Phenix\Database\Models\DatabaseModel;
+use Phenix\Auth\User as Authenticable;
 use Phenix\Facades\Mail;
 use Phenix\Mail\Mailable;
-use Phenix\Util\Date;
 
-class User extends DatabaseModel
+class User extends Authenticable
 {
-    #[Id]
-    public int $id;
-
-    #[Column]
-    public string $name;
-
-    #[Column]
-    public string $email;
-
-    #[Hidden]
-    public string $password;
-
-    #[DateTime(name: 'created_at', autoInit: true)]
-    public Date $createdAt;
-
-    #[DateTime(name: 'updated_at')]
-    public Date|null $updatedAt = null;
-
-    public static function table(): string
-    {
-        return 'users';
-    }
-
-    protected static function newQueryBuilder(): UserQuery
-    {
-        return new UserQuery();
-    }
-
     public function createOneTimePassword(OneTimePasswordScope $scope): UserOtp
     {
         $userOtp = UserOtp::make($scope);
