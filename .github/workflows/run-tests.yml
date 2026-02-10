@@ -44,7 +44,7 @@ jobs:
       - name: Execute tests
         run: |
           cp .env.example .env
-          vendor/bin/pest --coverage
+          vendor/bin/phpunit
 
       - name: Prepare paths for SonarQube analysis
         run: |
