@@ -56,7 +56,7 @@ class UserOtp extends DatabaseModel
         return new UserOtpQuery();
     }
 
-    public static function make(OneTimePasswordScope $scope): self
+    public static function fromScope(OneTimePasswordScope $scope): self
     {
         $value = random_int(100000, 999999);
 
@@ -64,7 +64,7 @@ class UserOtp extends DatabaseModel
         $otp->id = Str::uuid()->toString();
         $otp->scope = $scope->value;
         $otp->code = hash('sha256', (string) $value);
-        $otp->expiresAt = Date::now()->addMinutes(env(''));
+        $otp->expiresAt = Date::now()->addMinutes(config('auth.otp.expiration', 10));
         $otp->otp = $value;
 
         return $otp;

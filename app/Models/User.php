@@ -15,7 +15,7 @@ class User extends Authenticable
 {
     public function createOneTimePassword(OneTimePasswordScope $scope): UserOtp
     {
-        $userOtp = UserOtp::make($scope);
+        $userOtp = UserOtp::fromScope($scope);
         $userOtp->userId = $this->id;
         $userOtp->save();
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Auth;
 
+use App\Constants\OneTimePasswordScope;
 use App\Mail\SendEmailVerificationOtp;
 use Phenix\Facades\Mail;
 use Phenix\Testing\Concerns\RefreshDatabase;
@@ -37,6 +38,13 @@ class RegisterTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'email' => $data['email'],
+        ]);
+
+        $data = $response->getDecodedBody();
+
+        $this->assertDatabaseHas('user_one_time_passwords', [
+            'user_id' => $data['data']['id'],
+            'scope' => OneTimePasswordScope::VERIFY_EMAIL->value,
         ]);
 
         Mail::expect(SendEmailVerificationOtp::class)->toBeSent();
