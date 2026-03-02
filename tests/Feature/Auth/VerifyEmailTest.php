@@ -24,7 +24,7 @@ class VerifyEmailTest extends TestCase
 
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'test@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -55,7 +55,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'verified@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
             'email_verified_at' => Date::now(),
         ]);
@@ -74,7 +74,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'nonexist@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -92,7 +92,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'scope@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -118,13 +118,13 @@ class VerifyEmailTest extends TestCase
     {
         $userA = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'usera@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
         $userB = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'userb@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -159,7 +159,7 @@ class VerifyEmailTest extends TestCase
 
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'used@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -191,7 +191,7 @@ class VerifyEmailTest extends TestCase
 
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'expired@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -223,7 +223,7 @@ class VerifyEmailTest extends TestCase
 
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'boundary@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -254,7 +254,7 @@ class VerifyEmailTest extends TestCase
 
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'multiple@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -284,7 +284,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'digits5@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -302,7 +302,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'digits7@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -320,7 +320,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'nonnumeric@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -338,7 +338,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'nootp@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
@@ -367,7 +367,7 @@ class VerifyEmailTest extends TestCase
     {
         $user = User::create([
             'name' => $this->faker()->name(),
-            'email' => 'emptyotp@gmail.com',
+            'email' => $this->faker()->freeEmail(),
             'password' => Crypto::encryptString('password'),
         ]);
 
