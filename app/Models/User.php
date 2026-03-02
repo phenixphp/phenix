@@ -8,11 +8,16 @@ use App\Constants\OneTimePasswordScope;
 use App\Mail\SendEmailVerificationOtp;
 use App\Mail\SendLoginOtp;
 use Phenix\Auth\User as Authenticable;
+use Phenix\Database\Models\Attributes\DateTime;
 use Phenix\Facades\Mail;
 use Phenix\Mail\Mailable;
+use Phenix\Util\Date;
 
 class User extends Authenticable
 {
+    #[DateTime(name: 'email_verified_at')]
+    public Date|null $emailVerifiedAt = null;
+
     public function createOneTimePassword(OneTimePasswordScope $scope): UserOtp
     {
         $userOtp = UserOtp::fromScope($scope);
