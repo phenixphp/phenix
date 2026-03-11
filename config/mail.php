@@ -23,6 +23,10 @@ return [
         'resend' => [
             'transport' => 'resend',
         ],
+
+        'log' => [
+            'transport' => 'log',
+        ],
     ],
 
     'from' => [

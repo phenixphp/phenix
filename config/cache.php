@@ -12,7 +12,7 @@ return [
     | using this caching library. This connection is used when another is
     | not explicitly specified when executing a given caching function.
     |
-    | Supported: "local", "redis"
+    | Supported: "local", "file", "redis"
     |
     */
 
