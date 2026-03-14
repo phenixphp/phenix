@@ -41,10 +41,8 @@ class VerifyEmailController extends Controller
             ], HttpStatus::UNPROCESSABLE_ENTITY);
         }
 
-        /** @var User $user */
         $user = User::query()->whereEqual('email', $request->body('email'))->first();
 
-        /** @var UserOtp $otp */
         $otp = UserOtp::query()
             ->whereEqual('user_id', $user->id)
             ->whereEqual('scope', OneTimePasswordScope::VERIFY_EMAIL->value)
