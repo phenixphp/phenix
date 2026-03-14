@@ -34,7 +34,7 @@ class RegisterTest extends TestCase
             ->assertJsonContains([
                 'name' => $data['name'],
                 'email' => $data['email'],
-            ], 'data');
+            ]);
 
         $this->assertDatabaseHas('users', [
             'email' => $data['email'],
@@ -43,7 +43,7 @@ class RegisterTest extends TestCase
         $data = $response->getDecodedBody();
 
         $this->assertDatabaseHas('user_one_time_passwords', [
-            'user_id' => $data['data']['id'],
+            'user_id' => $data['id'],
             'scope' => OneTimePasswordScope::VERIFY_EMAIL->value,
         ]);
 
