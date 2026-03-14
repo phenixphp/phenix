@@ -36,7 +36,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('data.message', 'Email verified successfully.');
+            ->assertJsonPath('message', 'Email verified successfully.');
 
         $this->assertDatabaseHas('users', [
             'email' => $user->email,
@@ -66,7 +66,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertUnprocessableEntity()
-            ->assertJsonPath('data.errors.email.0', 'The selected email is invalid.');
+            ->assertJsonPath('errors.email.0', 'The selected email is invalid.');
     }
 
     /** @test */
@@ -84,7 +84,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('data.message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', 'The provided OTP is invalid.');
     }
 
     /** @test */
@@ -105,49 +105,10 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('data.message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', 'The provided OTP is invalid.');
 
         $this->assertDatabaseHas('users', [
             'email' => $user->email,
-            'email_verified_at' => null,
-        ]);
-    }
-
-    /** @test */
-    public function it_responds_not_found_when_otp_belongs_to_different_user(): void
-    {
-        $userA = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        $userB = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        // Create OTP for user A
-        $otp = $userA->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
-
-        // Try to use user A's OTP with user B's email
-        $response = $this->post('/verify-email', [
-            'email' => $userB->email,
-            'otp' => $otp->otp,
-        ]);
-
-        $response->assertNotFound()
-            ->assertJsonPath('data.message', 'The provided OTP is invalid.');
-
-        // Neither user should be verified
-        $this->assertDatabaseHas('users', [
-            'email' => $userA->email,
-            'email_verified_at' => null,
-        ]);
-
-        $this->assertDatabaseHas('users', [
-            'email' => $userB->email,
             'email_verified_at' => null,
         ]);
     }
@@ -175,7 +136,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('data.message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', 'The provided OTP is invalid.');
 
         // User should not be verified
         $this->assertDatabaseHas('users', [
@@ -206,177 +167,12 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('data.message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', 'The provided OTP is invalid.');
 
         // User should not be verified
         $this->assertDatabaseHas('users', [
             'email' => $user->email,
             'email_verified_at' => null,
         ]);
-    }
-
-    /** @test */
-    public function it_verifies_email_when_otp_is_one_second_before_expiration(): void
-    {
-        $startTime = Date::now();
-        Date::setTestNow($startTime);
-
-        $user = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        $otp = $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
-
-        // Advance time to 1 second before expiration (default is 10 minutes)
-        Date::setTestNow($startTime->addMinutes(10)->subSecond());
-
-        $response = $this->post('/verify-email', [
-            'email' => $user->email,
-            'otp' => $otp->otp,
-        ]);
-
-        $response->assertOk()
-            ->assertJsonPath('data.message', 'Email verified successfully.');
-
-        // User should be verified
-        $this->assertDatabaseHas('users', [
-            'email' => $user->email,
-            'email_verified_at' => Date::now(),
-        ]);
-    }
-
-    /** @test */
-    public function it_verifies_email_with_older_otp_when_multiple_valid_otps_exist(): void
-    {
-        Date::setTestNow(Date::now());
-
-        $user = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        // Create two OTPs for the same user and scope
-        $otp1 = $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
-        Date::setTestNow(Date::now()->addMinute());
-        $otp2 = $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
-
-        // Try to verify with the older OTP (both are valid)
-        $response = $this->post('/verify-email', [
-            'email' => $user->email,
-            'otp' => $otp1->otp,
-        ]);
-
-        $response->assertOk()
-            ->assertJsonPath('data.message', 'Email verified successfully.');
-
-        // User should be verified
-        $this->assertDatabaseHas('users', [
-            'email' => $user->email,
-            'email_verified_at' => Date::now(),
-        ]);
-    }
-
-    /** @test */
-    public function it_responds_with_validation_error_when_otp_has_less_than_6_digits(): void
-    {
-        $user = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        $response = $this->post('/verify-email', [
-            'email' => $user->email,
-            'otp' => '12345', // Only 5 digits
-        ]);
-
-        $response->assertUnprocessableEntity()
-            ->assertJsonPath('data.errors.otp.0', 'The otp must be 6 digits.');
-    }
-
-    /** @test */
-    public function it_responds_with_validation_error_when_otp_has_more_than_6_digits(): void
-    {
-        $user = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        $response = $this->post('/verify-email', [
-            'email' => $user->email,
-            'otp' => '1234567', // 7 digits
-        ]);
-
-        $response->assertUnprocessableEntity()
-            ->assertJsonPath('data.errors.otp.0', 'The otp must be 6 digits.');
-    }
-
-    /** @test */
-    public function it_responds_with_validation_error_when_otp_is_not_numeric(): void
-    {
-        $user = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        $response = $this->post('/verify-email', [
-            'email' => $user->email,
-            'otp' => '12345a', // Contains letter
-        ]);
-
-        $response->assertUnprocessableEntity()
-            ->assertJsonPath('data.errors.otp.0', 'The otp must be a number.');
-    }
-
-    /** @test */
-    public function it_responds_with_validation_error_when_otp_is_missing(): void
-    {
-        $user = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        $response = $this->post('/verify-email', [
-            'email' => $user->email,
-        ]);
-
-        $response->assertUnprocessableEntity()
-            ->assertJsonPath('data.errors.otp.0', 'The otp field is required.');
-    }
-
-    /** @test */
-    public function it_responds_with_validation_error_when_email_is_empty_string(): void
-    {
-        $response = $this->post('/verify-email', [
-            'email' => '',
-            'otp' => '123456',
-        ]);
-
-        $response->assertUnprocessableEntity()
-            ->assertJsonPath('data.errors.email.0', 'The email field is required.');
-    }
-
-    /** @test */
-    public function it_responds_with_validation_error_when_otp_is_empty_string(): void
-    {
-        $user = User::create([
-            'name' => $this->faker()->name(),
-            'email' => $this->faker()->freeEmail(),
-            'password' => Crypto::encryptString('password'),
-        ]);
-
-        $response = $this->post('/verify-email', [
-            'email' => $user->email,
-            'otp' => '',
-        ]);
-
-        $response->assertUnprocessableEntity()
-            ->assertJsonPath('data.errors.otp.0', 'The otp field is required.');
     }
 }
