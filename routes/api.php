@@ -11,7 +11,7 @@ use App\Http\Middleware\Guest;
 use Phenix\Auth\Middlewares\Authenticated;
 use Phenix\Cache\RateLimit\Middlewares\RateLimiter;
 use Phenix\Facades\Route;
-use Phenix\Routing\Route as Router;
+use Phenix\Routing\Router;
 
 Route::get('/', [WelcomeController::class, 'index']);
 
