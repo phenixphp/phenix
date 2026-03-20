@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
+
 return [
     'users' => [
-        'model' => Phenix\Auth\User::class,
+        'model' => User::class,
     ],
     'tokens' => [
         'model' => Phenix\Auth\PersonalAccessToken::class,
