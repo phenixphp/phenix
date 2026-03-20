@@ -88,10 +88,9 @@ class ResendOtpTest extends TestCase
         Mail::fake();
 
         $response = $this->post(
-            '/resend-verification-otp',
-            ['email' => $this->faker()->freeEmail()],
-            [],
-            ['Authorization' => 'Bearer any-token']
+            path: '/resend-verification-otp',
+            body: ['email' => $this->faker()->freeEmail()],
+            headers: ['Authorization' => 'Bearer any-token']
         );
 
         $response->assertUnauthorized()
