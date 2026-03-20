@@ -17,7 +17,7 @@ use Phenix\Util\Date;
 use Phenix\Validation\Types\Email;
 use Phenix\Validation\Validator;
 
-class ResendOtpController extends Controller
+class ResendVerificationOtpController extends Controller
 {
     public function resend(Request $request): Response
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ResendOtpController;
+use App\Http\Controllers\Auth\ResendVerificationOtpController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Middleware\Guest;
@@ -24,7 +24,7 @@ Route::middleware(Guest::class)
             ->name('verification.verify')
             ->middleware(RateLimiter::perMinute(6, 'auth:verify-email'));
 
-        $router->post('resend-verification-otp', [ResendOtpController::class, 'resend'])
+        $router->post('resend-verification-otp', [ResendVerificationOtpController::class, 'resend'])
             ->name('verification.resend')
             ->middleware(RateLimiter::perMinute(2, 'auth:resend-verification-otp'));
 
