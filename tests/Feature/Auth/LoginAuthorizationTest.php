@@ -74,7 +74,7 @@ class LoginAuthorizationTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
     }
 
     /** @test */
@@ -95,7 +95,7 @@ class LoginAuthorizationTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
     }
 
     /** @test */
@@ -120,7 +120,7 @@ class LoginAuthorizationTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
     }
 
     /** @test */
@@ -145,7 +145,7 @@ class LoginAuthorizationTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
     }
 
     /** @test */
@@ -171,7 +171,7 @@ class LoginAuthorizationTest extends TestCase
             'email' => $user->email,
             'otp' => '123456',
         ])->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
-            ->assertJsonPath('message', 'Rate limit exceeded. Please try again later.');
+            ->assertJsonPath('message', trans('auth.rate_limit.exceeded'));
     }
 
     /** @test */

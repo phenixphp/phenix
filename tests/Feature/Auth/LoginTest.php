@@ -40,7 +40,7 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('message', 'A verification code has been sent to your email address.');
+            ->assertJsonPath('message', trans('auth.otp.login.sent'));
 
         $this->assertDatabaseHas('user_one_time_passwords', [
             'user_id' => $user->id,
@@ -68,7 +68,7 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertUnauthorized()
-            ->assertJsonPath('message', 'Invalid credentials.');
+            ->assertJsonPath('message', trans('auth.login.invalid_credentials'));
 
         $this->assertSame(
             0,
@@ -98,7 +98,7 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertUnprocessableEntity()
-            ->assertJsonPath('errors.email.0', 'The selected email is invalid.');
+            ->assertJsonPath('errors.email.0', trans('validation.exists', ['field' => 'email']));
 
         Mail::expect(SendLoginOtp::class)->toNotBeSent();
     }
@@ -126,7 +126,7 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
-            ->assertJsonPath('message', 'You have exceeded the maximum number of OTP requests. Please try again later.');
+            ->assertJsonPath('message', trans('auth.otp.limit_exceeded'));
 
         $this->assertSame(
             5,
@@ -155,7 +155,7 @@ class LoginTest extends TestCase
         );
 
         $response->assertUnauthorized()
-            ->assertJsonPath('message', 'Unauthorized');
+            ->assertJsonPath('message', trans('auth.unauthorized'));
 
         Mail::expect(SendLoginOtp::class)->toNotBeSent();
     }
@@ -184,7 +184,7 @@ class LoginTest extends TestCase
             'email' => $user->email,
             'password' => 'WrongPass99',
         ])->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
-            ->assertJsonPath('message', 'Rate limit exceeded. Please try again later.');
+            ->assertJsonPath('message', trans('auth.rate_limit.exceeded'));
 
         Mail::expect(SendLoginOtp::class)->toNotBeSent();
     }

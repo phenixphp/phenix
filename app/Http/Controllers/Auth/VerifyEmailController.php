@@ -53,7 +53,7 @@ class VerifyEmailController extends Controller
 
         if (! $otp) {
             return response()->json([
-                'message' => 'The provided OTP is invalid.',
+                'message' => trans('auth.otp.invalid'),
             ], HttpStatus::NOT_FOUND);
         }
 
@@ -64,7 +64,7 @@ class VerifyEmailController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Email verified successfully.',
+            'message' => trans('auth.email_verification.verified'),
         ], HttpStatus::OK);
     }
 }

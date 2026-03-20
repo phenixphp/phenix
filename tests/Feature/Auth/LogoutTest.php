@@ -35,7 +35,7 @@ class LogoutTest extends TestCase
         );
 
         $response->assertOk()
-            ->assertJsonPath('message', 'Logged out successfully.');
+            ->assertJsonPath('message', trans('auth.logout.success'));
 
         $this->assertDatabaseMissing('personal_access_tokens', [
             'id' => $currentToken->id(),
@@ -51,6 +51,6 @@ class LogoutTest extends TestCase
     {
         $this->post('/logout')
             ->assertUnauthorized()
-            ->assertJsonPath('message', 'Unauthorized');
+            ->assertJsonPath('message', trans('auth.unauthorized'));
     }
 }

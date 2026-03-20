@@ -46,7 +46,7 @@ class LoginController extends Controller
 
         if (! Hash::verify($user->password, (string) $request->body('password'))) {
             return response()->json([
-                'message' => 'Invalid credentials.',
+                'message' => trans('auth.login.invalid_credentials'),
             ], HttpStatus::UNAUTHORIZED);
         }
 
@@ -58,14 +58,14 @@ class LoginController extends Controller
 
         if ($otpCount >= 5) {
             return response()->json([
-                'message' => 'You have exceeded the maximum number of OTP requests. Please try again later.',
+                'message' => trans('auth.otp.limit_exceeded'),
             ], HttpStatus::TOO_MANY_REQUESTS);
         }
 
         $user->sendOneTimePassword(OneTimePasswordScope::LOGIN);
 
         return response()->json([
-            'message' => 'A verification code has been sent to your email address.',
+            'message' => trans('auth.otp.login.sent'),
         ]);
     }
 
@@ -101,7 +101,7 @@ class LoginController extends Controller
 
         if (! $otp) {
             return response()->json([
-                'message' => 'The provided OTP is invalid.',
+                'message' => trans('auth.otp.invalid'),
             ], HttpStatus::NOT_FOUND);
         }
 
@@ -125,7 +125,7 @@ class LoginController extends Controller
         $user?->currentAccessToken()?->delete();
 
         return response()->json([
-            'message' => 'Logged out successfully.',
+            'message' => trans('auth.logout.success'),
         ], HttpStatus::OK);
     }
 }

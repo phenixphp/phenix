@@ -40,7 +40,7 @@ class ResendOtpTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('message', 'OTP has been resent successfully.');
+            ->assertJsonPath('message', trans('auth.otp.email_verification.resent'));
 
         $this->assertDatabaseHas('user_one_time_passwords', [
             'id' => $otp->id,
@@ -77,7 +77,7 @@ class ResendOtpTest extends TestCase
         ]);
 
         $response->assertUnprocessableEntity()
-            ->assertJsonPath('errors.email.0', 'The selected email is invalid.');
+            ->assertJsonPath('errors.email.0', trans('validation.exists', ['field' => 'email']));
 
         Mail::expect(SendEmailVerificationOtp::class)->toNotBeSent();
     }
@@ -95,7 +95,7 @@ class ResendOtpTest extends TestCase
         );
 
         $response->assertUnauthorized()
-            ->assertJsonPath('message', 'Unauthorized');
+            ->assertJsonPath('message', trans('auth.unauthorized'));
 
         Mail::expect(SendEmailVerificationOtp::class)->toNotBeSent();
     }
@@ -121,7 +121,7 @@ class ResendOtpTest extends TestCase
         ]);
 
         $response->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
-            ->assertJsonPath('message', 'You have exceeded the maximum number of OTP requests. Please try again later.');
+            ->assertJsonPath('message', trans('auth.otp.limit_exceeded'));
 
         Mail::expect(SendEmailVerificationOtp::class)->toNotBeSent();
     }

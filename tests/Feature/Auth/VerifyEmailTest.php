@@ -36,7 +36,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('message', 'Email verified successfully.');
+            ->assertJsonPath('message', trans('auth.email_verification.verified'));
 
         $this->assertDatabaseHas('users', [
             'email' => $user->email,
@@ -66,7 +66,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertUnprocessableEntity()
-            ->assertJsonPath('errors.email.0', 'The selected email is invalid.');
+            ->assertJsonPath('errors.email.0', trans('validation.exists', ['field' => 'email']));
     }
 
     /** @test */
@@ -84,7 +84,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
     }
 
     /** @test */
@@ -105,7 +105,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
 
         $this->assertDatabaseHas('users', [
             'email' => $user->email,
@@ -136,7 +136,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
 
         // User should not be verified
         $this->assertDatabaseHas('users', [
@@ -167,7 +167,7 @@ class VerifyEmailTest extends TestCase
         ]);
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'The provided OTP is invalid.');
+            ->assertJsonPath('message', trans('auth.otp.invalid'));
 
         // User should not be verified
         $this->assertDatabaseHas('users', [

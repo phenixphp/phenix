@@ -49,14 +49,14 @@ class ResendOtpController extends Controller
 
         if ($otpCount >= 5) {
             return response()->json([
-                'message' => 'You have exceeded the maximum number of OTP requests. Please try again later.',
+                'message' => trans('auth.otp.limit_exceeded'),
             ], HttpStatus::TOO_MANY_REQUESTS);
         }
 
         $user->sendOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
 
         return response()->json([
-            'message' => 'OTP has been resent successfully.',
+            'message' => trans('auth.otp.email_verification.resent'),
         ], HttpStatus::OK);
     }
 }
