@@ -40,7 +40,7 @@ class ResetPasswordTest extends TestCase
             'password_confirmation' => 'N3wP@ssw0rd1',
         ])->assertOk()
             ->assertJsonPath('message', trans('auth.password_reset.reset'));
-    
+
         $updatedUser = User::find($user->id);
 
         $this->assertNotNull($updatedUser);

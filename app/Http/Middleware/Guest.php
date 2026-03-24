@@ -32,10 +32,10 @@ class Guest implements Middleware
 
     protected function extractToken(string|null $authorizationHeader): string|null
     {
-        if (!$this->hasBearerToken($authorizationHeader)) {
+        if (! $this->hasBearerToken($authorizationHeader)) {
             return null;
         }
-    
+
         $parts = explode(' ', $authorizationHeader, 2);
 
         return isset($parts[1]) ? trim($parts[1]) : null;
