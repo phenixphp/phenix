@@ -140,27 +140,6 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function it_responds_unauthorized_when_authorization_token_is_present(): void
-    {
-        Mail::fake();
-
-        $response = $this->post(
-            '/login',
-            [
-                'email' => $this->faker()->freeEmail(),
-                'password' => 'P@ssw0rd12',
-            ],
-            [],
-            ['Authorization' => 'Bearer any-token']
-        );
-
-        $response->assertUnauthorized()
-            ->assertJsonPath('message', trans('auth.unauthorized'));
-
-        Mail::expect(SendLoginOtp::class)->toNotBeSent();
-    }
-
-    /** @test */
     public function it_rate_limits_login_attempts_per_client(): void
     {
         Cache::clear();

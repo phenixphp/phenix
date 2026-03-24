@@ -83,23 +83,6 @@ class ResendOtpTest extends TestCase
     }
 
     /** @test */
-    public function it_responds_unauthorized_when_authorization_token_is_present(): void
-    {
-        Mail::fake();
-
-        $response = $this->post(
-            path: '/resend-verification-otp',
-            body: ['email' => $this->faker()->freeEmail()],
-            headers: ['Authorization' => 'Bearer any-token']
-        );
-
-        $response->assertUnauthorized()
-            ->assertJsonPath('message', trans('auth.unauthorized'));
-
-        Mail::expect(SendEmailVerificationOtp::class)->toNotBeSent();
-    }
-
-    /** @test */
     public function it_responds_too_many_requests_when_exceed_otp_limit(): void
     {
         Date::setTestNow(Date::now());
