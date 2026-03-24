@@ -24,12 +24,29 @@ return [
             'message' => 'Use the following verification code to complete your sign in.',
             'sent' => 'A verification code has been sent to your email address.',
         ],
+        'reset_password' => [
+            'subject' => 'Your password reset code',
+            'title' => 'Password reset code',
+            'message' => 'Use the following verification code to reset your password.',
+        ],
         'email_verification' => [
             'subject' => 'Verify your email address',
             'title' => 'Email verification code',
             'message' => 'Use the following verification code to verify your email address.',
             'resent' => 'OTP has been resent successfully.',
         ],
+    ],
+    'password_reset' => [
+        'sent' => 'If your email address exists in our records, a password reset code has been sent.',
+        'reset' => 'Password has been reset successfully.',
+    ],
+    'security' => [
+        'warning' => 'For your security:',
+        'never_share' => 'Never share this code with anyone. Our team will never ask you for your verification code.',
+        'ignore_if_not_requested' => 'If you didn\'t request this verification, please ignore this email.',
+    ],
+    'footer' => [
+        'copyright' => ':year :appName. All rights reserved.',
     ],
     'rate_limit' => [
         'error' => 'Too Many Requests',

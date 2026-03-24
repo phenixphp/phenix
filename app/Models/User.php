@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Constants\OneTimePasswordScope;
 use App\Mail\SendEmailVerificationOtp;
 use App\Mail\SendLoginOtp;
+use App\Mail\SendResetPasswordOtp;
 use Phenix\Auth\User as Authenticable;
 use Phenix\Database\Models\Attributes\DateTime;
 use Phenix\Facades\Mail;
@@ -41,6 +42,7 @@ class User extends Authenticable
         return match ($scope) {
             OneTimePasswordScope::VERIFY_EMAIL => new SendEmailVerificationOtp($userOtp),
             OneTimePasswordScope::LOGIN => new SendLoginOtp($userOtp),
+            OneTimePasswordScope::RESET_PASSWORD => new SendResetPasswordOtp($userOtp),
         };
     }
 }

@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResendVerificationOtpController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Middleware\Guest;
@@ -27,6 +29,14 @@ Route::middleware(Guest::class)
         $router->post('resend-verification-otp', [ResendVerificationOtpController::class, 'resend'])
             ->name('verification.resend')
             ->middleware(RateLimiter::perMinute(2, 'auth:resend-verification-otp'));
+
+        $router->post('forgot-password', [ForgotPasswordController::class, 'store'])
+            ->name('password.email')
+            ->middleware(RateLimiter::perMinute(2, 'auth:forgot-password'));
+
+        $router->post('reset-password', [ResetPasswordController::class, 'store'])
+            ->name('password.store')
+            ->middleware(RateLimiter::perMinute(5, 'auth:reset-password'));
 
         $router->post('login', [LoginController::class, 'login'])
             ->name('login')
