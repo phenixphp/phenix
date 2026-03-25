@@ -20,6 +20,8 @@
     "require": {
         "php": "^8.2",
         "ext-pcntl": "*",
+        "ext-sockets": "*",
+        "ext-sqlite3": "*",
         "phenixphp/framework": "^0.8.1"
     },
     "require-dev": {
@@ -51,11 +53,14 @@
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
+        "post-create-project-cmd": [
+            "@php phenix key:generate"
+        ],
         "test": "XDEBUG_MODE=off vendor/bin/phpunit",
         "test:debug": "vendor/bin/phpunit",
         "test:coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit",
         "format": "vendor/bin/php-cs-fixer fix",
-        "analyze": "vendor/bin/phpstan",
+        "analyze": "vendor/bin/phpstan --memory-limit=1G",
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "@php server"
