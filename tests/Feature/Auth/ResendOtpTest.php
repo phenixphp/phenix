@@ -35,7 +35,7 @@ class ResendOtpTest extends TestCase
 
         $otp = $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
 
-        $response = $this->post('/resend-verification-otp', [
+        $response = $this->post(route('verification.resend'), [
             'email' => $user->email,
         ]);
 
@@ -72,7 +72,7 @@ class ResendOtpTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $response = $this->post('/resend-verification-otp', [
+        $response = $this->post(route('verification.resend'), [
             'email' => $user->email,
         ]);
 
@@ -98,7 +98,7 @@ class ResendOtpTest extends TestCase
             $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
         }
 
-        $response = $this->post('/resend-verification-otp', [
+        $response = $this->post(route('verification.resend'), [
             'email' => $user->email,
         ]);
 

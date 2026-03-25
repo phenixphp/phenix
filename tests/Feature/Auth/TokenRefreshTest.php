@@ -31,7 +31,7 @@ class TokenRefreshTest extends TestCase
         $oldToken = $user->createToken('auth_token');
 
         $response = $this->post(
-            path: '/token/refresh',
+            path: route('token.refresh'),
             headers: ['Authorization' => 'Bearer ' . $oldToken->toString()]
         );
 
@@ -69,14 +69,14 @@ class TokenRefreshTest extends TestCase
         $oldToken = $user->createToken('auth_token');
 
         $this->post(
-            path: '/token/refresh',
+            path: route('token.refresh'),
             headers: ['Authorization' => 'Bearer ' . $oldToken->toString()]
         )->assertOk();
 
         Date::setTestNow(Date::now()->addSecond());
 
         $this->post(
-            path: '/logout',
+            path: route('logout'),
             headers: ['Authorization' => 'Bearer ' . $oldToken->toString()]
         )->assertUnauthorized();
     }
@@ -84,7 +84,7 @@ class TokenRefreshTest extends TestCase
     /** @test */
     public function it_responds_unauthorized_without_token(): void
     {
-        $this->post('/token/refresh')
+        $this->post(route('token.refresh'))
             ->assertUnauthorized();
     }
 }

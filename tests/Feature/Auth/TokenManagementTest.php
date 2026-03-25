@@ -34,7 +34,7 @@ class TokenManagementTest extends TestCase
         $expiredToken = $user->createToken('token-expired', ['*'], Date::now()->subMinute());
 
         $response = $this->get(
-            path: '/tokens',
+            path: route('tokens.index'),
             headers: ['Authorization' => 'Bearer ' . $tokenA->toString()]
         );
 
@@ -64,7 +64,7 @@ class TokenManagementTest extends TestCase
         $tokenB = $user->createToken('token-b');
 
         $response = $this->delete(
-            path: '/tokens/' . $tokenA->id(),
+            path: route('tokens.destroy', ['id' => $tokenA->id()]),
             headers: ['Authorization' => 'Bearer ' . $tokenB->toString()]
         );
 
@@ -100,7 +100,7 @@ class TokenManagementTest extends TestCase
         $tokenB = $userB->createToken('token-b');
 
         $response = $this->delete(
-            path: '/tokens/' . $tokenB->id(),
+            path: route('tokens.destroy', ['id' => $tokenB->id()]),
             headers: ['Authorization' => 'Bearer ' . $tokenA->toString()]
         );
 

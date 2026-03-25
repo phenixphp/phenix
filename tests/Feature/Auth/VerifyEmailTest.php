@@ -30,7 +30,7 @@ class VerifyEmailTest extends TestCase
 
         $otp = $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
 
-        $response = $this->post('/verify-email', [
+        $response = $this->post(route('verification.verify'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);
@@ -60,7 +60,7 @@ class VerifyEmailTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $response = $this->post('/verify-email', [
+        $response = $this->post(route('verification.verify'), [
             'email' => $user->email,
             'otp' => '123456',
         ]);
@@ -78,7 +78,7 @@ class VerifyEmailTest extends TestCase
             'password' => Crypto::encryptString('password'),
         ]);
 
-        $response = $this->post('/verify-email', [
+        $response = $this->post(route('verification.verify'), [
             'email' => $user->email,
             'otp' => '123456',
         ]);
@@ -99,7 +99,7 @@ class VerifyEmailTest extends TestCase
         // Create OTP with LOGIN scope instead of VERIFY_EMAIL
         $otp = $user->createOneTimePassword(OneTimePasswordScope::LOGIN);
 
-        $response = $this->post('/verify-email', [
+        $response = $this->post(route('verification.verify'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);
@@ -130,7 +130,7 @@ class VerifyEmailTest extends TestCase
         $otp->usedAt = Date::now();
         $otp->save();
 
-        $response = $this->post('/verify-email', [
+        $response = $this->post(route('verification.verify'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);
@@ -161,7 +161,7 @@ class VerifyEmailTest extends TestCase
         // Advance time by 11 minutes (default expiration is 10 minutes)
         Date::setTestNow(Date::now()->addMinutes(11));
 
-        $response = $this->post('/verify-email', [
+        $response = $this->post(route('verification.verify'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);

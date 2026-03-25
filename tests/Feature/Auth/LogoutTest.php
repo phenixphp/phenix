@@ -30,7 +30,7 @@ class LogoutTest extends TestCase
         $otherToken = $user->createToken('other-token');
 
         $response = $this->post(
-            path: '/logout',
+            path: route('logout'),
             headers: ['Authorization' => 'Bearer ' . $currentToken->toString()]
         );
 
@@ -49,7 +49,7 @@ class LogoutTest extends TestCase
     /** @test */
     public function it_responds_unauthorized_when_logging_out_without_a_token(): void
     {
-        $this->post('/logout')
+        $this->post(route('logout'))
             ->assertUnauthorized()
             ->assertJsonPath('message', trans('auth.unauthorized'));
     }

@@ -28,7 +28,7 @@ class CancelRegistrationTest extends TestCase
 
         $otp = $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
 
-        $response = $this->post('/register/cancel', ['email' => $user->email]);
+        $response = $this->post(route('register.cancel'), ['email' => $user->email]);
 
         $response->assertOk()
             ->assertJsonPath('message', trans('auth.registration.cancelled'));
@@ -40,7 +40,7 @@ class CancelRegistrationTest extends TestCase
     /** @test */
     public function it_responds_unprocessable_when_email_does_not_exist(): void
     {
-        $response = $this->post('/register/cancel', ['email' => 'nonexistent@example.com']);
+        $response = $this->post(route('register.cancel'), ['email' => 'nonexistent@example.com']);
 
         $response->assertUnprocessableEntity();
     }
@@ -55,7 +55,7 @@ class CancelRegistrationTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $response = $this->post('/register/cancel', ['email' => 'verified@example.com']);
+        $response = $this->post(route('register.cancel'), ['email' => 'verified@example.com']);
 
         $response->assertUnprocessableEntity();
     }
@@ -73,7 +73,7 @@ class CancelRegistrationTest extends TestCase
         $token = $user->createToken('auth_token');
 
         $this->post(
-            path: '/register/cancel',
+            path: route('register.cancel'),
             body: ['email' => $user->email],
             headers: ['Authorization' => 'Bearer ' . $token->toString()]
         )->assertUnauthorized();

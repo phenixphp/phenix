@@ -28,7 +28,7 @@ class RegisterTest extends TestCase
             'password_confirmation' => 'P@ssw0rd',
         ];
 
-        $response = $this->post('/register', $data);
+        $response = $this->post(route('register'), $data);
 
         $response->assertCreated()
             ->assertJsonContains([

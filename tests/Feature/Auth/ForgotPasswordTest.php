@@ -33,7 +33,7 @@ class ForgotPasswordTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $this->post('/forgot-password', [
+        $this->post(route('password.email'), [
             'email' => $user->email,
         ])->assertOk()
             ->assertJsonPath('message', trans('auth.password_reset.sent'));
@@ -51,7 +51,7 @@ class ForgotPasswordTest extends TestCase
     {
         Mail::fake();
 
-        $this->post('/forgot-password', [
+        $this->post(route('password.email'), [
             'email' => $this->faker()->freeEmail(),
         ])->assertOk()
             ->assertJsonPath('message', trans('auth.password_reset.sent'));
@@ -77,7 +77,7 @@ class ForgotPasswordTest extends TestCase
             'password' => Hash::make('P@ssw0rd12'),
         ]);
 
-        $this->post('/forgot-password', [
+        $this->post(route('password.email'), [
             'email' => $user->email,
         ])->assertOk()
             ->assertJsonPath('message', trans('auth.password_reset.sent'));
@@ -110,7 +110,7 @@ class ForgotPasswordTest extends TestCase
             $user->createOneTimePassword(OneTimePasswordScope::RESET_PASSWORD);
         }
 
-        $this->post('/forgot-password', [
+        $this->post(route('password.email'), [
             'email' => $user->email,
         ])->assertOk()
             ->assertJsonPath('message', trans('auth.password_reset.sent'));

@@ -33,7 +33,7 @@ class ResetPasswordTest extends TestCase
         $secondToken = $user->createToken('second-token');
         $otp = $user->createOneTimePassword(OneTimePasswordScope::RESET_PASSWORD);
 
-        $this->post('/reset-password', [
+        $this->post(route('password.store'), [
             'email' => $user->email,
             'otp' => $otp->otp,
             'password' => 'N3wP@ssw0rd1',
@@ -72,7 +72,7 @@ class ResetPasswordTest extends TestCase
 
         $token = $user->createToken('active-token');
 
-        $this->post('/reset-password', [
+        $this->post(route('password.store'), [
             'email' => $user->email,
             'otp' => '123456',
             'password' => 'N3wP@ssw0rd1',
@@ -102,7 +102,7 @@ class ResetPasswordTest extends TestCase
 
         $otp = $user->createOneTimePassword(OneTimePasswordScope::LOGIN);
 
-        $this->post('/reset-password', [
+        $this->post(route('password.store'), [
             'email' => $user->email,
             'otp' => $otp->otp,
             'password' => 'N3wP@ssw0rd1',
@@ -127,7 +127,7 @@ class ResetPasswordTest extends TestCase
         $otp->usedAt = Date::now();
         $otp->save();
 
-        $this->post('/reset-password', [
+        $this->post(route('password.store'), [
             'email' => $user->email,
             'otp' => $otp->otp,
             'password' => 'N3wP@ssw0rd1',
@@ -152,7 +152,7 @@ class ResetPasswordTest extends TestCase
 
         Date::setTestNow(Date::now()->addMinutes(11));
 
-        $this->post('/reset-password', [
+        $this->post(route('password.store'), [
             'email' => $user->email,
             'otp' => $otp->otp,
             'password' => 'N3wP@ssw0rd1',
@@ -170,7 +170,7 @@ class ResetPasswordTest extends TestCase
             'password' => Hash::make('OldP@ssw0rd1'),
         ]);
 
-        $this->post('/reset-password', [
+        $this->post(route('password.store'), [
             'email' => $user->email,
             'otp' => '123456',
             'password' => 'N3wP@ssw0rd1',
@@ -189,7 +189,7 @@ class ResetPasswordTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $this->post('/reset-password', [
+        $this->post(route('password.store'), [
             'email' => $user->email,
             'otp' => '123456',
             'password' => 'N3wP@ssw0rd1',

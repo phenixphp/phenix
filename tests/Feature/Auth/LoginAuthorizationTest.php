@@ -33,7 +33,7 @@ class LoginAuthorizationTest extends TestCase
 
         $otp = $user->createOneTimePassword(OneTimePasswordScope::LOGIN);
 
-        $response = $this->post('/login/authorize', [
+        $response = $this->post(route('login.authorize'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);
@@ -68,7 +68,7 @@ class LoginAuthorizationTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $response = $this->post('/login/authorize', [
+        $response = $this->post(route('login.authorize'), [
             'email' => $user->email,
             'otp' => '123456',
         ]);
@@ -89,7 +89,7 @@ class LoginAuthorizationTest extends TestCase
 
         $otp = $user->createOneTimePassword(OneTimePasswordScope::VERIFY_EMAIL);
 
-        $response = $this->post('/login/authorize', [
+        $response = $this->post(route('login.authorize'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);
@@ -114,7 +114,7 @@ class LoginAuthorizationTest extends TestCase
         $otp->usedAt = Date::now();
         $otp->save();
 
-        $response = $this->post('/login/authorize', [
+        $response = $this->post(route('login.authorize'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);
@@ -139,7 +139,7 @@ class LoginAuthorizationTest extends TestCase
 
         Date::setTestNow(Date::now()->addMinutes(11));
 
-        $response = $this->post('/login/authorize', [
+        $response = $this->post(route('login.authorize'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ]);
@@ -161,13 +161,13 @@ class LoginAuthorizationTest extends TestCase
         ]);
 
         for ($i = 0; $i < 5; $i++) {
-            $this->post('/login/authorize', [
+            $this->post(route('login.authorize'), [
                 'email' => $user->email,
                 'otp' => '123456',
             ])->assertNotFound();
         }
 
-        $this->post('/login/authorize', [
+        $this->post(route('login.authorize'), [
             'email' => $user->email,
             'otp' => '123456',
         ])->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
@@ -189,13 +189,13 @@ class LoginAuthorizationTest extends TestCase
         $otp = $user->createOneTimePassword(OneTimePasswordScope::LOGIN);
 
         for ($i = 0; $i < 5; $i++) {
-            $this->post('/login', [
+            $this->post(route('login'), [
                 'email' => $user->email,
                 'password' => 'WrongPass99',
             ])->assertUnauthorized();
         }
 
-        $this->post('/login/authorize', [
+        $this->post(route('login.authorize'), [
             'email' => $user->email,
             'otp' => $otp->otp,
         ])->assertOk()

@@ -34,7 +34,7 @@ class LoginTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $response = $this->post('/login', [
+        $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'P@ssw0rd12',
         ]);
@@ -62,7 +62,7 @@ class LoginTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        $response = $this->post('/login', [
+        $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'WrongPass99',
         ]);
@@ -92,7 +92,7 @@ class LoginTest extends TestCase
             'password' => Hash::make('P@ssw0rd12'),
         ]);
 
-        $response = $this->post('/login', [
+        $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'P@ssw0rd12',
         ]);
@@ -120,7 +120,7 @@ class LoginTest extends TestCase
             $user->createOneTimePassword(OneTimePasswordScope::LOGIN);
         }
 
-        $response = $this->post('/login', [
+        $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'P@ssw0rd12',
         ]);
@@ -153,13 +153,13 @@ class LoginTest extends TestCase
         ]);
 
         for ($i = 0; $i < 5; $i++) {
-            $this->post('/login', [
+            $this->post(route('login'), [
                 'email' => $user->email,
                 'password' => 'WrongPass99',
             ])->assertUnauthorized();
         }
 
-        $this->post('/login', [
+        $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'WrongPass99',
         ])->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
