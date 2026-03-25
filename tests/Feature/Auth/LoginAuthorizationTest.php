@@ -201,4 +201,31 @@ class LoginAuthorizationTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('token_type', 'Bearer');
     }
+
+    /** @test */
+    public function it_allows_login_authorization_to_continue_when_bearer_token_is_invalid(): void
+    {
+        Date::setTestNow(Date::now());
+
+        $user = User::create([
+            'name' => $this->faker()->name(),
+            'email' => $this->faker()->freeEmail(),
+            'password' => Hash::make('P@ssw0rd12'),
+            'email_verified_at' => Date::now(),
+        ]);
+
+        $otp = $user->createOneTimePassword(OneTimePasswordScope::LOGIN);
+
+        $response = $this->post(
+            path: route('login.authorize'),
+            body: [
+                'email' => $user->email,
+                'otp' => $otp->otp,
+            ],
+            headers: ['Authorization' => 'Bearer invalid-token']
+        );
+
+        $response->assertOk()
+            ->assertJsonPath('token_type', 'Bearer');
+    }
 }

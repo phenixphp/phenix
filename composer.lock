@@ -4120,12 +4120,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "4aa5081b1d04621f9e84cd832a62a40c20b90633"
+                "reference": "a697243e6859a56d4b631587eb3e1d97d20bf925"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/4aa5081b1d04621f9e84cd832a62a40c20b90633",
-                "reference": "4aa5081b1d04621f9e84cd832a62a40c20b90633",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/a697243e6859a56d4b631587eb3e1d97d20bf925",
+                "reference": "a697243e6859a56d4b631587eb3e1d97d20bf925",
                 "shasum": ""
             },
             "require": {
@@ -4207,7 +4207,7 @@
                 "issues": "https://github.com/phenixphp/framework/issues",
                 "source": "https://github.com/phenixphp/framework/tree/develop"
             },
-            "time": "2026-03-24T23:34:14+00:00"
+            "time": "2026-03-25T17:14:49+00:00"
         },
         {
             "name": "phenixphp/http-cors",
