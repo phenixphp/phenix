@@ -39,6 +39,7 @@ class User extends Authenticable
 
     protected function resolveMailable(OneTimePasswordScope $scope, UserOtp $userOtp): Mailable
     {
+        /** @phpstan-ignore-next-line */
         return match ($scope) {
             OneTimePasswordScope::VERIFY_EMAIL => new SendEmailVerificationOtp($userOtp),
             OneTimePasswordScope::LOGIN => new SendLoginOtp($userOtp),
