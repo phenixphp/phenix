@@ -55,4 +55,7 @@ return [
     'token' => [
         'not_found' => 'Token not found.',
     ],
+    'registration' => [
+        'cancelled' => 'Registration cancelled.',
+    ],
 ];

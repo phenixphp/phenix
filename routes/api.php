@@ -46,6 +46,9 @@ Route::middleware(Guest::class)
         $router->post('login/authorize', [LoginController::class, 'authorize'])
             ->name('login.authorize')
             ->middleware(RateLimiter::perMinute(5, 'auth:login-authorize'));
+
+        $router->post('register/cancel', [RegisterController::class, 'cancel'])
+            ->name('register.cancel');
     });
 
 Route::middleware(Authenticated::class)

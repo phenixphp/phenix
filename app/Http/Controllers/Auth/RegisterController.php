@@ -49,4 +49,36 @@ class RegisterController extends Controller
 
         return response()->json($user, HttpStatus::CREATED);
     }
+
+    public function cancel(Request $request): Response
+    {
+        $validator = new Validator($request);
+        $validator->setRules([
+            'email' => Email::required()->validations(
+                new DNSCheckValidation(),
+                new NoRFCWarningsValidation()
+            )->max(100)
+                ->exists('users', 'email', function ($query): void {
+                    $query->whereNull('email_verified_at');
+                }),
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->failing(),
+            ], HttpStatus::UNPROCESSABLE_ENTITY);
+        }
+
+        /** @var User $user */
+        $user = User::query()
+            ->whereEqual('email', $request->body('email'))
+            ->whereNull('email_verified_at')
+            ->first();
+
+        $user->delete();
+
+        return response()->json([
+            'message' => trans('auth.registration.cancelled'),
+        ], HttpStatus::OK);
+    }
 }
