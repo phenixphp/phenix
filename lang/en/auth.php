@@ -52,4 +52,7 @@ return [
         'error' => 'Too Many Requests',
         'exceeded' => 'Rate limit exceeded. Please try again later.',
     ],
+    'token' => [
+        'not_found' => 'Token not found.',
+    ],
 ];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Auth\ResendVerificationOtpController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -51,4 +52,13 @@ Route::middleware(Authenticated::class)
     ->group(function (Router $router): void {
         $router->post('logout', [LoginController::class, 'logout'])
             ->name('logout');
+
+        $router->get('tokens', [TokenController::class, 'index'])
+            ->name('tokens.index');
+
+        $router->post('token/refresh', [TokenController::class, 'refresh'])
+            ->name('token.refresh');
+
+        $router->delete('tokens/{id}', [TokenController::class, 'destroy'])
+            ->name('tokens.destroy');
     });
