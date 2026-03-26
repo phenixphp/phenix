@@ -16,11 +16,11 @@ jobs:
           MYSQL_DATABASE: phenix_testing
           MYSQL_USER: phenix
           MYSQL_PASSWORD: secret
-          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -uphenix -psecret --silent"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
@@ -68,7 +68,7 @@ jobs:
       - name: Execute tests
         run: |
           cp .env.example .env
-          php phenix key:generate
+          php phenix key:generate .env --force
           vendor/bin/phpunit
 
       - name: Prepare paths for SonarQube analysis
