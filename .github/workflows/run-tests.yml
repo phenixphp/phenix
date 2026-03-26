@@ -44,6 +44,7 @@ jobs:
       - name: Execute tests
         run: |
           cp .env.example .env
+          php phenix key:generate
           vendor/bin/phpunit
 
       - name: Prepare paths for SonarQube analysis
