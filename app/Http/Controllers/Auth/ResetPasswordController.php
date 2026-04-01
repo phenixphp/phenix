@@ -47,21 +47,19 @@ class ResetPasswordController extends Controller
             ->whereNotNull('email_verified_at')
             ->first();
 
-        if ($user === null) {
-            return response()->json([
-                'message' => trans('auth.otp.invalid'),
-            ], HttpStatus::NOT_FOUND);
+        $otp = null;
+
+        if ($user !== null) {
+            $otp = UserOtp::query()
+                ->whereEqual('user_id', $user->id)
+                ->whereEqual('scope', OneTimePasswordScope::RESET_PASSWORD->value)
+                ->whereEqual('code', hash('sha256', (string) $request->body('otp')))
+                ->whereNull('used_at')
+                ->whereGreaterThanOrEqual('expires_at', Date::now()->toDateTimeString())
+                ->first();
         }
 
-        $otp = UserOtp::query()
-            ->whereEqual('user_id', $user->id)
-            ->whereEqual('scope', OneTimePasswordScope::RESET_PASSWORD->value)
-            ->whereEqual('code', hash('sha256', (string) $request->body('otp')))
-            ->whereNull('used_at')
-            ->whereGreaterThanOrEqual('expires_at', Date::now()->toDateTimeString())
-            ->first();
-
-        if (! $otp) {
+        if ($user === null || $otp === null) {
             return response()->json([
                 'message' => trans('auth.otp.invalid'),
             ], HttpStatus::NOT_FOUND);

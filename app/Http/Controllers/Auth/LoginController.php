@@ -43,30 +43,31 @@ class LoginController extends Controller
         }
 
         $user = User::query()->whereEqual('email', $request->body('email'))->first();
-
-        if (! Hash::verify($user->password, (string) $request->body('password'))) {
-            return response()->json([
-                'message' => trans('auth.login.invalid_credentials'),
-            ], HttpStatus::UNAUTHORIZED);
-        }
-
-        $otpCount = UserOtp::query()
-            ->whereEqual('user_id', $user->id)
-            ->whereEqual('scope', OneTimePasswordScope::LOGIN->value)
-            ->whereGreaterThanOrEqual('created_at', Date::now()->subHour()->toDateTimeString())
-            ->count();
-
-        if ($otpCount >= 5) {
-            return response()->json([
-                'message' => trans('auth.otp.limit_exceeded'),
-            ], HttpStatus::TOO_MANY_REQUESTS);
-        }
-
-        $user->sendOneTimePassword(OneTimePasswordScope::LOGIN);
-
-        return response()->json([
+        $response = response()->json([
             'message' => trans('auth.otp.login.sent'),
         ]);
+
+        if (! Hash::verify($user->password, (string) $request->body('password'))) {
+            $response = response()->json([
+                'message' => trans('auth.login.invalid_credentials'),
+            ], HttpStatus::UNAUTHORIZED);
+        } else {
+            $otpCount = UserOtp::query()
+                ->whereEqual('user_id', $user->id)
+                ->whereEqual('scope', OneTimePasswordScope::LOGIN->value)
+                ->whereGreaterThanOrEqual('created_at', Date::now()->subHour()->toDateTimeString())
+                ->count();
+
+            if ($otpCount >= 5) {
+                $response = response()->json([
+                    'message' => trans('auth.otp.limit_exceeded'),
+                ], HttpStatus::TOO_MANY_REQUESTS);
+            } else {
+                $user->sendOneTimePassword(OneTimePasswordScope::LOGIN);
+            }
+        }
+
+        return $response;
     }
 
     public function authorize(Request $request): Response
