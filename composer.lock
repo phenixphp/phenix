@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "102d0a66003d31e813f956d74b4c3ce9",
+    "content-hash": "d9718ea6bd56cb81771975fdd73b5836",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -4116,16 +4116,16 @@
         },
         {
             "name": "phenixphp/framework",
-            "version": "0.8.4",
+            "version": "0.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phenixphp/framework.git",
-                "reference": "9eb5921ec28967164094f3ccd8f1ab466e57f1f1"
+                "reference": "64b4d155ddc119f1291e65d33b01b2b6ff235d96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phenixphp/framework/zipball/9eb5921ec28967164094f3ccd8f1ab466e57f1f1",
-                "reference": "9eb5921ec28967164094f3ccd8f1ab466e57f1f1",
+                "url": "https://api.github.com/repos/phenixphp/framework/zipball/64b4d155ddc119f1291e65d33b01b2b6ff235d96",
+                "reference": "64b4d155ddc119f1291e65d33b01b2b6ff235d96",
                 "shasum": ""
             },
             "require": {
@@ -4205,9 +4205,9 @@
             "description": "Phenix framework based on Amphp",
             "support": {
                 "issues": "https://github.com/phenixphp/framework/issues",
-                "source": "https://github.com/phenixphp/framework/tree/0.8.4"
+                "source": "https://github.com/phenixphp/framework/tree/0.8.5"
             },
-            "time": "2026-03-31T21:57:13+00:00"
+            "time": "2026-04-01T15:17:50+00:00"
         },
         {
             "name": "phenixphp/http-cors",

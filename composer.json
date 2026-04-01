@@ -22,7 +22,7 @@
         "ext-pcntl": "*",
         "ext-sockets": "*",
         "ext-sqlite3": "*",
-        "phenixphp/framework": "^0.8.4"
+        "phenixphp/framework": "^0.8.5"
     },
     "require-dev": {
         "amphp/phpunit-util": "^v3.0.0",
