@@ -7,7 +7,7 @@ namespace App\Mail;
 use App\Models\UserOtp;
 use Phenix\Mail\Mailable;
 
-class SendResetPasswordOtp extends Mailable
+class ResetPasswordOtp extends Mailable
 {
     public function __construct(
         protected UserOtp $userOtp,

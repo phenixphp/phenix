@@ -38,7 +38,6 @@ class ResendVerificationOtpController extends Controller
             ], HttpStatus::UNPROCESSABLE_ENTITY);
         }
 
-        /** @var User $user */
         $user = User::query()->whereEqual('email', $request->body('email'))->first();
 
         $otpCount = UserOtp::query()

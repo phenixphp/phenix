@@ -69,7 +69,6 @@ class RegisterController extends Controller
             ], HttpStatus::UNPROCESSABLE_ENTITY);
         }
 
-        /** @var User $user */
         $user = User::query()
             ->whereEqual('email', $request->body('email'))
             ->whereNull('email_verified_at')

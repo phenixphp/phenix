@@ -44,8 +44,7 @@ class TokenController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-
-        /** @var PersonalAccessToken|null $token */
+        
         $token = PersonalAccessToken::query()
             ->whereEqual('id', $request->route('id'))
             ->whereEqual('tokenable_type', User::class)

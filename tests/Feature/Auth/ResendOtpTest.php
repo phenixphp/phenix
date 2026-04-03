@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Auth;
 
 use App\Constants\OneTimePasswordScope;
-use App\Mail\SendEmailVerificationOtp;
+use App\Mail\VerificationOtp;
 use App\Models\User;
 use App\Models\UserOtp;
 use Phenix\Facades\Crypto;
@@ -57,7 +57,7 @@ class ResendOtpTest extends TestCase
                 ->count()
         );
 
-        Mail::expect(SendEmailVerificationOtp::class)->toBeSentTimes(1);
+        Mail::expect(VerificationOtp::class)->toBeSentTimes(1);
     }
 
     /** @test */
@@ -79,7 +79,7 @@ class ResendOtpTest extends TestCase
         $response->assertUnprocessableEntity()
             ->assertJsonPath('errors.email.0', trans('validation.exists', ['field' => 'email']));
 
-        Mail::expect(SendEmailVerificationOtp::class)->toNotBeSent();
+        Mail::expect(VerificationOtp::class)->toNotBeSent();
     }
 
     /** @test */
@@ -105,6 +105,6 @@ class ResendOtpTest extends TestCase
         $response->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
             ->assertJsonPath('message', trans('auth.otp.limit_exceeded'));
 
-        Mail::expect(SendEmailVerificationOtp::class)->toNotBeSent();
+        Mail::expect(VerificationOtp::class)->toNotBeSent();
     }
 }
