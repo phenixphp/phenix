@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Auth;
 
 use App\Constants\OneTimePasswordScope;
-use App\Mail\SendEmailVerificationOtp;
+use App\Mail\VerificationOtp;
 use Phenix\Facades\Mail;
 use Phenix\Testing\Concerns\RefreshDatabase;
 use Phenix\Testing\Concerns\WithFaker;
@@ -47,6 +47,6 @@ class RegisterTest extends TestCase
             'scope' => OneTimePasswordScope::VERIFY_EMAIL->value,
         ]);
 
-        Mail::expect(SendEmailVerificationOtp::class)->toBeSent();
+        Mail::expect(VerificationOtp::class)->toBeSent();
     }
 }
