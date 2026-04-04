@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Auth;
 
 use App\Constants\OneTimePasswordScope;
-use App\Mail\SendLoginOtp;
+use App\Mail\LoginOtp;
 use App\Models\User;
 use App\Models\UserOtp;
 use Phenix\Facades\Cache;
@@ -47,7 +47,7 @@ class LoginTest extends TestCase
             'scope' => OneTimePasswordScope::LOGIN->value,
         ]);
 
-        Mail::expect(SendLoginOtp::class)->toBeSentTimes(1);
+        Mail::expect(LoginOtp::class)->toBeSentTimes(1);
     }
 
     /** @test */
@@ -78,7 +78,7 @@ class LoginTest extends TestCase
                 ->count()
         );
 
-        Mail::expect(SendLoginOtp::class)->toNotBeSent();
+        Mail::expect(LoginOtp::class)->toNotBeSent();
     }
 
     /** @test */
@@ -100,7 +100,7 @@ class LoginTest extends TestCase
         $response->assertUnprocessableEntity()
             ->assertJsonPath('errors.email.0', trans('validation.exists', ['field' => 'email']));
 
-        Mail::expect(SendLoginOtp::class)->toNotBeSent();
+        Mail::expect(LoginOtp::class)->toNotBeSent();
     }
 
     /** @test */
@@ -136,7 +136,7 @@ class LoginTest extends TestCase
                 ->count()
         );
 
-        Mail::expect(SendLoginOtp::class)->toNotBeSent();
+        Mail::expect(LoginOtp::class)->toNotBeSent();
     }
 
     /** @test */
@@ -165,6 +165,6 @@ class LoginTest extends TestCase
         ])->assertStatusCode(HttpStatus::TOO_MANY_REQUESTS)
             ->assertJsonPath('message', trans('auth.rate_limit.exceeded'));
 
-        Mail::expect(SendLoginOtp::class)->toNotBeSent();
+        Mail::expect(LoginOtp::class)->toNotBeSent();
     }
 }

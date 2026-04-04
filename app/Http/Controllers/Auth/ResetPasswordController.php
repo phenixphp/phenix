@@ -41,7 +41,6 @@ class ResetPasswordController extends Controller
             ], HttpStatus::UNPROCESSABLE_ENTITY);
         }
 
-        /** @var User|null $user */
         $user = User::query()
             ->whereEqual('email', $request->body('email'))
             ->whereNotNull('email_verified_at')

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Auth;
 
 use App\Constants\OneTimePasswordScope;
-use App\Mail\SendResetPasswordOtp;
+use App\Mail\ResetPasswordOtp;
 use App\Models\User;
 use App\Models\UserOtp;
 use Phenix\Facades\Hash;
@@ -43,7 +43,7 @@ class ForgotPasswordTest extends TestCase
             'scope' => OneTimePasswordScope::RESET_PASSWORD->value,
         ]);
 
-        Mail::expect(SendResetPasswordOtp::class)->toBeSentTimes(1);
+        Mail::expect(ResetPasswordOtp::class)->toBeSentTimes(1);
     }
 
     /** @test */
@@ -63,7 +63,7 @@ class ForgotPasswordTest extends TestCase
                 ->count()
         );
 
-        Mail::expect(SendResetPasswordOtp::class)->toNotBeSent();
+        Mail::expect(ResetPasswordOtp::class)->toNotBeSent();
     }
 
     /** @test */
@@ -90,7 +90,7 @@ class ForgotPasswordTest extends TestCase
                 ->count()
         );
 
-        Mail::expect(SendResetPasswordOtp::class)->toNotBeSent();
+        Mail::expect(ResetPasswordOtp::class)->toNotBeSent();
     }
 
     /** @test */
@@ -123,6 +123,6 @@ class ForgotPasswordTest extends TestCase
                 ->count()
         );
 
-        Mail::expect(SendResetPasswordOtp::class)->toNotBeSent();
+        Mail::expect(ResetPasswordOtp::class)->toNotBeSent();
     }
 }

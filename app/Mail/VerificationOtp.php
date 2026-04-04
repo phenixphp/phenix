@@ -7,7 +7,7 @@ namespace App\Mail;
 use App\Models\UserOtp;
 use Phenix\Mail\Mailable;
 
-class SendEmailVerificationOtp extends Mailable
+class VerificationOtp extends Mailable
 {
     public function __construct(
         protected UserOtp $userOtp,
