@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Constants\OneTimePasswordScope;
-use App\Mail\VerificationOtp;
 use App\Mail\LoginOtp;
 use App\Mail\ResetPasswordOtp;
+use App\Mail\VerificationOtp;
 use Phenix\Auth\User as Authenticable;
 use Phenix\Database\Models\Attributes\DateTime;
 use Phenix\Facades\Mail;
