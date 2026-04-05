@@ -25,11 +25,10 @@ XDEBUG_MODE=off php public/index.php  # Direct server start (faster, no debuggin
 
 ### Testing
 ```bash
-composer test                   # Pest tests (XDEBUG_MODE=off)
+composer test                   # PHPUnit tests (XDEBUG_MODE=off)
 composer test:coverage          # With coverage reports
-composer test:parallel          # Parallel execution
 ```
-- **Test Framework**: Pest PHP with custom HTTP client helpers
+- **Test Framework**: PHPUnit with custom HTTP client helpers
 - **Test Structure**: `tests/Feature/` and `tests/Unit/` with shared `TestCase`
 - **HTTP Testing**: Uses Amp HTTP client with helper functions: `get()`, `post()`, etc.
 
@@ -133,7 +132,6 @@ class MyController extends Controller
 - `config/app.php` - Service provider registration and app config
 - `vendor/phenixphp/framework/src/Queue/` - Queue implementation details
 - `vendor/phenixphp/framework/src/Tasks/QueuableTask.php` - Base task class
-- `tests/Pest.php` - HTTP testing helpers and setup
 - `bootstrap/app.php` - Application bootstrap via `AppBuilder`
 
 ## Common Pitfalls

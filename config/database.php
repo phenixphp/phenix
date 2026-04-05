@@ -6,6 +6,10 @@ return [
     'default' => env('DB_CONNECTION', static fn (): string => 'mysql'),
 
     'connections' => [
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'database' => env('DB_DATABASE', static fn (): string => base_path('database' . DIRECTORY_SEPARATOR . 'database.sqlite3')),
+        ],
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', static fn (): string => '127.0.0.1'),

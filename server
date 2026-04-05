@@ -214,7 +214,6 @@ class Watcher extends Watch
             }
 
             echo Output::error("Failed to start server: " . $e->getMessage()) . PHP_EOL;
-            echo Output::debug("Command: {$command}") . PHP_EOL;
             echo Output::warning("Consecutive errors: {$this->consecutiveErrors}") . PHP_EOL . PHP_EOL;
 
             if ($this->consecutiveErrors < $this->maxConsecutiveErrors) {
@@ -443,6 +442,7 @@ try {
         __DIR__ . '/config',
         __DIR__ . '/routes',
         __DIR__ . '/database',
+        __DIR__ . '/lang',
         __DIR__ . '/composer.json',
         __DIR__ . '/.env',
     ], $config);

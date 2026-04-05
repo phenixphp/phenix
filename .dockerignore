@@ -42,7 +42,6 @@ coverage/
 *.pid.lock
 
 .phpunit.result.cache
-.pest
 .php_cs.cache
 
 dist/

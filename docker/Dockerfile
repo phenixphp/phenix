@@ -5,7 +5,10 @@ USER root
 RUN apk add --no-cache \
     curl \
     git \
-    unzip
+    unzip \
+    linux-headers \
+    && docker-php-ext-install pcntl sockets \
+    && docker-php-ext-enable pcntl sockets
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
