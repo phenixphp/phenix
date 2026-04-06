@@ -29,6 +29,8 @@ class TestCase extends BaseTestCase
 
     protected function getEnvFile(): string|null
     {
-        return file_exists($this->getAppDir() . '/.env.testing') ? 'testing' : null;
+        $path = $this->getAppDir() . DIRECTORY_SEPARATOR . '.env.testing';
+
+        return file_exists($path) ? 'testing' : null;
     }
 }

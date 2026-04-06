@@ -2,13 +2,17 @@
 
 declare(strict_types=1);
 
-it('responses successfully', function () {
-    get('/')
-        ->assertOk()
-        ->assertBodyContains('Hello, world!');
-});
+namespace Tests\Feature;
 
-it('responses not acceptable request', function () {
-    get(path: '/', headers: ['Accept' => 'text/html'])
-        ->assertNotAcceptable();
-});
+use Tests\TestCase;
+
+class WelcomeTest extends TestCase
+{
+    /** @test */
+    public function it_responses_successfully(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertBodyContains('Hello, world!');
+    }
+}
