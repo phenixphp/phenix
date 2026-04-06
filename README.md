@@ -8,7 +8,7 @@ Phenix is a web framework built on pure PHP, without external extensions, based 
 
 ## Learning Phenix
 
-You can learn about Phenix in the official [documentation](https://phenix.omarbarbosa.com) and discover the power of asynchronous and concurrent applications in native PHP.
+You can learn about Phenix in the official [documentation](https://phenixphp.com) and discover the power of asynchronous and concurrent applications in native PHP.
 
 ## Security Vulnerabilities
 

@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-**Phenix** is an asynchronous PHP web framework built on the [AmPHP](https://amphp.org/) ecosystem. This is a **skeleton application** that depends on `phenixphp/framework` for core functionality. Official documentation can be found at [Phenix Documentation](https://phenix.omarbarbosa.com/).
+**Phenix** is an asynchronous PHP web framework built on the [AmPHP](https://amphp.org/) ecosystem. This is a **skeleton application** that depends on `phenixphp/framework` for core functionality. Official documentation can be found at [Phenix Documentation](https://phenixphp.com/).
 
 ### Key Components
 - **App Structure**: Standard MVC with `app/` (controllers, tasks), `config/` (service configs), `routes/` (API definitions)
@@ -48,7 +48,7 @@ composer analyze                # PHPStan
 class MyTask extends QueuableTask
 {
     protected int|null $maxTries = 3;  // Configure retries
-    
+
     protected function handle(Channel $channel, Cancellation $cancellation): Result
     {
         // Async task logic here
