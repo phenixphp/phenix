@@ -30,7 +30,9 @@ storage/framework/views/*
 node_modules/
 vendor/
 
-.env
+.env*
+*.key
+*.pem
 
 build/
 coverage/
