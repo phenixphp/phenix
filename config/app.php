@@ -51,6 +51,7 @@ return [
     */
     'server_mode' => env('APP_SERVER_MODE', static fn (): string => 'single'),
     'debug' => env('APP_DEBUG', static fn (): bool => true),
+    'debug_level' => env('APP_DEBUG_LEVEL', static fn (): int => 100),
     'locale' => 'en',
     'fallback_locale' => 'en',
     'middlewares' => [
