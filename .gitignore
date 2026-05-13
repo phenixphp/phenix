@@ -16,4 +16,5 @@ package.json
 *.sqlite*
 .devcontainer
 AGENTS.md
+.agents
 .github/copilot-instructions.md
