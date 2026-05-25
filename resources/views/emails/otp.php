@@ -1,8 +1,6 @@
 @extends('emails.email')
 
-@section('title')
-{{ $title }}
-@endsection
+@section('title', $title)
 
 @section('content')
 	<p class="welcome-text">{{ $message }}</p>
