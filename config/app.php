@@ -51,6 +51,7 @@ return [
     */
     'server_mode' => env('APP_SERVER_MODE', static fn (): string => 'single'),
     'debug' => env('APP_DEBUG', static fn (): bool => true),
+    'debug_level' => env('APP_DEBUG_LEVEL', static fn (): int => 100),
     'locale' => 'en',
     'fallback_locale' => 'en',
     'middlewares' => [
@@ -66,13 +67,13 @@ return [
     'providers' => [
         \Phenix\Filesystem\FilesystemServiceProvider::class,
         \Phenix\Console\CommandsServiceProvider::class,
+        \Phenix\Cache\CacheServiceProvider::class,
         \Phenix\Routing\RouteServiceProvider::class,
         \Phenix\Database\DatabaseServiceProvider::class,
         \Phenix\Redis\RedisServiceProvider::class,
         \Phenix\Auth\AuthServiceProvider::class,
         \Phenix\Tasks\TaskServiceProvider::class,
         \Phenix\Views\ViewServiceProvider::class,
-        \Phenix\Cache\CacheServiceProvider::class,
         \Phenix\Mail\MailServiceProvider::class,
         \Phenix\Crypto\CryptoServiceProvider::class,
         \Phenix\Queue\QueueServiceProvider::class,

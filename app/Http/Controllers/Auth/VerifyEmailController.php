@@ -28,9 +28,8 @@ class VerifyEmailController extends Controller
                 new DNSCheckValidation(),
                 new NoRFCWarningsValidation()
             )->max(100)
-                ->exists('users', 'email', function ($query) use ($request): void {
-                    $query->whereEqual('email', $request->body('email'))
-                        ->whereNull('email_verified_at');
+                ->exists('users', 'email', function ($query): void {
+                    $query->whereNull('email_verified_at');
                 }),
             'otp' => Numeric::required()->digits(6),
         ]);

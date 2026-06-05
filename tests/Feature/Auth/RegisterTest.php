@@ -22,7 +22,7 @@ class RegisterTest extends TestCase
         Mail::fake();
 
         $data = [
-            'name' => $this->faker()->name(),
+            'name' => 'Ada Lovelace',
             'email' => $this->faker()->email(),
             'password' => 'P@ssw0rd',
             'password_confirmation' => 'P@ssw0rd',
