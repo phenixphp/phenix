@@ -3,10 +3,10 @@
 <?php
 
 use Dotenv\Dotenv;
-use Spatie\Watcher\Watch;
-use Symfony\Component\Process\Process;
 use Spatie\Watcher\Exceptions\CouldNotStartWatcher;
+use Spatie\Watcher\Watch;
 use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -85,7 +85,6 @@ class Watcher extends Watch
 
     protected bool $stopAttempts = false;
 
-
     public function __construct(
         array $paths,
         array $config = []
@@ -93,7 +92,7 @@ class Watcher extends Watch
         parent::__construct();
 
         $this->setPaths($paths);
-        $this->host = $config['APP_HOST'] ?? '0.0.0.0';
+        $this->host = $config['APP_HOST'] ?? '127.0.0.1';
         $this->port = $config['APP_PORT'] ?? 1337;
     }
 
@@ -108,7 +107,7 @@ class Watcher extends Watch
 
             $this->handleServerProcess();
 
-            if (!($this->shouldContinue)()) {
+            if (! ($this->shouldContinue)()) {
                 break;
             }
 
@@ -160,7 +159,7 @@ class Watcher extends Watch
     public function runServer(bool $incrementErrorCounter = true): void
     {
         if ($this->consecutiveErrors >= $this->maxConsecutiveErrors || $this->stopAttempts) {
-            if (!$this->stopAttempts) {
+            if (! $this->stopAttempts) {
                 echo Output::error("Too many consecutive errors ({$this->consecutiveErrors}). Stopping server attempts.") . PHP_EOL;
 
                 $this->stopAttempts = true;
@@ -170,8 +169,12 @@ class Watcher extends Watch
         }
 
         $this->serverProcess = new Process(
-            command:[(new PhpExecutableFinder)->find(), 'public/index.php', "--host={$this->host}", "--port={$this->port}"],
-            env:['XDEBUG_MODE' => 'off']
+            command: [(new PhpExecutableFinder())->find(), 'public/index.php'],
+            env: [
+                'XDEBUG_MODE' => 'off',
+                'APP_HOST' => $this->host,
+                'APP_PORT' => (string) $this->port,
+            ]
         );
         $this->serverProcess->setTimeout(null);
 
@@ -180,7 +183,7 @@ class Watcher extends Watch
 
             usleep(100000); // 100ms
 
-            if (!$this->serverProcess->isRunning()) {
+            if (! $this->serverProcess->isRunning()) {
                 $exitCode = $this->serverProcess->getExitCode();
 
                 if ($incrementErrorCounter) {
@@ -226,7 +229,7 @@ class Watcher extends Watch
 
     private function ensureWatcherIsRunning(Process $watcher): void
     {
-        if (!$watcher->isRunning()) {
+        if (! $watcher->isRunning()) {
             throw CouldNotStartWatcher::make($watcher);
         }
     }
@@ -240,7 +243,7 @@ class Watcher extends Watch
 
     private function handleServerProcess(): void
     {
-        if (!isset($this->serverProcess)) {
+        if (! isset($this->serverProcess)) {
             return;
         }
 
@@ -334,7 +337,7 @@ class Watcher extends Watch
         }
 
         if (time() - $this->lastHealthCheck > 10) {
-            if (!$this->isServerHealthy()) {
+            if (! $this->isServerHealthy()) {
                 echo Output::warning("Server health check failed. Restarting...") . PHP_EOL;
 
                 $this->consecutiveErrors++;
@@ -390,7 +393,7 @@ class Watcher extends Watch
 
     private function killExistingProcess(): void
     {
-        if (!isset($this->serverProcess) || !$this->pid) {
+        if (! isset($this->serverProcess) || ! $this->pid) {
             return;
         }
 
@@ -418,18 +421,23 @@ class Watcher extends Watch
 
     private function isServerHealthy(): bool
     {
-        if (!isset($this->serverProcess) || !$this->serverProcess->isRunning()) {
+        if (! isset($this->serverProcess) || ! $this->serverProcess->isRunning()) {
             return false;
         }
 
         $context = stream_context_create([
             'http' => [
                 'timeout' => 1,
-                'ignore_errors' => true
-            ]
+                'ignore_errors' => true,
+            ],
         ]);
 
-        $url = str_replace(['http://', 'https://'], '', $this->host) . ':' . $this->port;
+        $healthHost = match ($this->host) {
+            '0.0.0.0' => '127.0.0.1',
+            '::', '[::]' => '[::1]',
+            default => $this->host,
+        };
+        $url = $healthHost . ':' . $this->port;
         $result = @file_get_contents("http://{$url}", false, $context);
 
         return $result !== false;

@@ -5,7 +5,8 @@ declare(strict_types=1);
 return [
     'name' => env('APP_NAME', static fn (): string => 'Phenix'),
     'env' => env('APP_ENV', static fn (): string => 'local'),
-    'url' => env('APP_URL', static fn (): string => 'http://127.0.0.1'),
+    'url' => env('APP_URL', static fn (): string => 'http://127.0.0.1:1337'),
+    'host' => env('APP_HOST', static fn (): string => '127.0.0.1'),
     'port' => env('APP_PORT', static fn (): int => 1337),
     'cert_path' => env('APP_CERT_PATH', static fn (): string|null => null),
     'key' => env('APP_KEY'),

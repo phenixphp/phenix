@@ -2,20 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Models\UserOtp;
-use Phenix\Auth\PersonalAccessToken;
+use App\Tasks\DeleteExpiredPersonalAccessTokens;
+use App\Tasks\DeleteExpiredUserOtps;
 use Phenix\Facades\Schedule;
-use Phenix\Util\Date;
 
-Schedule::timer(function (): void {
-    UserOtp::query()
-        ->whereNull('used_at')
-        ->whereLessThan('expires_at', Date::now()->toDateTimeString())
-        ->delete();
+Schedule::call('delete-expired-user-otps', function (): void {
+    DeleteExpiredUserOtps::dispatch();
 })->everyMinute();
 
-Schedule::timer(function (): void {
-    PersonalAccessToken::query()
-        ->whereLessThanOrEqual('expires_at', Date::now()->toDateTimeString())
-        ->delete();
+Schedule::call('delete-expired-personal-access-tokens', function (): void {
+    DeleteExpiredPersonalAccessTokens::dispatch();
 })->everyMinute();

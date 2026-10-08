@@ -24,6 +24,7 @@ return [
         'redis' => [
             'connection' => env('REDIS_QUEUE_CONNECTION', static fn (): string => 'default'),
             'queue' => env('REDIS_QUEUE', static fn (): string => 'default'),
+            'reservation_timeout' => env('REDIS_QUEUE_RESERVATION_TIMEOUT', static fn (): int => 60),
         ],
     ],
 ];
