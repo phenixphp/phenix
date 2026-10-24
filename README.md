@@ -1,8 +1,8 @@
 # Phenix framework
 
-[![run-tests](https://github.com/phenixphp/phenix/actions/workflows/run-tests.yml/badge.svg)](https://github.com/phenixphp/phenix/actions/workflows/run-tests.yml)
-<a href="https://packagist.org/packages/phenixphp/phenix"><img src="https://img.shields.io/packagist/v/phenixphp/phenix" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/phenixphp/phenix"><img src="https://img.shields.io/packagist/l/phenixphp/phenix" alt="License"></a>
+[![run-tests](https://img.shields.io/github/actions/workflow/status/phenixphp/phenix/run-tests.yml?label=run-tests)](https://github.com/phenixphp/phenix/actions/workflows/run-tests.yml)
+[![Latest Stable Version](https://img.shields.io/packagist/v/phenixphp/phenix)](https://packagist.org/packages/phenixphp/phenix)
+[![License](https://img.shields.io/packagist/l/phenixphp/phenix)](https://opensource.org/licenses/MIT)
 
 Phenix is a web framework built on pure PHP, without external extensions, based on the [Amphp](https://amphp.org/)  ecosystem, which provides non-blocking operations, asynchronism and parallel code execution natively. It runs in the PHP SAPI CLI and on its own server, it is simply powerful.
 
